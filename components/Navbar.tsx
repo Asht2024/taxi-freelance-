@@ -58,7 +58,7 @@ export const Navbar = ({
       animate={{ y: isScrolled ? 0 : -100 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
       className={cn(
-        "  w-full bg-white/80 dark:bg-black/80 backdrop-blur-sm z-50 border-b border-gray-200 dark:border-gray-800",
+        "fixed top-0 w-full bg-white/80 dark:bg-black/80 backdrop-blur-sm z-50 border-b border-gray-200 dark:border-gray-800",
         className
       )}
     >
