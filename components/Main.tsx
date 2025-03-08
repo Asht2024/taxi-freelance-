@@ -50,7 +50,11 @@ const Main = () => {
       <h1
         className={`text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 
         bg-clip-text text-transparent transform transition-all duration-1000
-        ${isMounted ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"}
+        ${
+          isMounted
+            ? "translate-x-0 opacity-100"
+            : "-translate-x-full opacity-0"
+        }
         hover:scale-105`}
       >
         Asth Cab Service
@@ -71,18 +75,39 @@ const Main = () => {
         <div className="flex gap-4 justify-start">
           {[
             { name: "Rental", icon: <FaCar size={24} /> },
-            { name: "Outstation", icon: <FaMapMarkedAlt size={24} /> },
             { name: "Local", icon: <FaTaxi size={24} /> },
+            { name: "Outstation", icon: <FaMapMarkedAlt size={24} /> },
           ].map((option) => (
-            <button
+            <div
               key={option.name}
-              onClick={() => setSelectedOption(option.name)}
-              className={`w-16 h-16 flex items-center justify-center rounded-full border-2 
-              transition-all duration-300 shadow-md
-              ${selectedOption === option.name ? "bg-yellow-500 text-white border-yellow-500" : "border-gray-300 text-gray-700 hover:bg-gray-200"}`}
+              className="relative group" // Added group class for hover state
             >
-              {option.icon}
-            </button>
+              {/* Tooltip */}
+              <div
+                className="absolute -top-8 left-1/2 -translate-x-1/2 
+        opacity-0 group-hover:opacity-100 transition-opacity duration-200
+        bg-gray-800 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap
+        before:content-[''] before:absolute before:top-full before:left-1/2
+        before:-translate-x-1/2 before:border-4 before:border-transparent
+        before:border-t-gray-800"
+              >
+                {option.name}
+              </div>
+
+              {/* Button */}
+              <button
+                onClick={() => setSelectedOption(option.name)}
+                className={`w-16 h-16 flex items-center justify-center rounded-full border-2 
+          transition-all duration-300 shadow-md
+          ${
+            selectedOption === option.name
+              ? "bg-yellow-500 text-white border-yellow-500"
+              : "border-gray-300 text-gray-700 hover:bg-gray-200"
+          }`}
+              >
+                {option.icon}
+              </button>
+            </div>
           ))}
         </div>
 
