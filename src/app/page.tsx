@@ -1,4 +1,5 @@
 import { Navbar } from "../../components/Navbar";
+import Main from "../../components/Main";
 
 export default function Home() {
   const navItems = [
@@ -8,8 +9,16 @@ export default function Home() {
   ];
 
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <Navbar navItems={navItems} />
+    <div className="grid grid-rows-[auto_1fr] min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+      {/* Navbar at the top */}
+      <div className="flex justify-center">
+        <Navbar navItems={navItems} />
+      </div>
+
+      {/* Main component aligned to the left */}
+      <div className="flex justify-start w-full">
+        <Main />
+      </div>
     </div>
   );
 }
