@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState,JSX } from "react";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 import { cn } from "../lib/utils";
 import Link from "next/link";
@@ -70,7 +70,7 @@ export const Navbar = ({
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex gap-6 items-center">
-          {navItems.map((item, index) => (
+          {navItems.map((item) => (
             <motion.div
               key={item.name}
               whileHover={{ scale: 1.05 }}
