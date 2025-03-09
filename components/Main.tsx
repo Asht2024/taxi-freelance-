@@ -116,75 +116,7 @@ const Main = () => {
         </div>
 
         {/* Booking Form */}
-        <div className="space-y-6">
-          {/* Address Row */}
-          <div className="flex items-center gap-4">
-            <div className="flex-1 relative">
-              <input
-                type="text"
-                placeholder="Enter pickup location"
-                className="w-full px-4 py-2 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-yellow-400 focus:ring-2 focus:ring-yellow-200 transition-all"
-              />
-              <FiMapPin className="absolute right-3 top-2.5 text-gray-400" size={20} />
-            </div>
-
-            <button className="p-3 bg-yellow-400 rounded-full hover:bg-yellow-500 transition-colors shadow-lg">
-              <FiRepeat className="text-white" size={24} />
-            </button>
-
-            <div className="flex-1 relative">
-              <input
-                type="text"
-                placeholder="Enter drop location"
-                className="w-full px-4 py-2 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-yellow-400 focus:ring-2 focus:ring-yellow-200 transition-all"
-              />
-              <FiFlag className="absolute right-3 top-2.5 text-gray-400" size={20} />
-            </div>
-          </div>
-
-          {/* Details Row */}
-          <div className="flex gap-4">
-            <div className="flex-1 relative group">
-              <button className="w-full px-4 py-2 border-2 border-gray-300 rounded-xl text-left flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <FiClock className="text-gray-400" size={20} />
-                  <span className="text-gray-500">Select Date & Time</span>
-                </div>
-                <FiChevronDown className="text-gray-400" />
-              </button>
-            </div>
-
-            <div className="flex-1 relative">
-              <input
-                type="number"
-                min="0"
-                max="10"
-                placeholder="Luggage"
-                className="w-full px-4 py-2 pl-10 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-yellow-400 focus:ring-2 focus:ring-yellow-200"
-              />
-              <FiBriefcase className="absolute left-3 top-2.5 text-gray-400" size={20} />
-            </div>
-
-            <div className="flex-1 relative">
-              <input
-                type="number"
-                min="1"
-                max="8"
-                placeholder="Passengers"
-                className="w-full px-4 py-2 pl-10 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-yellow-400 focus:ring-2 focus:ring-yellow-200"
-              />
-              <FiUsers className="absolute left-3 top-2.5 text-gray-400" size={20} />
-            </div>
-          </div>
-
-          {/* Choose Ride Button */}
-          <div className="pt-4">
-            <button className="w-full py-3 bg-blue-600 text-white font-bold rounded-xl shadow-lg hover:bg-blue-700 transition-all flex items-center justify-center gap-2">
-              <FaCarSide size={24} />
-              Choose Your Ride
-            </button>
-          </div>
-        </div>
+        
       </div>
     </div>
   );
