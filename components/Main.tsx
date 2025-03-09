@@ -1,15 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { FaCarSide, FaMapMarkedAlt, FaTaxi } from "react-icons/fa";
-import { 
-  FiMapPin, 
-  FiFlag, 
-  FiRepeat,  // Correct swap icon
-  FiClock, 
-  FiChevronDown,
-  FiBriefcase,
-  FiUsers
-} from "react-icons/fi";
 
 const Main = () => {
   const [text, setText] = useState("");
