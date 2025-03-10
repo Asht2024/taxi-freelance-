@@ -169,7 +169,7 @@ const Main: React.FC = () => {
   const [typingSpeed, setTypingSpeed] = useState(150);
   const [selectedOption, setSelectedOption] = useState<
     "Local" | "Rental" | "Outstation"
-  >("Rental");
+  >("Local");
   const [headerMounted, setHeaderMounted] = useState(false);
   const [textVisible, setTextVisible] = useState(false);
 
