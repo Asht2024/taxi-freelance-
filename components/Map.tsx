@@ -46,15 +46,19 @@ const Map: React.FC = () => {
           }
         );
 
+        // Custom icon for the marker (using an emoji or image)
+        const customIcon = {
+          url: "https://emojicdn.elk.sh/🧍", // URL for the person emoji
+          scaledSize: new google.maps.Size(40, 40), // Adjust size as needed
+        };
+
         // Add a bouncing animation to the marker
         pickupMarkerRef.current = new google.maps.Marker({
           position: location,
           map: mapRef.current,
           title: "Your Location",
-          icon: {
-            url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
-          },
-          animation: google.maps.Animation.BOUNCE,
+          icon: customIcon, // Use the custom icon
+          animation: google.maps.Animation.BOUNCE, // Add bounce animation
         });
 
         // Zoom in animation
