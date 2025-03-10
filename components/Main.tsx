@@ -23,70 +23,125 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
   }, []);
 
   const renderForm = () => {
+    const inputCommonClass = "w-full pl-12 pr-4 py-3 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white shadow-sm";
+    const iconCommonClass = "absolute left-4 top-1/2 -translate-y-1/2 text-blue-500";
+
     switch (serviceType) {
       case "Local":
         return (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {["Pickup Location", "Drop Location"].map((label, idx) => (
-              <div className="relative" key={idx}>
-                <FaMapMarkerAlt className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
+          <div className="space-y-6 w-1/2">
+            {/* Pickup Location */}
+            <div className="relative">
+              <FaMapMarkerAlt className={iconCommonClass} />
+              <input
+                type="text"
+                placeholder="Pickup Location"
+                className={inputCommonClass}
+              />
+            </div>
+
+            {/* Drop Location */}
+            <div className="relative">
+              <FaMapMarkerAlt className={iconCommonClass} />
+              <input
+                type="text"
+                placeholder="Drop Location"
+                className={inputCommonClass}
+              />
+            </div>
+
+            {/* Date & Time */}
+            <div className="flex gap-6">
+              <div className="relative w-1/2">
+                <FaCalendar className={iconCommonClass} />
                 <input
-                  type="text"
-                  placeholder={label}
-                  className="w-full pl-12 pr-4 py-3 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white shadow-sm"
+                  type="date"
+                  className={inputCommonClass}
                 />
               </div>
-            ))}
+              <div className="relative w-1/2">
+                <FaClock className={iconCommonClass} />
+                <input
+                  type="time"
+                  className={inputCommonClass}
+                />
+              </div>
+            </div>
           </div>
         );
 
       case "Rental":
         return (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="space-y-6 w-1/2">
+            {/* Pickup Location */}
             <div className="relative">
-              <FaMapMarkerAlt className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
+              <FaMapMarkerAlt className={iconCommonClass} />
               <input
                 type="text"
                 placeholder="Pickup Location"
-                className="w-full pl-12 pr-4 py-3 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white shadow-sm"
+                className={inputCommonClass}
               />
             </div>
-            <div className="relative">
-              <FaCalendar className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
-              <input
-                type="date"
-                className="w-full pl-12 pr-4 py-3 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white shadow-sm"
-              />
-            </div>
-            <div className="relative">
-              <FaClock className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
-              <input
-                type="time"
-                className="w-full pl-12 pr-4 py-3 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white shadow-sm"
-              />
+
+            {/* Date & Time */}
+            <div className="flex gap-6">
+              <div className="relative w-1/2">
+                <FaCalendar className={iconCommonClass} />
+                <input
+                  type="date"
+                  className={inputCommonClass}
+                />
+              </div>
+              <div className="relative w-1/2">
+                <FaClock className={iconCommonClass} />
+                <input
+                  type="time"
+                  className={inputCommonClass}
+                />
+              </div>
             </div>
           </div>
         );
 
       case "Outstation":
         return (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {["From City", "To City"].map((label, idx) => (
-              <div className="relative" key={idx}>
-                <FaMapMarkerAlt className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
+          <div className="space-y-6 w-1/2">
+            {/* From City */}
+            <div className="relative">
+              <FaMapMarkerAlt className={iconCommonClass} />
+              <input
+                type="text"
+                placeholder="From City"
+                className={inputCommonClass}
+              />
+            </div>
+
+            {/* To City */}
+            <div className="relative">
+              <FaMapMarkerAlt className={iconCommonClass} />
+              <input
+                type="text"
+                placeholder="To City"
+                className={inputCommonClass}
+              />
+            </div>
+
+            {/* Date & Time */}
+            <div className="flex gap-6">
+              <div className="relative w-1/2">
+                <FaCalendar className={iconCommonClass} />
                 <input
-                  type="text"
-                  placeholder={label}
-                  className="w-full pl-12 pr-4 py-3 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white shadow-sm"
+                  type="date"
+                  className={inputCommonClass}
                 />
               </div>
-            ))}
-            <div className="relative">
-              <FaCalendar className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
-              <input
-                type="date"
-                className="w-full pl-12 pr-4 py-3 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white shadow-sm"
-              />
+              <div className="relative w-1/2">
+                <FaClock className={iconCommonClass} />
+                <input
+                  type="time"
+                  className={inputCommonClass}
+                />
+              </div>
             </div>
           </div>
         );
@@ -97,13 +152,13 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
   };
 
   return (
-    <div
-      className={`transition-all duration-300 ${
-        isMounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-      }`}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="transition-all duration-300"
     >
       {renderForm()}
-    </div>
+    </motion.div>
   );
 };
 
