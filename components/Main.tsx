@@ -112,7 +112,9 @@ const Main: React.FC = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [loopNum, setLoopNum] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(150);
-  const [selectedOption, setSelectedOption] = useState<"Local" | "Rental" | "Outstation">("Rental");
+  const [selectedOption, setSelectedOption] = useState<
+    "Local" | "Rental" | "Outstation"
+  >("Rental");
   const [headerMounted, setHeaderMounted] = useState(false);
   const [textVisible, setTextVisible] = useState(false);
 
@@ -158,7 +160,9 @@ const Main: React.FC = () => {
       <h1
         className={`text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 
         bg-clip-text text-transparent transition-all duration-500 ${
-          headerMounted ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-12"
+          headerMounted
+            ? "opacity-100 translate-x-0"
+            : "opacity-0 -translate-x-12"
         }`}
       >
         Asth Cab Service
@@ -183,30 +187,67 @@ const Main: React.FC = () => {
             { name: "Rental", icon: <FaCarSide size={24} /> },
             { name: "Outstation", icon: <FaMapMarkedAlt size={24} /> },
           ].map((option, index) => (
-            <div key={option.name} className="relative group">
-              <div
-                className="absolute -top-8 left-1/2 -translate-x-1/2 
-                opacity-0 group-hover:opacity-100 transition-opacity duration-200
-                bg-gray-800 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap
-                before:content-[''] before:absolute before:top-full before:left-1/2
-                before:-translate-x-1/2 before:border-4 before:border-transparent
-                before:border-t-gray-800"
-              >
-                {option.name}
-              </div>
+            <div key={option.name} className="relative group mt-7">
+              {/* Selected Option Label - Always visible */}
+              {selectedOption === option.name && (
+                <motion.div
+                  initial={{ y: -10, opacity: 0 }}
+                  animate={{ y: -25, opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 200 }}
+                  className="absolute left-1/2 -translate-x-1/2 -top-6 text-blue-600 font-semibold whitespace-nowrap"
+                >
+                  {option.name}
+                  <motion.div
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
+                    className="h-1 bg-blue-600 mt-1 rounded-full"
+                    transition={{ duration: 0.3 }}
+                  />
+                </motion.div>
+              )}
 
+              {/* Hover Tooltip - Only shows on hover for non-selected options */}
+              {selectedOption !== option.name && (
+                <motion.div
+                  initial={{ y: 5 }}
+                  animate={{ y: 0 }}
+                  className="absolute left-1/2 -translate-x-1/2 -top-8 
+            bg-gray-800 text-white text-xs px-2 py-1 rounded-md
+            before:content-[''] before:absolute before:top-full before:left-1/2
+            before:-translate-x-1/2 before:border-4 before:border-transparent
+            before:border-t-gray-800
+            opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                  style={{ pointerEvents: "none" }}
+                >
+                  {option.name}
+                </motion.div>
+              )}
+
+              {/* Button */}
               <motion.button
                 initial={{ opacity: 0, scale: 0.4 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.1, duration: 0.5, type: "spring" }}
-                onClick={() => setSelectedOption(option.name as "Local" | "Rental" | "Outstation")}
-                className={`w-16 h-16 flex items-center justify-center rounded-full border-2 
-                transition-all duration-300 shadow-md
-                ${
-                  selectedOption === option.name
-                    ? "bg-blue-600 text-white border-blue-600"
-                    : "border-gray-300 text-gray-700 hover:bg-gray-200"
-                }`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{
+                  delay: index * 0.1,
+                  duration: 0.5,
+                  type: "spring",
+                }}
+                onClick={() =>
+                  setSelectedOption(
+                    option.name as "Local" | "Rental" | "Outstation"
+                  )
+                }
+                className={`
+          w-16 h-16 flex items-center justify-center rounded-full border-2 
+          transition-all duration-300 shadow-md relative
+          ${
+            selectedOption === option.name
+              ? "bg-blue-600 text-white border-blue-600 shadow-lg"
+              : "border-gray-300 text-gray-700 hover:bg-gray-50"
+          }
+        `}
               >
                 {option.icon}
               </motion.button>
