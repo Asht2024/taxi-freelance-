@@ -32,7 +32,7 @@ const Map: React.FC = () => {
           document.getElementById("map") as HTMLElement,
           {
             center: location,
-            zoom: 15,
+            zoom: 12, // Start with a lower zoom level for animation
             mapTypeControl: false,
             streetViewControl: false,
             fullscreenControl: false,
@@ -46,6 +46,7 @@ const Map: React.FC = () => {
           }
         );
 
+        // Add a bouncing animation to the marker
         pickupMarkerRef.current = new google.maps.Marker({
           position: location,
           map: mapRef.current,
@@ -53,7 +54,15 @@ const Map: React.FC = () => {
           icon: {
             url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
           },
+          animation: google.maps.Animation.BOUNCE,
         });
+
+        // Zoom in animation
+        setTimeout(() => {
+          if (mapRef.current) {
+            mapRef.current.setZoom(15); // Zoom to the desired level
+          }
+        }, 1000); // Delay the zoom for 1 second
 
         directionsServiceRef.current = new google.maps.DirectionsService();
         directionsRendererRef.current = new google.maps.DirectionsRenderer({
@@ -139,22 +148,35 @@ const Map: React.FC = () => {
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-blue-50/80 z-10">
           <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-            className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full"
-          />
+            animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+            transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+            className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center"
+          >
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+              className="w-8 h-8 border-4 border-white border-t-transparent rounded-full"
+            />
+          </motion.div>
         </div>
       )}
 
       {errorMessage && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white/90 z-10 p-4">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="absolute inset-0 flex items-center justify-center bg-white/90 z-10 p-4"
+        >
           <p className="text-center text-red-600 font-medium">{errorMessage}</p>
-        </div>
+        </motion.div>
       )}
 
-      <div
+      <motion.div
         id="map"
         className="w-full h-full rounded-lg hover:shadow-xl transition-shadow duration-300 md:ml-4"
+        whileHover={{ scale: 1.01 }}
+        transition={{ duration: 0.3 }}
       />
     </motion.div>
   );
