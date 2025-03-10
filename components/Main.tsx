@@ -12,6 +12,10 @@ import {
   FaSyncAlt,
   FaTrash,
   FaPlusCircle,
+  FaUsers, 
+  FaSuitcase,
+  FaUserPlus,
+  FaWeightHanging 
 } from "react-icons/fa";
 
 interface ServiceFormsProps {
@@ -82,6 +86,52 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
                 <input type="time" className={inputCommonClass} />
               </div>
             </motion.div>
+
+            <motion.div 
+  variants={formVariants}
+  className="grid grid-cols-2 gap-4"
+  initial="hidden"
+  animate="visible"
+  transition={{ staggerChildren: 0.1 }}
+>
+  <motion.div 
+    variants={formVariants}
+    className={rowCommonClass}
+    whileHover={{ scale: 1.02 }}
+    transition={{ duration: 0.2 }}
+  >
+    <FaUsers className={iconCommonClass} />
+    <input
+      type="number"
+      placeholder="Number of Members"
+      className={inputCommonClass}
+      min="1"
+      max="10"
+    />
+    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+      <FaUserPlus />
+    </span>
+  </motion.div>
+
+  <motion.div 
+    variants={formVariants}
+    className={rowCommonClass}
+    whileHover={{ scale: 1.02 }}
+    transition={{ duration: 0.2 }}
+  >
+    <FaSuitcase className={iconCommonClass} />
+    <input
+      type="number"
+      placeholder="Luggage (kg)"
+      className={inputCommonClass}
+      min="0"
+      step="1"
+    />
+    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+      <FaWeightHanging />
+    </span>
+  </motion.div>
+</motion.div>
           </motion.div>
         );
 
@@ -115,6 +165,51 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
                 <input type="time" className={inputCommonClass} />
               </div>
             </motion.div>
+            <motion.div 
+  variants={formVariants}
+  className="grid grid-cols-2 gap-4"
+  initial="hidden"
+  animate="visible"
+  transition={{ staggerChildren: 0.1 }}
+>
+  <motion.div 
+    variants={formVariants}
+    className={rowCommonClass}
+    whileHover={{ scale: 1.02 }}
+    transition={{ duration: 0.2 }}
+  >
+    <FaUsers className={iconCommonClass} />
+    <input
+      type="number"
+      placeholder="Number of Members"
+      className={inputCommonClass}
+      min="1"
+      max="10"
+    />
+    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+      <FaUserPlus />
+    </span>
+  </motion.div>
+
+  <motion.div 
+    variants={formVariants}
+    className={rowCommonClass}
+    whileHover={{ scale: 1.02 }}
+    transition={{ duration: 0.2 }}
+  >
+    <FaSuitcase className={iconCommonClass} />
+    <input
+      type="number"
+      placeholder="Luggage (kg)"
+      className={inputCommonClass}
+      min="0"
+      step="1"
+    />
+    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+      <FaWeightHanging />
+    </span>
+  </motion.div>
+</motion.div>
           </motion.div>
         );
 
@@ -180,6 +275,53 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
                 <input type="time" className={inputCommonClass} />
               </div>
             </motion.div>
+
+            <motion.div 
+  variants={formVariants}
+  className="grid grid-cols-2 gap-4"
+  initial="hidden"
+  animate="visible"
+  transition={{ staggerChildren: 0.1 }}
+>
+  <motion.div 
+    variants={formVariants}
+    className={rowCommonClass}
+    whileHover={{ scale: 1.02 }}
+    transition={{ duration: 0.2 }}
+  >
+    <FaUsers className={iconCommonClass} />
+    <input
+      type="number"
+      placeholder="Number of Members"
+      className={inputCommonClass}
+      min="1"
+      max="10"
+    />
+    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+      <FaUserPlus />
+    </span>
+  </motion.div>
+
+  <motion.div 
+    variants={formVariants}
+    className={rowCommonClass}
+    whileHover={{ scale: 1.02 }}
+    transition={{ duration: 0.2 }}
+  >
+    <FaSuitcase className={iconCommonClass} />
+    <input
+      type="number"
+      placeholder="Luggage (kg)"
+      className={inputCommonClass}
+      min="0"
+      step="1"
+    />
+    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+      <FaWeightHanging />
+    </span>
+  </motion.div>
+</motion.div>
+            
 
             {/* Intermediate Cities Section */}
             {tripType === "Round Trip" && (
