@@ -19,7 +19,7 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
+    setIsMounted(!isMounted);
   }, []);
 
   const inputCommonClass = "w-full pl-12 pr-4 py-3 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white shadow-sm";
