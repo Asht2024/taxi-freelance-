@@ -548,7 +548,7 @@ const Main: React.FC = () => {
           <ServiceForms key={selectedOption} serviceType={selectedOption} />
         </div>
 
-        <div className="w-full md:w-1/2 md:absolute md:right-0 md:top-0 md:h-full justify-center">
+        <div className=" md:w-1/2 md:absolute md:right-0 md:top-0 md:h-full justify-center border-none">
           <Maps />
         </div>
       </div>

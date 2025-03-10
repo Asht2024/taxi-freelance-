@@ -134,7 +134,7 @@ const Map: React.FC = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="w-full h-[400px] md:h-[500px] lg:h-[600px] rounded-lg shadow-lg overflow-hidden relative"
+      className="w-full h-[500px] md:h-[570px] lg:h-[580px] rounded-lg shadow-lg overflow-hidden relative"
     >
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-blue-50/80 z-10">
@@ -154,7 +154,7 @@ const Map: React.FC = () => {
 
       <div
         id="map"
-        className="w-full h-full rounded-lg hover:shadow-xl transition-shadow duration-300"
+        className="w-full h-full rounded-lg hover:shadow-xl transition-shadow duration-300 md:ml-4"
       />
     </motion.div>
   );
