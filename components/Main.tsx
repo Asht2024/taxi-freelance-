@@ -16,33 +16,48 @@ interface ServiceFormsProps {
 }
 
 const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(!isMounted);
-  }, []);
-
-  const inputCommonClass = "w-full pl-12 pr-4 py-3 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white shadow-sm";
+  const inputCommonClass =
+    "w-full pl-12 pr-4 py-3 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white shadow-sm";
   const iconCommonClass = "absolute left-4 top-1/2 -translate-y-1/2 text-blue-500";
   const rowCommonClass = "relative h-[58px]";
+
+  const formVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
 
   const renderForm = () => {
     switch (serviceType) {
       case "Local":
         return (
-          <div className="space-y-6 w-full md:w-1/2">
-            {/* Pickup & Drop Locations */}
-            <div className={rowCommonClass}>
+          <motion.div
+            className="space-y-6 w-full md:w-1/2"
+            initial="hidden"
+            animate="visible"
+            transition={{ staggerChildren: 0.1 }}
+          >
+            <motion.div variants={formVariants} className={rowCommonClass}>
               <FaMapMarkerAlt className={iconCommonClass} />
-              <input type="text" placeholder="Pickup Location" className={inputCommonClass} />
-            </div>
-            <div className={rowCommonClass}>
-              <FaMapMarkerAlt className={iconCommonClass} />
-              <input type="text" placeholder="Drop Location" className={inputCommonClass} />
-            </div>
+              <input
+                type="text"
+                placeholder="Pickup Location"
+                className={inputCommonClass}
+              />
+            </motion.div>
 
-            {/* Date & Time - Always in row */}
-            <div className="grid grid-cols-2 gap-3 h-[58px]">
+            <motion.div variants={formVariants} className={rowCommonClass}>
+              <FaMapMarkerAlt className={iconCommonClass} />
+              <input
+                type="text"
+                placeholder="Drop Location"
+                className={inputCommonClass}
+              />
+            </motion.div>
+
+            <motion.div
+              variants={formVariants}
+              className="grid grid-cols-2 gap-3 h-[58px]"
+            >
               <div className="relative">
                 <FaCalendar className={iconCommonClass} />
                 <input type="date" className={inputCommonClass} />
@@ -51,19 +66,31 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
                 <FaClock className={iconCommonClass} />
                 <input type="time" className={inputCommonClass} />
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         );
 
       case "Rental":
         return (
-          <div className="space-y-6 w-full md:w-1/2">
-            <div className={rowCommonClass}>
+          <motion.div
+            className="space-y-6 w-full md:w-1/2"
+            initial="hidden"
+            animate="visible"
+            transition={{ staggerChildren: 0.1 }}
+          >
+            <motion.div variants={formVariants} className={rowCommonClass}>
               <FaMapMarkerAlt className={iconCommonClass} />
-              <input type="text" placeholder="Pickup Location" className={inputCommonClass} />
-            </div>
-            
-            <div className="grid grid-cols-2 gap-3 h-[58px]">
+              <input
+                type="text"
+                placeholder="Pickup Location"
+                className={inputCommonClass}
+              />
+            </motion.div>
+
+            <motion.div
+              variants={formVariants}
+              className="grid grid-cols-2 gap-3 h-[58px]"
+            >
               <div className="relative">
                 <FaCalendar className={iconCommonClass} />
                 <input type="date" className={inputCommonClass} />
@@ -72,23 +99,40 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
                 <FaClock className={iconCommonClass} />
                 <input type="time" className={inputCommonClass} />
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         );
 
       case "Outstation":
         return (
-          <div className="space-y-6 w-full md:w-1/2">
-            <div className={rowCommonClass}>
+          <motion.div
+            className="space-y-6 w-full md:w-1/2"
+            initial="hidden"
+            animate="visible"
+            transition={{ staggerChildren: 0.1 }}
+          >
+            <motion.div variants={formVariants} className={rowCommonClass}>
               <FaMapMarkerAlt className={iconCommonClass} />
-              <input type="text" placeholder="From City" className={inputCommonClass} />
-            </div>
-            <div className={rowCommonClass}>
+              <input
+                type="text"
+                placeholder="From City"
+                className={inputCommonClass}
+              />
+            </motion.div>
+
+            <motion.div variants={formVariants} className={rowCommonClass}>
               <FaMapMarkerAlt className={iconCommonClass} />
-              <input type="text" placeholder="To City" className={inputCommonClass} />
-            </div>
-            
-            <div className="grid grid-cols-2 gap-3 h-[58px]">
+              <input
+                type="text"
+                placeholder="To City"
+                className={inputCommonClass}
+              />
+            </motion.div>
+
+            <motion.div
+              variants={formVariants}
+              className="grid grid-cols-2 gap-3 h-[58px]"
+            >
               <div className="relative">
                 <FaCalendar className={iconCommonClass} />
                 <input type="date" className={inputCommonClass} />
@@ -97,8 +141,8 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
                 <FaClock className={iconCommonClass} />
                 <input type="time" className={inputCommonClass} />
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         );
 
       default:
@@ -110,7 +154,7 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="transition-all duration-300"
+      transition={{ duration: 0.4 }}
     >
       {renderForm()}
     </motion.div>
