@@ -32,7 +32,7 @@ export default function Home() {
           </div>
 
           {/* Main component aligned to the left */}
-          <div className="flex justify-start w-full">
+          <div className="flex  w-full">
             <Main />
           </div>
         </>
