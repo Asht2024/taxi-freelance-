@@ -19,19 +19,19 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(!isMounted);
+    setIsMounted(true);
   }, []);
 
-  const renderForm = () => {
-    const inputCommonClass = "w-full pl-12 pr-4 py-3 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white shadow-sm";
-    const iconCommonClass = "absolute left-4 top-1/2 -translate-y-1/2 text-blue-500";
+  const inputCommonClass = "w-full pl-12 pr-4 py-3 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white shadow-sm";
+  const iconCommonClass = "absolute left-4 top-1/2 -translate-y-1/2 text-blue-500";
+  const rowCommonClass = "relative h-[58px]"; // Fixed height for equal row sizing
 
+  const renderForm = () => {
     switch (serviceType) {
       case "Local":
         return (
-          <div className="space-y-6 w-1/2">
-            {/* Pickup Location */}
-            <div className="relative">
+          <div className="space-y-6 w-full md:w-1/2">
+            <div className={rowCommonClass}>
               <FaMapMarkerAlt className={iconCommonClass} />
               <input
                 type="text"
@@ -40,8 +40,7 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
               />
             </div>
 
-            {/* Drop Location */}
-            <div className="relative">
+            <div className={rowCommonClass}>
               <FaMapMarkerAlt className={iconCommonClass} />
               <input
                 type="text"
@@ -50,21 +49,14 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
               />
             </div>
 
-            {/* Date & Time */}
-            <div className="flex gap-6">
-              <div className="relative w-1/2">
+            <div className="flex flex-col md:flex-row gap-6 h-[58px]">
+              <div className="relative w-full md:w-1/2">
                 <FaCalendar className={iconCommonClass} />
-                <input
-                  type="date"
-                  className={inputCommonClass}
-                />
+                <input type="date" className={inputCommonClass} />
               </div>
-              <div className="relative w-1/2">
+              <div className="relative w-full md:w-1/2">
                 <FaClock className={iconCommonClass} />
-                <input
-                  type="time"
-                  className={inputCommonClass}
-                />
+                <input type="time" className={inputCommonClass} />
               </div>
             </div>
           </div>
@@ -72,9 +64,8 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
 
       case "Rental":
         return (
-          <div className="space-y-6 w-1/2">
-            {/* Pickup Location */}
-            <div className="relative">
+          <div className="space-y-6 w-full md:w-1/2">
+            <div className={rowCommonClass}>
               <FaMapMarkerAlt className={iconCommonClass} />
               <input
                 type="text"
@@ -83,21 +74,14 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
               />
             </div>
 
-            {/* Date & Time */}
-            <div className="flex gap-6">
-              <div className="relative w-1/2">
+            <div className="flex flex-col md:flex-row gap-6 h-[58px]">
+              <div className="relative w-full md:w-1/2">
                 <FaCalendar className={iconCommonClass} />
-                <input
-                  type="date"
-                  className={inputCommonClass}
-                />
+                <input type="date" className={inputCommonClass} />
               </div>
-              <div className="relative w-1/2">
+              <div className="relative w-full md:w-1/2">
                 <FaClock className={iconCommonClass} />
-                <input
-                  type="time"
-                  className={inputCommonClass}
-                />
+                <input type="time" className={inputCommonClass} />
               </div>
             </div>
           </div>
@@ -105,9 +89,8 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
 
       case "Outstation":
         return (
-          <div className="space-y-6 w-1/2">
-            {/* From City */}
-            <div className="relative">
+          <div className="space-y-6 w-full md:w-1/2">
+            <div className={rowCommonClass}>
               <FaMapMarkerAlt className={iconCommonClass} />
               <input
                 type="text"
@@ -116,8 +99,7 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
               />
             </div>
 
-            {/* To City */}
-            <div className="relative">
+            <div className={rowCommonClass}>
               <FaMapMarkerAlt className={iconCommonClass} />
               <input
                 type="text"
@@ -126,21 +108,14 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
               />
             </div>
 
-            {/* Date & Time */}
-            <div className="flex gap-6">
-              <div className="relative w-1/2">
+            <div className="flex flex-col gap-6 h-[58px]">
+              <div className="relative w-full md:w-1/2">
                 <FaCalendar className={iconCommonClass} />
-                <input
-                  type="date"
-                  className={inputCommonClass}
-                />
+                <input type="date" className={inputCommonClass} />
               </div>
-              <div className="relative w-1/2">
+              <div className="relative w-full md:w-1/2">
                 <FaClock className={iconCommonClass} />
-                <input
-                  type="time"
-                  className={inputCommonClass}
-                />
+                <input type="time" className={inputCommonClass} />
               </div>
             </div>
           </div>
