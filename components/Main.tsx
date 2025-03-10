@@ -24,37 +24,30 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
 
   const inputCommonClass = "w-full pl-12 pr-4 py-3 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white shadow-sm";
   const iconCommonClass = "absolute left-4 top-1/2 -translate-y-1/2 text-blue-500";
-  const rowCommonClass = "relative h-[58px]"; // Fixed height for equal row sizing
+  const rowCommonClass = "relative h-[58px]";
 
   const renderForm = () => {
     switch (serviceType) {
       case "Local":
         return (
           <div className="space-y-6 w-full md:w-1/2">
+            {/* Pickup & Drop Locations */}
             <div className={rowCommonClass}>
               <FaMapMarkerAlt className={iconCommonClass} />
-              <input
-                type="text"
-                placeholder="Pickup Location"
-                className={inputCommonClass}
-              />
+              <input type="text" placeholder="Pickup Location" className={inputCommonClass} />
             </div>
-
             <div className={rowCommonClass}>
               <FaMapMarkerAlt className={iconCommonClass} />
-              <input
-                type="text"
-                placeholder="Drop Location"
-                className={inputCommonClass}
-              />
+              <input type="text" placeholder="Drop Location" className={inputCommonClass} />
             </div>
 
-            <div className="flex flex-col md:flex-row gap-6 h-[58px]">
-              <div className="relative w-full md:w-1/2">
+            {/* Date & Time - Always in row */}
+            <div className="grid grid-cols-2 gap-3 h-[58px]">
+              <div className="relative">
                 <FaCalendar className={iconCommonClass} />
                 <input type="date" className={inputCommonClass} />
               </div>
-              <div className="relative w-full md:w-1/2">
+              <div className="relative">
                 <FaClock className={iconCommonClass} />
                 <input type="time" className={inputCommonClass} />
               </div>
@@ -67,19 +60,15 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
           <div className="space-y-6 w-full md:w-1/2">
             <div className={rowCommonClass}>
               <FaMapMarkerAlt className={iconCommonClass} />
-              <input
-                type="text"
-                placeholder="Pickup Location"
-                className={inputCommonClass}
-              />
+              <input type="text" placeholder="Pickup Location" className={inputCommonClass} />
             </div>
-
-            <div className="flex flex-col md:flex-row gap-6 h-[58px]">
-              <div className="relative w-full md:w-1/2">
+            
+            <div className="grid grid-cols-2 gap-3 h-[58px]">
+              <div className="relative">
                 <FaCalendar className={iconCommonClass} />
                 <input type="date" className={inputCommonClass} />
               </div>
-              <div className="relative w-full md:w-1/2">
+              <div className="relative">
                 <FaClock className={iconCommonClass} />
                 <input type="time" className={inputCommonClass} />
               </div>
@@ -92,28 +81,19 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
           <div className="space-y-6 w-full md:w-1/2">
             <div className={rowCommonClass}>
               <FaMapMarkerAlt className={iconCommonClass} />
-              <input
-                type="text"
-                placeholder="From City"
-                className={inputCommonClass}
-              />
+              <input type="text" placeholder="From City" className={inputCommonClass} />
             </div>
-
             <div className={rowCommonClass}>
               <FaMapMarkerAlt className={iconCommonClass} />
-              <input
-                type="text"
-                placeholder="To City"
-                className={inputCommonClass}
-              />
+              <input type="text" placeholder="To City" className={inputCommonClass} />
             </div>
-
-            <div className="flex flex-col gap-6 h-[58px]">
-              <div className="relative w-full md:w-1/2">
+            
+            <div className="grid grid-cols-2 gap-3 h-[58px]">
+              <div className="relative">
                 <FaCalendar className={iconCommonClass} />
                 <input type="date" className={inputCommonClass} />
               </div>
-              <div className="relative w-full md:w-1/2">
+              <div className="relative">
                 <FaClock className={iconCommonClass} />
                 <input type="time" className={inputCommonClass} />
               </div>
