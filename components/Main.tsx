@@ -19,7 +19,7 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
+    setIsMounted(!isMounted);
   }, []);
 
   const renderForm = () => {
