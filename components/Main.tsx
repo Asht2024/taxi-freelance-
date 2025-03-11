@@ -558,7 +558,7 @@ const Main: React.FC = () => {
           ))}
         </div>
 
-        <div className="relative min-h-[160px]">
+        <div className="relative min-h-[160px] md:w-4/5">
           <ServiceForms key={selectedOption} serviceType={selectedOption} />
         </div>
 
