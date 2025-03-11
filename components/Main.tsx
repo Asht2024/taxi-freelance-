@@ -12,12 +12,12 @@ import {
   FaSyncAlt,
   FaTrash,
   FaPlusCircle,
-  FaUsers, 
+  FaUsers,
   FaSuitcase,
   FaUserPlus,
-  FaWeightHanging 
+  FaWeightHanging,
 } from "react-icons/fa";
-import Maps from './Map';
+import Maps from "./Map";
 
 interface ServiceFormsProps {
   serviceType: "Local" | "Rental" | "Outstation";
@@ -26,7 +26,8 @@ interface ServiceFormsProps {
 const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
   const inputCommonClass =
     "w-full pl-12 pr-10 py-3 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white shadow-sm";
-  const iconCommonClass = "absolute left-4 top-1/2 -translate-y-1/2 text-blue-500";
+  const iconCommonClass =
+    "absolute left-4 top-1/2 -translate-y-1/2 text-blue-500";
   const rowCommonClass = "relative h-[58px]";
 
   const formVariants = {
@@ -38,8 +39,10 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
   const [tripType, setTripType] = useState<"One Way" | "Round Trip">("One Way");
   const [intermediateCities, setIntermediateCities] = useState<string[]>([]);
 
-  const handleAddCity = () => setIntermediateCities([...intermediateCities, ""]);
-  const handleRemoveCity = (index: number) => setIntermediateCities(intermediateCities.filter((_, i) => i !== index));
+  const handleAddCity = () =>
+    setIntermediateCities([...intermediateCities, ""]);
+  const handleRemoveCity = (index: number) =>
+    setIntermediateCities(intermediateCities.filter((_, i) => i !== index));
   const handleUpdateCity = (index: number, value: string) => {
     const newCities = [...intermediateCities];
     newCities[index] = value;
@@ -88,14 +91,14 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
               </div>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               variants={formVariants}
               className="grid grid-cols-2 gap-4"
               initial="hidden"
               animate="visible"
               transition={{ staggerChildren: 0.1 }}
             >
-              <motion.div 
+              <motion.div
                 variants={formVariants}
                 className={rowCommonClass}
                 whileHover={{ scale: 1.02 }}
@@ -114,7 +117,7 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
                 </span>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 variants={formVariants}
                 className={rowCommonClass}
                 whileHover={{ scale: 1.02 }}
@@ -166,14 +169,14 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
                 <input type="time" className={inputCommonClass} />
               </div>
             </motion.div>
-            <motion.div 
+            <motion.div
               variants={formVariants}
               className="grid grid-cols-2 gap-4"
               initial="hidden"
               animate="visible"
               transition={{ staggerChildren: 0.1 }}
             >
-              <motion.div 
+              <motion.div
                 variants={formVariants}
                 className={rowCommonClass}
                 whileHover={{ scale: 1.02 }}
@@ -192,7 +195,7 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
                 </span>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 variants={formVariants}
                 className={rowCommonClass}
                 whileHover={{ scale: 1.02 }}
@@ -223,7 +226,10 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
             transition={{ staggerChildren: 0.1 }}
           >
             {/* Trip Type Selector */}
-            <motion.div variants={formVariants} className="flex gap-4 justify-center mb-8">
+            <motion.div
+              variants={formVariants}
+              className="flex gap-4 justify-center mb-8"
+            >
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -266,7 +272,10 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
             </div>
 
             {/* Date & Time Section */}
-            <motion.div variants={formVariants} className="grid grid-cols-2 gap-4">
+            <motion.div
+              variants={formVariants}
+              className="grid grid-cols-2 gap-4"
+            >
               <div className={rowCommonClass}>
                 <FaCalendar className={iconCommonClass} />
                 <input type="date" className={inputCommonClass} />
@@ -277,14 +286,14 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
               </div>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               variants={formVariants}
               className="grid grid-cols-2 gap-4"
               initial="hidden"
               animate="visible"
               transition={{ staggerChildren: 0.1 }}
             >
-              <motion.div 
+              <motion.div
                 variants={formVariants}
                 className={rowCommonClass}
                 whileHover={{ scale: 1.02 }}
@@ -303,7 +312,7 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
                 </span>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 variants={formVariants}
                 className={rowCommonClass}
                 whileHover={{ scale: 1.02 }}
@@ -322,11 +331,10 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
                 </span>
               </motion.div>
             </motion.div>
-            
 
             {/* Intermediate Cities Section */}
             {tripType === "Round Trip" && (
-              <motion.div 
+              <motion.div
                 variants={formVariants}
                 className="space-y-4 mt-4 bg-blue-50 p-4 rounded-xl"
               >
@@ -353,7 +361,9 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({ serviceType }) => {
                         <FaMapMarkerAlt className={iconCommonClass} />
                         <input
                           value={city}
-                          onChange={(e) => handleUpdateCity(index, e.target.value)}
+                          onChange={(e) =>
+                            handleUpdateCity(index, e.target.value)
+                          }
                           placeholder={`Stop ${index + 1}`}
                           className={inputCommonClass}
                         />
@@ -451,7 +461,6 @@ const Main: React.FC = () => {
 
   return (
     <div className="relative -top-10 w-full text-left space-y-4 md:space-y-6 min-w-[320px] p-4 md:p-6">
-
       <h1
         className={`text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 
         bg-clip-text text-transparent transition-all duration-500 ${
@@ -460,7 +469,7 @@ const Main: React.FC = () => {
             : "opacity-0 -translate-x-12"
         }`}
       >
-        Asht Cab Service 
+        Asht Cab
       </h1>
 
       <div
@@ -473,13 +482,14 @@ const Main: React.FC = () => {
       </div>
 
       <div className="space-y-6 mt-20">
-        <div className="flex gap-4 flex-wrap">
+        <div className="flex gap-4">
           {[
             { name: "Local", icon: <FaTaxi size={24} /> },
             { name: "Rental", icon: <FaCarSide size={24} /> },
             { name: "Outstation", icon: <FaMapMarkedAlt size={24} /> },
           ].map((option, index) => (
             <div key={option.name} className="relative group">
+              {/* Selected Option Label */}
               {selectedOption === option.name && (
                 <motion.div
                   initial={{ y: -10, opacity: 0 }}
@@ -497,22 +507,26 @@ const Main: React.FC = () => {
                 </motion.div>
               )}
 
+              {/* Hover Tooltip */}
               {selectedOption !== option.name && (
                 <motion.div
-                  initial={{ y: 5 }}
-                  animate={{ y: 0 }}
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
                   className="absolute left-1/2 -translate-x-1/2 -top-8 
             bg-gray-800 text-white text-xs px-2 py-1 rounded-md
             before:content-[''] before:absolute before:top-full before:left-1/2
             before:-translate-x-1/2 before:border-4 before:border-transparent
-            before:border-t-gray-800
-            opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                  style={{ pointerEvents: "none" }}
+            before:border-t-gray-800"
+                  style={{
+                    transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+                    pointerEvents: "none",
+                  }}
                 >
                   {option.name}
                 </motion.div>
               )}
 
+              {/* Button */}
               <motion.button
                 initial={{ opacity: 0, scale: 0.4 }}
                 animate={{ opacity: 1, scale: 1 }}
