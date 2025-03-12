@@ -1,0 +1,66 @@
+{
+    "rideOptions": {
+      "local": {
+        "type": "Local",
+        "distance": "141 km",
+        "carType": "Sedan",
+        "model": "Skoda Slavi",
+        "capacity": {
+          "passengers": 4,
+          "luggage": 3
+        },
+        "totalPrice": 5317.11
+      },
+      "rental": {
+        "type": "Rental",
+        "carType": "Sedan",
+        "model": "Skoda Slavi",
+        "capacity": {
+          "passengers": 4,
+          "luggage": 3
+        },
+        "packages": [
+          {
+            "duration": "6hr / 60km",
+            "price": 1650,
+            "extra": {
+              "distance": "11km",
+              "time": "160min"
+            }
+          },
+          {
+            "duration": "8hr / 80km",
+            "price": 1950,
+            "extra": {
+              "distance": "11km",
+              "time": "160min"
+            }
+          },
+          {
+            "duration": "12hr / 120km",
+            "price": 2800,
+            "extra": {
+              "distance": "11km",
+              "time": "160min"
+            }
+          }
+        ]
+      },
+      "outstation": {
+        "type": "Outstation Oneway",
+        "distance": "141 km",
+        "carType": "Sedan",
+        "model": "Skoda Slavi",
+        "capacity": {
+          "passengers": 4,
+          "luggage": 3
+        },
+        "driverAllowance": {
+          "perDay": 300,
+          "perNight": 250
+        },
+        "totalPrice": 2088.23
+      }
+    }
+  }
+  

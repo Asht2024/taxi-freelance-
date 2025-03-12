@@ -21,9 +21,14 @@ type LocationType = {
 
 type OptionType = "Local" | "Rental" | "Outstation";
 
-const getCityFromComponents = (components: google.maps.GeocoderAddressComponent[]): string => {
+const getCityFromComponents = (
+  components: google.maps.GeocoderAddressComponent[]
+): string => {
   for (const component of components) {
-    if (component.types.includes("locality") || component.types.includes("administrative_area_level_2")) {
+    if (
+      component.types.includes("locality") ||
+      component.types.includes("administrative_area_level_2")
+    ) {
       return component.long_name;
     }
   }
@@ -251,7 +256,10 @@ const MainPage = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.3 }}
-              onClick={() => setIsRedirecting(true)}
+              onClick={() => {
+                setIsRedirecting(true);
+                router.push(`/Cabs?type=${selectedOption.toLowerCase()}`);
+              }}
               className="w-full md:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg flex items-center justify-center space-x-2 shadow-lg hover:bg-blue-700 transition-all"
             >
               <FaSearch size={18} />
