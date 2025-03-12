@@ -1,11 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import {
-  FaTaxi,
-  FaCarSide,
-  FaMapMarkedAlt,
-} from "react-icons/fa";
+import { FaTaxi, FaCarSide, FaMapMarkedAlt } from "react-icons/fa";
 import Maps from "./Map";
 import ServiceForms from "./ServiceForm";
 
@@ -20,29 +16,28 @@ const getCityFromComponents = (components: google.maps.GeocoderAddressComponent[
   }
   return "";
 };
+
 const Main: React.FC = () => {
-    // Location states
-    const [pickupLocation, setPickupLocation] = useState<{
-      address: string;
-      city: string;
-      lat: number;
-      lng: number;
-    }>({ address: "", city: "", lat: 0, lng: 0 });
-    
-    const [dropLocation, setDropLocation] = useState<{
-      address: string;
-      city: string;
-      lat: number;
-      lng: number;
-    }>({ address: "", city: "", lat: 0, lng: 0 });
-  const [isScriptLoaded, setIsScriptLoaded] = useState(false);
+  // Location states
+  const [pickupLocation, setPickupLocation] = useState<{
+    address: string;
+    city: string;
+    lat: number;
+    lng: number;
+  }>({ address: "", city: "", lat: 0, lng: 0 });
+
+  const [dropLocation, setDropLocation] = useState<{
+    address: string;
+    city: string;
+    lat: number;
+    lng: number;
+  }>({ address: "", city: "", lat: 0, lng: 0 });
+
   const [text, setText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [loopNum, setLoopNum] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(150);
-  const [selectedOption, setSelectedOption] = useState<
-    "Local" | "Rental" | "Outstation"
-  >("Local");
+  const [selectedOption, setSelectedOption] = useState<"Local" | "Rental" | "Outstation">("Local");
   const [headerMounted, setHeaderMounted] = useState(false);
   const [textVisible, setTextVisible] = useState(false);
 
@@ -71,19 +66,16 @@ const Main: React.FC = () => {
           script.defer = true;
           document.head.appendChild(script);
           script.onload = () => {
-            setIsScriptLoaded(true);
             getCurrentLocation();
           };
         } else {
-          setIsScriptLoaded(true);  // If script is already present, mark it as loaded
-          getCurrentLocation();
+          getCurrentLocation(); // If script is already present, proceed
         }
       } else {
-        setIsScriptLoaded(true);
-        getCurrentLocation();
+        getCurrentLocation(); // If Google Maps is already loaded, proceed
       }
     };
-  
+
     // Get user's current location
     const getCurrentLocation = () => {
       if (navigator.geolocation) {
@@ -113,10 +105,9 @@ const Main: React.FC = () => {
         );
       }
     };
-  
+
     loadGoogleMaps();
   }, []);
-  
 
   useEffect(() => {
     const handleType = () => {
@@ -241,35 +232,36 @@ const Main: React.FC = () => {
         </div>
 
         <div className="relative min-h-[160px] md:w-4/5">
-        <ServiceForms
-      key={selectedOption}
-      serviceType={selectedOption}
-      pickupAddress={pickupLocation.address}
-      dropAddress={dropLocation.address}
-      onPickupChange={(newLocation) => {
-        setPickupLocation({
-          address: newLocation.address,
-          city: newLocation.city,
-          lat: newLocation.latitude,
-          lng: newLocation.longitude,
-        });
-      }}
-      onDropChange={(newLocation) => {
-        setDropLocation({
-          address: newLocation.address,
-          city: newLocation.city,
-          lat: newLocation.latitude,
-          lng: newLocation.longitude,
-        });
-      }}
-    />
+          <ServiceForms
+            key={selectedOption}
+            serviceType={selectedOption}
+            pickupAddress={pickupLocation.address}
+            dropAddress={dropLocation.address}
+            onPickupChange={(newLocation) => {
+              setPickupLocation({
+                address: newLocation.address,
+                city: newLocation.city,
+                lat: newLocation.latitude,
+                lng: newLocation.longitude,
+              });
+            }}
+            onDropChange={(newLocation) => {
+              setDropLocation({
+                address: newLocation.address,
+                city: newLocation.city,
+                lat: newLocation.latitude,
+                lng: newLocation.longitude,
+              });
+            }}
+          />
         </div>
 
-        <div className=" md:w-1/2 md:absolute md:right-0 md:top-0 md:h-full justify-center border-none">
+        <div className="md:w-1/2 md:absolute md:right-20 md:top-56 md:h-full justify-center border-none">
           <Maps />
         </div>
       </div>
     </div>
   );
 };
+
 export default Main;
