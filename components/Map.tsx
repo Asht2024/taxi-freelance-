@@ -177,7 +177,7 @@ const Map: React.FC = () => {
 
       <motion.div
         id="map"
-        className="w-full h-full rounded-lg hover:shadow-xl transition-shadow duration-300 md:ml-4"
+        className="w-full h-fullzz rounded-lg hover:shadow-xl transition-shadow duration-300 md:ml-4"
         whileHover={{ scale: 1.01 }}
         transition={{ duration: 0.3 }}
       />
