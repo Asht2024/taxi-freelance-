@@ -1,16 +1,12 @@
 "use client"
 import React, { useState, useEffect } from "react";
-import { Navbar } from "../../components/Navbar";
+
 import Main from "../../components/Main";
 import Loader from "../../components/Loader"; // Import the Loader component
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true); // State to control loader visibility
-  const navItems = [
-    { name: "Home", link: "/" },
-    { name: "About", link: "/about" },
-    { name: "Contact", link: "/contact" },
-  ];
+ 
 
   useEffect(() => {
     // Simulate loading for 3 seconds
@@ -27,9 +23,9 @@ export default function Home() {
       {!isLoading && (
         <>
           {/* Navbar at the top */}
-          <div className="flex justify-center">
+          {/* <div className="flex justify-center">
             <Navbar navItems={navItems} />
-          </div>
+          </div> */}
 
           {/* Main component aligned to the left */}
           <div className="flex  w-full">
