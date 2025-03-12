@@ -256,9 +256,10 @@ const Main: React.FC = () => {
           />
         </div>
 
-        <div className="md:w-1/2 md:absolute md:right-20 md:top-56 md:h-full justify-center border-none">
-          <Maps />
-        </div>
+        <div className="md:w-1/2 md:absolute md:right-0 md:bottom-10 md:h-auto flex justify-center border-none">
+  <Maps />
+</div>
+
       </div>
     </div>
   );
