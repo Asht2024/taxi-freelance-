@@ -63,21 +63,27 @@ const Main: React.FC = () => {
     // Load Google Maps script with Places library
     const loadGoogleMaps = () => {
       if (!window.google) {
-        const script = document.createElement("script");
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_MAP_API_KEY}&libraries=places`;
-        script.async = true;
-        script.defer = true;
-        document.head.appendChild(script);
-        script.onload = () => {
-          setIsScriptLoaded(!isScriptLoaded);
+        const existingScript = document.querySelector('script[src^="https://maps.googleapis.com/maps/api/js"]');
+        if (!existingScript) {
+          const script = document.createElement("script");
+          script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_MAP_API_KEY}&libraries=places`;
+          script.async = true;
+          script.defer = true;
+          document.head.appendChild(script);
+          script.onload = () => {
+            setIsScriptLoaded(true);
+            getCurrentLocation();
+          };
+        } else {
+          setIsScriptLoaded(true);  // If script is already present, mark it as loaded
           getCurrentLocation();
-        };
+        }
       } else {
-        setIsScriptLoaded(!isScriptLoaded);
+        setIsScriptLoaded(true);
         getCurrentLocation();
       }
     };
-
+  
     // Get user's current location
     const getCurrentLocation = () => {
       if (navigator.geolocation) {
@@ -107,9 +113,10 @@ const Main: React.FC = () => {
         );
       }
     };
-
+  
     loadGoogleMaps();
   }, []);
+  
 
   useEffect(() => {
     const handleType = () => {

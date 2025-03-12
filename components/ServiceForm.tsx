@@ -280,21 +280,21 @@ interface ServiceFormsProps {
                 <motion.div variants={formVariants} className={rowCommonClass}>
                   <FaMapMarkerAlt className={iconCommonClass} />
                   <AutocompleteInput
-                    placeholder="From Location"
-                    className={inputCommonClass}
-                    value={pickupAddress}
-                    onChange={onPickupChange}
-                  />
+                  placeholder="Pickup Location"
+                  className={inputCommonClass}
+                  value={pickupAddress}
+                  onChange={onPickupChange}
+                />
                 </motion.div>
   
                 <motion.div variants={formVariants} className={rowCommonClass}>
                   <FaMapMarkerAlt className={iconCommonClass} />
                   <AutocompleteInput
-                    placeholder="Pickup Location"
-                    className={inputCommonClass}
-                    value={dropAddress}
-                    onChange={onDropChange}
-                  />
+                  placeholder="Drop Location"
+                  className={inputCommonClass}
+                  value={dropAddress}
+                  onChange={onDropChange}
+                />
                 </motion.div>
               </div>
   
