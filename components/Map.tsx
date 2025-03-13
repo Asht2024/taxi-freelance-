@@ -27,7 +27,7 @@ const Map: React.FC = () => {
         const { latitude, longitude } = position.coords;
         const location: LatLngLiteral = { lat: latitude, lng: longitude };
 
-        mapRef.current = new google.maps.Map(
+        mapRef.current = new window.google.maps.Map(
           document.getElementById("map") as HTMLElement,
           {
             center: location,
@@ -47,15 +47,15 @@ const Map: React.FC = () => {
 
         const customIcon = {
           url: "https://emojicdn.elk.sh/🧍",
-          scaledSize: new google.maps.Size(40, 40),
+          scaledSize: new window.google.maps.Size(40, 40),
         };
 
-        pickupMarkerRef.current = new google.maps.Marker({
+        pickupMarkerRef.current = new window.google.maps.Marker({
           position: location,
           map: mapRef.current,
           title: "Your Location",
           icon: customIcon,
-          animation: google.maps.Animation.BOUNCE,
+          animation: window.google.maps.Animation.BOUNCE,
         });
 
         setTimeout(() => {
@@ -64,8 +64,8 @@ const Map: React.FC = () => {
           }
         }, 1000);
 
-        directionsServiceRef.current = new google.maps.DirectionsService();
-        directionsRendererRef.current = new google.maps.DirectionsRenderer({
+        directionsServiceRef.current = new window.google.maps.DirectionsService();
+        directionsRendererRef.current = new window.google.maps.DirectionsRenderer({
           map: mapRef.current,
           suppressMarkers: true,
           polylineOptions: {
@@ -97,7 +97,7 @@ const Map: React.FC = () => {
       }
 
       const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDIucGpZeqEX6mIBCcAzz3gMIyln_Mv6Eo&loading=async&libraries=places`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&loading=async&libraries=places`;
       script.async = true;
       script.defer = true;
 
