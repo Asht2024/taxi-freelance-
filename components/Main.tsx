@@ -5,7 +5,6 @@ import { FaTaxi, FaCarSide, FaMapMarkedAlt, FaSearch } from "react-icons/fa";
 import Maps from "./Map";
 import ServiceForms from "./ServiceForm";
 import { useRouter } from "next/navigation";
-
 declare global {
   interface Window {
     google: typeof google;
@@ -164,6 +163,7 @@ const MainPage = () => {
           transition={{ duration: 0.5 }}
           className="relative w-full text-left space-y-4 md:space-y-6 min-w-[320px] p-4 md:p-6 pt-20 sm:pt-24"
         >
+          
           <h1
             className={`text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 
               bg-clip-text text-transparent transition-all duration-500 ${
@@ -174,13 +174,16 @@ const MainPage = () => {
           </h1>
 
           <div
-            className={`text-lg font-mono text-gray-600 font-semibold transition-opacity duration-500 ${
+            className={`text-lg font-mono text-gray-600 font-semibold transition-opacity duration-500  ${
               textVisible ? "opacity-100" : "opacity-0"
             }`}
           >
             {text}
             <span className="ml-1 animate-blink">|</span>
+            
           </div>
+
+          
 
           <div className="space-y-6 mt-20">
             <div className="flex gap-4">
@@ -266,6 +269,8 @@ const MainPage = () => {
               <span>Search Cab</span>
             </motion.button>
 
+            
+
             <div className="relative min-h-[160px] md:w-4/5">
               <ServiceForms
                 key={selectedOption}
@@ -290,6 +295,9 @@ const MainPage = () => {
                 }
               />
             </div>
+
+            {/* Replaced "hey" with suv.png */}
+           
 
             <div className="md:w-1/2 md:absolute md:right-0 md:bottom-10 md:h-auto flex justify-center border-none">
               <Maps />
