@@ -11,19 +11,19 @@ declare global {
   }
 }
 
-interface Car {
-  id: number;
-  model: string;
-  image_url: string;
-  car_name: string;
-  local_price_per_km: number;
-  local_min_price: number;
-  rental_price: string;
-  outstation_per_km: number;
-  outstation_min: number;
-  luggage: number;
-  passenger: number;
-}
+// interface Car {
+//   id: number;
+//   model: string;
+//   image_url: string;
+//   car_name: string;
+//   local_price_per_km: number;
+//   local_min_price: number;
+//   rental_price: string;
+//   outstation_per_km: number;
+//   outstation_min: number;
+//   luggage: number;
+//   passenger: number;
+// }
 
 type LocationType = {
   address: string;
@@ -377,7 +377,7 @@ const MainPage = () => {
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.3 }}
               onClick={() => {
-                priceCalculation();
+                
                 setIsRedirecting(true);
                 router.push(`/Cabs?type=${selectedOption.toLowerCase()}`);
               }}
