@@ -105,7 +105,7 @@ const MainPage = () => {
         );
         if (!existingScript) {
           const script = document.createElement("script");
-          script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.MAP_API_KEY}&libraries=places`;
+          script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDIucGpZeqEX6mIBCcAzz3gMIyln_Mv6Eo&libraries=places`;
           script.async = true;
           script.defer = true;
           document.head.appendChild(script);
