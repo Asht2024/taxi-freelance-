@@ -5,25 +5,12 @@ import { FaTaxi, FaCarSide, FaMapMarkedAlt, FaSearch } from "react-icons/fa";
 import Maps from "./Map";
 import ServiceForms from "./ServiceForm";
 import { useRouter } from "next/navigation";
+
 declare global {
   interface Window {
     google: typeof google;
   }
 }
-
-// interface Car {
-//   id: number;
-//   model: string;
-//   image_url: string;
-//   car_name: string;
-//   local_price_per_km: number;
-//   local_min_price: number;
-//   rental_price: string;
-//   outstation_per_km: number;
-//   outstation_min: number;
-//   luggage: number;
-//   passenger: number;
-// }
 
 type LocationType = {
   address: string;
@@ -52,8 +39,7 @@ const MainPage = () => {
   const router = useRouter();
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  
-  
+
   useEffect(() => {
     if (isRedirecting) {
       setIsVisible(false);
@@ -97,53 +83,70 @@ const MainPage = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Load Google Maps API
+  const loadGoogleMaps = () => {
+    return new Promise<void>((resolve, reject) => {
+      if (window.google?.maps) {
+        resolve();
+        return;
+      }
+
+      const existingScript = document.querySelector(
+        'script[src^="https://maps.googleapis.com/maps/api/js"]'
+      );
+
+      if (existingScript) {
+        existingScript.addEventListener("load", () => resolve());
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDIucGpZeqEX6mIBCcAzz3gMIyln_Mv6Eo&loading=async&libraries=places`;
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+
+      script.onload = () => resolve();
+      script.onerror = (error) => reject(error);
+    });
+  };
+
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const geocoder = new window.google.maps.Geocoder();
+          const latlng = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          geocoder.geocode({ location: latlng }, (results, status) => {
+            if (status === "OK" && results && results[0]) {
+              setPickupLocation({
+                address: results[0].formatted_address || "",
+                city: getCityFromComponents(results[0].address_components),
+                lat: latlng.lat,
+                lng: latlng.lng,
+              });
+            }
+          });
+        },
+        (error) => console.error("Location error:", error)
+      );
+    }
+  };
+
   useEffect(() => {
-    const loadGoogleMaps = () => {
-      if (!window.google) {
-        const existingScript = document.querySelector(
-          'script[src^="https://maps.googleapis.com/maps/api/js"]'
-        );
-        if (!existingScript) {
-          const script = document.createElement("script");
-          script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDIucGpZeqEX6mIBCcAzz3gMIyln_Mv6Eo&libraries=places`;
-          script.async = true;
-          script.defer = true;
-          document.head.appendChild(script);
-          script.onload = () => getCurrentLocation();
-        } else {
-          getCurrentLocation();
-        }
-      } else {
+    const initializeMap = async () => {
+      try {
+        await loadGoogleMaps();
         getCurrentLocation();
+      } catch (error) {
+        console.error("Failed to load Google Maps:", error);
       }
     };
 
-    const getCurrentLocation = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const geocoder = new window.google.maps.Geocoder();
-            const latlng = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            };
-            geocoder.geocode({ location: latlng }, (results, status) => {
-              if (status === "OK" && results && results[0]) {
-                setPickupLocation({
-                  address: results[0].formatted_address || "",
-                  city: getCityFromComponents(results[0].address_components),
-                  lat: latlng.lat,
-                  lng: latlng.lng,
-                });
-              }
-            });
-          },
-          (error) => console.error("Location error:", error)
-        );
-      }
-    };
-
-    loadGoogleMaps();
+    initializeMap();
   }, []);
 
   useEffect(() => {
@@ -178,7 +181,6 @@ const MainPage = () => {
           transition={{ duration: 0.5 }}
           className="relative w-full text-left space-y-4 md:space-y-6 min-w-[320px] p-4 md:p-6 pt-20 sm:pt-24"
         >
-          
           <h1
             className={`text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 
               bg-clip-text text-transparent transition-all duration-500 ${
@@ -197,10 +199,7 @@ const MainPage = () => {
           >
             {text}
             <span className="ml-1 animate-blink">|</span>
-            
           </div>
-
-          
 
           <div className="space-y-6 mt-20">
             <div className="flex gap-4">
@@ -283,7 +282,6 @@ const MainPage = () => {
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.3 }}
               onClick={() => {
-                // priceCalculation();
                 setIsRedirecting(true);
                 router.push(`/Cabs?type=${selectedOption.toLowerCase()}`);
               }}
@@ -292,8 +290,6 @@ const MainPage = () => {
               <FaSearch size={18} />
               <span>Search Cab</span>
             </motion.button>
-
-            
 
             <div className="relative min-h-[160px] md:w-4/5">
               <ServiceForms
@@ -319,9 +315,6 @@ const MainPage = () => {
                 }
               />
             </div>
-
-            
-           
 
             <div className="md:w-1/2 md:absolute md:right-0 md:bottom-10 md:h-auto flex justify-center border-none">
               <Maps />

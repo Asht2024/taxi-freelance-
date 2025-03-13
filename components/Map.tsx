@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 
 type LatLngLiteral = google.maps.LatLngLiteral;
 
-// Global variable to track if the script is already loaded
 let scriptLoadPromise: Promise<void> | null = null;
 
 const Map: React.FC = () => {
@@ -32,7 +31,7 @@ const Map: React.FC = () => {
           document.getElementById("map") as HTMLElement,
           {
             center: location,
-            zoom: 12, // Start with a lower zoom level for animation
+            zoom: 12,
             mapTypeControl: false,
             streetViewControl: false,
             fullscreenControl: false,
@@ -46,27 +45,24 @@ const Map: React.FC = () => {
           }
         );
 
-        // Custom icon for the marker (using an emoji or image)
         const customIcon = {
-          url: "https://emojicdn.elk.sh/🧍", // URL for the person emoji
-          scaledSize: new google.maps.Size(40, 40), // Adjust size as needed
+          url: "https://emojicdn.elk.sh/🧍",
+          scaledSize: new google.maps.Size(40, 40),
         };
 
-        // Add a bouncing animation to the marker
         pickupMarkerRef.current = new google.maps.Marker({
           position: location,
           map: mapRef.current,
           title: "Your Location",
-          icon: customIcon, // Use the custom icon
-          animation: google.maps.Animation.BOUNCE, // Add bounce animation
+          icon: customIcon,
+          animation: google.maps.Animation.BOUNCE,
         });
 
-        // Zoom in animation
         setTimeout(() => {
           if (mapRef.current) {
-            mapRef.current.setZoom(15); // Zoom to the desired level
+            mapRef.current.setZoom(15);
           }
-        }, 1000); // Delay the zoom for 1 second
+        }, 1000);
 
         directionsServiceRef.current = new google.maps.DirectionsService();
         directionsRendererRef.current = new google.maps.DirectionsRenderer({
@@ -79,7 +75,7 @@ const Map: React.FC = () => {
         });
 
         setIsLoading(false);
-        setErrorMessage(null); // Clear any previous error messages
+        setErrorMessage(null);
       },
       (error) => {
         console.error("Error getting location:", error);
@@ -95,23 +91,18 @@ const Map: React.FC = () => {
     if (scriptLoadPromise) return scriptLoadPromise;
 
     scriptLoadPromise = new Promise((resolve, reject) => {
-      if (window.google && window.google.maps) {
+      if (window.google?.maps) {
         resolve();
         return;
       }
 
       const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDIucGpZeqEX6mIBCcAzz3gMIyln_Mv6Eo&libraries=places`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDIucGpZeqEX6mIBCcAzz3gMIyln_Mv6Eo&loading=async&libraries=places`;
       script.async = true;
       script.defer = true;
 
-      script.onload = () => {
-        resolve();
-      };
-
-      script.onerror = () => {
-        reject(new Error("Failed to load Google Maps script."));
-      };
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error("Failed to load Google Maps script."));
 
       document.head.appendChild(script);
     });
@@ -177,7 +168,7 @@ const Map: React.FC = () => {
 
       <motion.div
         id="map"
-        className="w-full h-fullzz rounded-lg hover:shadow-xl transition-shadow duration-300 md:ml-4"
+        className="w-full h-full rounded-lg hover:shadow-xl transition-shadow duration-300 md:ml-4"
         whileHover={{ scale: 1.01 }}
         transition={{ duration: 0.3 }}
       />
