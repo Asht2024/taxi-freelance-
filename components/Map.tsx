@@ -2,135 +2,40 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 
-type LatLngLiteral = google.maps.LatLngLiteral;
-
-let scriptLoadPromise: Promise<void> | null = null;
-
 const Map: React.FC = () => {
-  const mapRef = useRef<google.maps.Map | null>(null);
-  const directionsServiceRef = useRef<google.maps.DirectionsService | null>(null);
-  const directionsRendererRef = useRef<google.maps.DirectionsRenderer | null>(null);
-  const pickupMarkerRef = useRef<google.maps.Marker | null>(null);
-
+  const mapRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const initMap = useCallback(() => {
-    if (!navigator.geolocation) {
-      setErrorMessage("Geolocation is not supported by your browser.");
+    if (!mapRef.current || !window.google?.maps) {
+      setErrorMessage("Google Maps failed to load.");
       setIsLoading(false);
       return;
     }
 
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        const location: LatLngLiteral = { lat: latitude, lng: longitude };
-
-        mapRef.current = new window.google.maps.Map(
-          document.getElementById("map") as HTMLElement,
-          {
-            center: location,
-            zoom: 12,
-            mapTypeControl: false,
-            streetViewControl: false,
-            fullscreenControl: false,
-            styles: [
-              {
-                featureType: "poi",
-                elementType: "labels",
-                stylers: [{ visibility: "off" }],
-              },
-            ],
-          }
-        );
-
-        const customIcon = {
-          url: "https://emojicdn.elk.sh/🧍",
-          scaledSize: new window.google.maps.Size(40, 40),
-        };
-
-        pickupMarkerRef.current = new window.google.maps.Marker({
-          position: location,
-          map: mapRef.current,
-          title: "Your Location",
-          icon: customIcon,
-          animation: window.google.maps.Animation.BOUNCE,
-        });
-
-        setTimeout(() => {
-          if (mapRef.current) {
-            mapRef.current.setZoom(15);
-          }
-        }, 1000);
-
-        directionsServiceRef.current = new window.google.maps.DirectionsService();
-        directionsRendererRef.current = new window.google.maps.DirectionsRenderer({
-          map: mapRef.current,
-          suppressMarkers: true,
-          polylineOptions: {
-            strokeColor: "#3b82f6",
-            strokeWeight: 5,
-          },
-        });
-
-        setIsLoading(false);
-        setErrorMessage(null);
-      },
-      (error) => {
-        console.error("Error getting location:", error);
-        setErrorMessage(
-          "Please allow location access in your browser settings to use this feature."
-        );
-        setIsLoading(false);
-      }
-    );
-  }, []);
-
-  const loadGoogleMapsScript = useCallback(() => {
-    if (scriptLoadPromise) return scriptLoadPromise;
-
-    scriptLoadPromise = new Promise((resolve, reject) => {
-      if (window.google?.maps) {
-        resolve();
-        return;
-      }
-
-      const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDIucGpZeqEX6mIBCcAzz3gMIyln_Mv6Eo&loading=async&libraries=places`;
-      script.async = true;
-      script.defer = true;
-
-      script.onload = () => resolve();
-      script.onerror = () => reject(new Error("Failed to load Google Maps script."));
-
-      document.head.appendChild(script);
+    // Initialize the map (no need to assign to 'map' if not used)
+    new window.google.maps.Map(mapRef.current, {
+      center: { lat: 23.0225, lng: 72.5714 }, // Ahmedabad
+      zoom: 12,
     });
 
-    return scriptLoadPromise;
+    setIsLoading(false);
   }, []);
 
   useEffect(() => {
-    loadGoogleMapsScript()
-      .then(() => {
-        initMap();
-      })
-      .catch((error) => {
-        console.error(error);
-        setIsLoading(false);
-        setErrorMessage("Failed to load Google Maps. Please try again later.");
-      });
-
-    return () => {
-      if (pickupMarkerRef.current) {
-        pickupMarkerRef.current.setMap(null);
-      }
-
-      if (directionsRendererRef.current) {
-        directionsRendererRef.current.setMap(null);
-      }
-    };
-  }, [initMap, loadGoogleMapsScript]);
+    if (window.google?.maps) {
+      initMap();
+    } else {
+      const timer = setInterval(() => {
+        if (window.google?.maps) {
+          initMap();
+          clearInterval(timer);
+        }
+      }, 100);
+      return () => clearInterval(timer);
+    }
+  }, [initMap]);
 
   return (
     <motion.div
@@ -166,12 +71,7 @@ const Map: React.FC = () => {
         </motion.div>
       )}
 
-      <motion.div
-        id="map"
-        className="w-full h-full rounded-lg hover:shadow-xl transition-shadow duration-300 md:ml-4"
-        whileHover={{ scale: 1.01 }}
-        transition={{ duration: 0.3 }}
-      />
+      <div ref={mapRef} className="w-full h-full" />
     </motion.div>
   );
 };

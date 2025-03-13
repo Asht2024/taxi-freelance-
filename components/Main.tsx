@@ -21,24 +21,11 @@ type LocationType = {
 
 type OptionType = "Local" | "Rental" | "Outstation";
 
-const getCityFromComponents = (
-  components: google.maps.GeocoderAddressComponent[]
-): string => {
-  for (const component of components) {
-    if (
-      component.types.includes("locality") ||
-      component.types.includes("administrative_area_level_2")
-    ) {
-      return component.long_name;
-    }
-  }
-  return "";
-};
-
 const MainPage = () => {
   const router = useRouter();
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const [isMapLoaded, setIsMapLoaded] = useState(false);
 
   useEffect(() => {
     if (isRedirecting) {
@@ -84,69 +71,22 @@ const MainPage = () => {
   }, []);
 
   // Load Google Maps API
-  const loadGoogleMaps = () => {
-    return new Promise<void>((resolve, reject) => {
+  useEffect(() => {
+    const loadGoogleMaps = () => {
       if (window.google?.maps) {
-        resolve();
-        return;
-      }
-
-      const existingScript = document.querySelector(
-        'script[src^="https://maps.googleapis.com/maps/api/js"]'
-      );
-
-      if (existingScript) {
-        existingScript.addEventListener("load", () => resolve());
+        setIsMapLoaded(true);
         return;
       }
 
       const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDIucGpZeqEX6mIBCcAzz3gMIyln_Mv6Eo&loading=async&libraries=places`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDIucGpZeqEX6mIBCcAzz3gMIyln_Mv6Eo&libraries=places`;
       script.async = true;
       script.defer = true;
+      script.onload = () => setIsMapLoaded(true);
       document.head.appendChild(script);
-
-      script.onload = () => resolve();
-      script.onerror = (error) => reject(error);
-    });
-  };
-
-  const getCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const geocoder = new window.google.maps.Geocoder();
-          const latlng = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          };
-          geocoder.geocode({ location: latlng }, (results, status) => {
-            if (status === "OK" && results && results[0]) {
-              setPickupLocation({
-                address: results[0].formatted_address || "",
-                city: getCityFromComponents(results[0].address_components),
-                lat: latlng.lat,
-                lng: latlng.lng,
-              });
-            }
-          });
-        },
-        (error) => console.error("Location error:", error)
-      );
-    }
-  };
-
-  useEffect(() => {
-    const initializeMap = async () => {
-      try {
-        await loadGoogleMaps();
-        getCurrentLocation();
-      } catch (error) {
-        console.error("Failed to load Google Maps:", error);
-      }
     };
 
-    initializeMap();
+    loadGoogleMaps();
   }, []);
 
   useEffect(() => {
@@ -204,74 +144,36 @@ const MainPage = () => {
           <div className="space-y-6 mt-20">
             <div className="flex gap-4">
               {(["Local", "Rental", "Outstation"] as OptionType[]).map(
-                (name, index) => {
-                  const icon =
-                    name === "Local" ? (
-                      <FaTaxi size={24} />
-                    ) : name === "Rental" ? (
-                      <FaCarSide size={24} />
-                    ) : (
-                      <FaMapMarkedAlt size={24} />
-                    );
-
-                  return (
-                    <div key={name} className="relative group">
-                      {selectedOption === name ? (
-                        <motion.div
-                          initial={{ y: -10, opacity: 0 }}
-                          animate={{ y: -25, opacity: 1 }}
-                          transition={{ type: "spring", stiffness: 200 }}
-                          className="absolute left-1/2 -translate-x-1/2 -top-6 text-blue-600 font-semibold whitespace-nowrap"
-                        >
-                          {name}
-                          <motion.div
-                            initial={{ scaleX: 0 }}
-                            animate={{ scaleX: 1 }}
-                            className="h-1 bg-blue-600 mt-1 rounded-full"
-                            transition={{ duration: 0.3 }}
-                          />
-                        </motion.div>
-                      ) : (
-                        <motion.div
-                          initial={{ opacity: 0, y: 5 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className="absolute left-1/2 -translate-x-1/2 -top-8 
-                          bg-gray-800 text-white text-xs px-2 py-1 rounded-md
-                          before:content-[''] before:absolute before:top-full before:left-1/2
-                          before:-translate-x-1/2 before:border-4 before:border-transparent
-                          before:border-t-gray-800"
-                          style={{
-                            transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-                            pointerEvents: "none",
-                          }}
-                        >
-                          {name}
-                        </motion.div>
-                      )}
-
-                      <motion.button
-                        initial={{ opacity: 0, scale: 0.4 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        transition={{
-                          delay: index * 0.1,
-                          duration: 0.5,
-                          type: "spring",
-                        }}
-                        onClick={() => setSelectedOption(name)}
-                        className={`w-16 h-16 flex items-center justify-center rounded-full border-2 
+                (name, index) => (
+                  <div key={name} className="relative group">
+                    <motion.button
+                      initial={{ opacity: 0, scale: 0.4 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{
+                        delay: index * 0.1,
+                        duration: 0.5,
+                        type: "spring",
+                      }}
+                      onClick={() => setSelectedOption(name)}
+                      className={`w-16 h-16 flex items-center justify-center rounded-full border-2 
                         transition-all duration-300 shadow-md relative ${
                           selectedOption === name
                             ? "bg-blue-600 text-white border-blue-600 shadow-lg"
                             : "border-gray-300 text-gray-700 hover:bg-gray-50"
                         }`}
-                      >
-                        {icon}
-                      </motion.button>
-                    </div>
-                  );
-                }
+                    >
+                      {name === "Local" ? (
+                        <FaTaxi size={24} />
+                      ) : name === "Rental" ? (
+                        <FaCarSide size={24} />
+                      ) : (
+                        <FaMapMarkedAlt size={24} />
+                      )}
+                    </motion.button>
+                  </div>
+                )
               )}
             </div>
 
@@ -317,7 +219,13 @@ const MainPage = () => {
             </div>
 
             <div className="md:w-1/2 md:absolute md:right-0 md:bottom-10 md:h-auto flex justify-center border-none">
-              <Maps />
+              {isMapLoaded ? (
+                <Maps />
+              ) : (
+                <div className="w-full h-96 bg-gray-100 flex items-center justify-center">
+                  Loading map...
+                </div>
+              )}
             </div>
           </div>
         </motion.div>

@@ -1,28 +1,17 @@
 "use client";
-import React, { useEffect, useRef } from "react";
-
-interface LocationData {
-  address: string;
-  city: string;
-  latitude: number;
-  longitude: number;
-}
+import React, { useEffect, useRef, useState } from "react";
 
 interface AutocompleteInputProps {
   placeholder: string;
   className: string;
   value: string;
-  onChange: (location: LocationData) => void;
+  onChange: (location: {
+    address: string;
+    city: string;
+    latitude: number;
+    longitude: number;
+  }) => void;
 }
-
-const getCityFromComponents = (components: google.maps.GeocoderAddressComponent[]) => {
-  for (const component of components) {
-    if (component.types.includes("locality")) {
-      return component.long_name;
-    }
-  }
-  return "";
-};
 
 const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
   placeholder,
@@ -31,34 +20,42 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
   onChange,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+  const [inputValue, setInputValue] = useState(value);
 
   useEffect(() => {
-    if (inputRef.current && window.google) {
-      autocompleteRef.current = new google.maps.places.Autocomplete(
-        inputRef.current,
-        { types: ["geocode"] }
-      );
+    if (!window.google?.maps?.places?.Autocomplete || !inputRef.current) return;
 
-      autocompleteRef.current.addListener("place_changed", () => {
-        const place = autocompleteRef.current?.getPlace();
-        if (place?.formatted_address && place.geometry?.location) {
-          onChange({
-            address: place.formatted_address,
-            city: getCityFromComponents(place.address_components || []),
-            latitude: place.geometry.location.lat(),
-            longitude: place.geometry.location.lng(),
-          });
-        }
+    const autocomplete = new window.google.maps.places.Autocomplete(
+      inputRef.current,
+      { types: ["geocode"] }
+    );
+
+    autocomplete.addListener("place_changed", () => {
+      const place = autocomplete.getPlace();
+      const location = place.geometry?.location;
+      const components = place.address_components;
+
+      if (!location || !components || !place.formatted_address) return;
+
+      const lat = typeof location.lat === "function" ? location.lat() : 0;
+      const lng = typeof location.lng === "function" ? location.lng() : 0;
+
+      const city =
+        components.find((comp) =>
+          comp.types.includes("locality")
+        )?.long_name || "";
+
+      const address = place.formatted_address;
+
+      setInputValue(address);
+      onChange({
+        address,
+        city,
+        latitude: lat,
+        longitude: lng,
       });
-    }
+    });
   }, [onChange]);
-
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.value = value;
-    }
-  }, [value]);
 
   return (
     <input
@@ -66,14 +63,10 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
       type="text"
       placeholder={placeholder}
       className={className}
-      defaultValue={value}
+      value={inputValue}
+      onChange={(e) => setInputValue(e.target.value)}
     />
   );
 };
 
 export default AutocompleteInput;
-
-
-
-
-
