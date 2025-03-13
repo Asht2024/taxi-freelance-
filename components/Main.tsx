@@ -79,7 +79,7 @@ const MainPage = () => {
       }
 
       const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDIucGpZeqEX6mIBCcAzz3gMIyln_Mv6Eo&libraries=places`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBv0kNWVgU4H3dHz67CuQppiMS5-opfVWI&libraries=places`;
       script.async = true;
       script.defer = true;
       script.onload = () => setIsMapLoaded(true);
