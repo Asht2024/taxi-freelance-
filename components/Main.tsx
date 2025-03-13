@@ -12,6 +12,20 @@ declare global {
   }
 }
 
+interface Car {
+  id: number;
+  model: string;
+  image_url: string;
+  car_name: string;
+  local_price_per_km: number;
+  local_min_price: number;
+  rental_price: string;
+  outstation_per_km: number;
+  outstation_min: number;
+  luggage: number;
+  passenger: number;
+}
+
 type LocationType = {
   address: string;
   city: string;
@@ -39,7 +53,10 @@ const MainPage = () => {
   const router = useRouter();
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-
+  const [cars, setCars] = useState<Car[]>([]);
+  const priceCalculation = async () => {
+      
+  };
   useEffect(() => {
     if (isRedirecting) {
       setIsVisible(false);
@@ -167,7 +184,9 @@ const MainPage = () => {
           <h1
             className={`text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 
               bg-clip-text text-transparent transition-all duration-500 ${
-                headerMounted ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-12"
+                headerMounted
+                  ? "opacity-100 translate-x-0"
+                  : "opacity-0 -translate-x-12"
               }`}
           >
             Asht Cab
@@ -184,70 +203,76 @@ const MainPage = () => {
 
           <div className="space-y-6 mt-20">
             <div className="flex gap-4">
-              {(["Local", "Rental", "Outstation"] as OptionType[]).map((name, index) => {
-                const icon =
-                  name === "Local" ? (
-                    <FaTaxi size={24} />
-                  ) : name === "Rental" ? (
-                    <FaCarSide size={24} />
-                  ) : (
-                    <FaMapMarkedAlt size={24} />
-                  );
-
-                return (
-                  <div key={name} className="relative group">
-                    {selectedOption === name ? (
-                      <motion.div
-                        initial={{ y: -10, opacity: 0 }}
-                        animate={{ y: -25, opacity: 1 }}
-                        transition={{ type: "spring", stiffness: 200 }}
-                        className="absolute left-1/2 -translate-x-1/2 -top-6 text-blue-600 font-semibold whitespace-nowrap"
-                      >
-                        {name}
-                        <motion.div
-                          initial={{ scaleX: 0 }}
-                          animate={{ scaleX: 1 }}
-                          className="h-1 bg-blue-600 mt-1 rounded-full"
-                          transition={{ duration: 0.3 }}
-                        />
-                      </motion.div>
+              {(["Local", "Rental", "Outstation"] as OptionType[]).map(
+                (name, index) => {
+                  const icon =
+                    name === "Local" ? (
+                      <FaTaxi size={24} />
+                    ) : name === "Rental" ? (
+                      <FaCarSide size={24} />
                     ) : (
-                      <motion.div
-                        initial={{ opacity: 0, y: 5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="absolute left-1/2 -translate-x-1/2 -top-8 
+                      <FaMapMarkedAlt size={24} />
+                    );
+
+                  return (
+                    <div key={name} className="relative group">
+                      {selectedOption === name ? (
+                        <motion.div
+                          initial={{ y: -10, opacity: 0 }}
+                          animate={{ y: -25, opacity: 1 }}
+                          transition={{ type: "spring", stiffness: 200 }}
+                          className="absolute left-1/2 -translate-x-1/2 -top-6 text-blue-600 font-semibold whitespace-nowrap"
+                        >
+                          {name}
+                          <motion.div
+                            initial={{ scaleX: 0 }}
+                            animate={{ scaleX: 1 }}
+                            className="h-1 bg-blue-600 mt-1 rounded-full"
+                            transition={{ duration: 0.3 }}
+                          />
+                        </motion.div>
+                      ) : (
+                        <motion.div
+                          initial={{ opacity: 0, y: 5 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="absolute left-1/2 -translate-x-1/2 -top-8 
                           bg-gray-800 text-white text-xs px-2 py-1 rounded-md
                           before:content-[''] before:absolute before:top-full before:left-1/2
                           before:-translate-x-1/2 before:border-4 before:border-transparent
                           before:border-t-gray-800"
-                        style={{
-                          transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-                          pointerEvents: "none",
-                        }}
-                      >
-                        {name}
-                      </motion.div>
-                    )}
+                          style={{
+                            transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+                            pointerEvents: "none",
+                          }}
+                        >
+                          {name}
+                        </motion.div>
+                      )}
 
-                    <motion.button
-                      initial={{ opacity: 0, scale: 0.4 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      transition={{ delay: index * 0.1, duration: 0.5, type: "spring" }}
-                      onClick={() => setSelectedOption(name)}
-                      className={`w-16 h-16 flex items-center justify-center rounded-full border-2 
+                      <motion.button
+                        initial={{ opacity: 0, scale: 0.4 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{
+                          delay: index * 0.1,
+                          duration: 0.5,
+                          type: "spring",
+                        }}
+                        onClick={() => setSelectedOption(name)}
+                        className={`w-16 h-16 flex items-center justify-center rounded-full border-2 
                         transition-all duration-300 shadow-md relative ${
                           selectedOption === name
                             ? "bg-blue-600 text-white border-blue-600 shadow-lg"
                             : "border-gray-300 text-gray-700 hover:bg-gray-50"
                         }`}
-                    >
-                      {icon}
-                    </motion.button>
-                  </div>
-                );
-              })}
+                      >
+                        {icon}
+                      </motion.button>
+                    </div>
+                  );
+                }
+              )}
             </div>
 
             <motion.button
@@ -257,6 +282,7 @@ const MainPage = () => {
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.3 }}
               onClick={() => {
+                priceCalculation();
                 setIsRedirecting(true);
                 router.push(`/Cabs?type=${selectedOption.toLowerCase()}`);
               }}
