@@ -52,101 +52,7 @@ const MainPage = () => {
   const router = useRouter();
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  // const [cars, setCars] = useState<Car[]>([]);
-  // const priceCalculation = async ({ pickupcity, distance, dropcity }:{pickupcity:String;distance:Number;dropcity:String  }) => {
-  //   try {
-  //     const res = await fetch("/api/getallcars");
-  //     const data = await res.json();
-  //     if (!data.success) {
-  //       console.error(data.message || "Failed to fetch cars.");
-  //       return;
-  //     }
   
-  //     const cars = data.data;
-  
-  //     // Step 2: Fetch pickup and drop location IDs
-  //     const pickupRes = await fetch(`/api/getlocationid?city=${pickupcity}`);
-  //     const pickupData = await pickupRes.json();
-  
-  //     const dropRes = await fetch(`/api/getlocationid?city=${dropcity}`);
-  //     const dropData = await dropRes.json();
-  
-  //     if (!pickupData.success || !dropData.success) {
-  //       console.error("Error fetching location IDs");
-  //       return;
-  //     }
-  
-  //     const pickupLocationId = pickupData.location_id;
-  //     const dropLocationId = dropData.location_id;
-  
-  //     // Step 3: Calculate price for each car without updating DB
-  //     const updatedCars = cars.map(async (car:any) => {
-  //       let calculatedPrice = 0;
-  
-  //       if (!pickupLocationId) {
-  //         // Local pricing logic
-  //         calculatedPrice =
-  //           distance <= 5
-  //             ? car.local_min_price
-  //             : car.local_min_price + (distance - 5) * car.local_price_per_km;
-  //       } else if (
-  //         (pickupLocationId === 3 && dropLocationId === 4) ||
-  //         (pickupLocationId === 4 && dropLocationId === 3)
-  //       ) {
-  //         // Fixed price for specific locations
-  //         const priceRes = await fetch(
-  //           `/api/getlocalbookingprice?carid=${car.id}&locationid=${pickupLocationId}`
-  //         );
-  //         const priceData = await priceRes.json();
-  //         if (priceData.success) {
-  //           calculatedPrice = parseInt(priceData.data[0]);
-  //         }
-  //       } else {
-  //         // General case: Fetch fixed price from backend
-  //         const priceRes = await fetch(
-  //           `/api/getlocalbookingprice?carid=${car.id}&locationid=${pickupLocationId}`
-  //         );
-  //         const priceData = await priceRes.json();
-  //         if (priceData.success) {
-  //           let prices = priceData.data[0].split(" ").map(Number); // Convert string to array of integers
-  
-  //           // Price selection based on distance
-  //           if (prices.length === 3) {
-  //             calculatedPrice =
-  //               distance <= 15
-  //                 ? prices[0]
-  //                 : distance <= 20
-  //                 ? prices[1]
-  //                 : distance <= 25
-  //                 ? prices[2]
-  //                 : car.local_min_price + (distance - 5) * car.local_price_per_km;
-  //           } else {
-  //             calculatedPrice =
-  //               distance <= 15
-  //                 ? prices[0]
-  //                 : distance <= 20
-  //                 ? prices[1]
-  //                 : distance <= 25
-  //                 ? prices[2]
-  //                 : distance <= 30
-  //                 ? prices[3]
-  //                 : prices[4];
-  //           }
-  //         }
-  //       }
-  
-  //       // Return car object with temporary calculated price (without updating DB)
-  //       return { ...car, calculated_price: calculatedPrice };
-  //     });
-  
-  //     // Resolve all async operations before setting state
-  //     const finalCars = await Promise.all(updatedCars);
-  //     setCars(finalCars); // Update state with cars including calculated_price
-  
-  //   } catch (err) {
-  //     console.error("Error in price calculation:", err);
-  //   }
-  // };
   
   useEffect(() => {
     if (isRedirecting) {
@@ -414,7 +320,7 @@ const MainPage = () => {
               />
             </div>
 
-            {/* Replaced "hey" with suv.png */}
+            
            
 
             <div className="md:w-1/2 md:absolute md:right-0 md:bottom-10 md:h-auto flex justify-center border-none">
