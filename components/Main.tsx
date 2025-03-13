@@ -52,7 +52,7 @@ const MainPage = () => {
   const router = useRouter();
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const [cars, setCars] = useState<Car[]>([]);
+  // const [cars, setCars] = useState<Car[]>([]);
   // const priceCalculation = async ({ pickupcity, distance, dropcity }:{pickupcity:String;distance:Number;dropcity:String  }) => {
   //   try {
   //     const res = await fetch("/api/getallcars");
