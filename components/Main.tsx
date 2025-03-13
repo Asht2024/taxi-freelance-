@@ -377,7 +377,7 @@ const MainPage = () => {
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.3 }}
               onClick={() => {
-                
+                // priceCalculation();
                 setIsRedirecting(true);
                 router.push(`/Cabs?type=${selectedOption.toLowerCase()}`);
               }}
