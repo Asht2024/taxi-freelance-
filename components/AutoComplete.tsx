@@ -20,8 +20,7 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
   onChange,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  //@ts-ignore
-  const autocompleteRef = useRef<google.maps.places.Autocomplete>();
+  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
   const [inputValue, setInputValue] = useState(value);
 
   useEffect(() => {
