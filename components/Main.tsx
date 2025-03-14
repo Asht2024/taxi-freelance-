@@ -77,15 +77,18 @@ const MainPage = () => {
         setIsMapLoaded(true);
         return;
       }
-
-      const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBv0kNWVgU4H3dHz67CuQppiMS5-opfVWI&libraries=places`;
-      script.async = true;
-      script.defer = true;
-      script.onload = () => setIsMapLoaded(true);
-      document.head.appendChild(script);
+  
+      // Check if script is already added
+      if (!document.querySelector('script[src*="maps.googleapis.com/maps/api/js"]')) {
+        const script = document.createElement("script");
+        script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBv0kNWVgU4H3dHz67CuQppiMS5-opfVWI&libraries=places`;
+        script.async = true;
+        script.defer = true;
+        script.onload = () => setIsMapLoaded(true);
+        document.head.appendChild(script);
+      }
     };
-
+  
     loadGoogleMaps();
   }, []);
 

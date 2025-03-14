@@ -1,3 +1,4 @@
+
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -20,41 +21,68 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
   onChange,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  //@ts-ignore
+  const autocompleteRef = useRef<google.maps.places.Autocomplete>();
   const [inputValue, setInputValue] = useState(value);
 
   useEffect(() => {
-    if (!window.google?.maps?.places?.Autocomplete || !inputRef.current) return;
+    setInputValue(value);
+  }, [value]);
 
-    const autocomplete = new window.google.maps.places.Autocomplete(
-      inputRef.current,
-      { types: ["geocode"] }
-    );
+  useEffect(() => {
+    if (!inputRef.current || autocompleteRef.current) return;
 
-    autocomplete.addListener("place_changed", () => {
-      const place = autocomplete.getPlace();
-      const location = place.geometry?.location;
-      const components = place.address_components;
+    const initAutocomplete = () => {
+      if (window.google?.maps?.places) {
+        autocompleteRef.current = new window.google.maps.places.Autocomplete(
+          inputRef.current!,
+          { types: ["geocode"] }
+        );
 
-      if (!location || !components || !place.formatted_address) return;
+        autocompleteRef.current.addListener("place_changed", () => {
+          const place = autocompleteRef.current?.getPlace();
+          if (!place?.geometry?.location || !place.address_components) return;
 
-      const lat = typeof location.lat === "function" ? location.lat() : 0;
-      const lng = typeof location.lng === "function" ? location.lng() : 0;
+          // Extract city
+          const getAddressComponent = (types: string[]) => 
+            place.address_components?.find(c => types.some(t => c.types.includes(t)))?.long_name || '';
 
-      const city =
-        components.find((comp) =>
-          comp.types.includes("locality")
-        )?.long_name || "";
+          const city = 
+            getAddressComponent(['locality', 'administrative_area_level_2']) ||
+            getAddressComponent(['administrative_area_level_1']);
 
-      const address = place.formatted_address;
+          const location = {
+            address: place.formatted_address || '',
+            city,
+            latitude: place.geometry.location.lat(),
+            longitude: place.geometry.location.lng(),
+          };
 
-      setInputValue(address);
-      onChange({
-        address,
-        city,
-        latitude: lat,
-        longitude: lng,
-      });
-    });
+          console.log('Selected Location:', location);
+          
+          setInputValue(location.address);
+          onChange(location);
+        });
+      }
+    };
+
+    // Initialize when Google Maps is available
+    if (window.google?.maps) {
+      initAutocomplete();
+    } else {
+      const timer = setInterval(() => {
+        if (window.google?.maps) {
+          initAutocomplete();
+          clearInterval(timer);
+        }
+      }, 100);
+    }
+
+    return () => {
+      if (autocompleteRef.current) {
+        google.maps.event.clearInstanceListeners(autocompleteRef.current);
+      }
+    };
   }, [onChange]);
 
   return (
@@ -69,4 +97,4 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
   );
 };
 
-export default AutocompleteInput;
+export default React.memo(AutocompleteInput);
