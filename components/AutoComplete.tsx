@@ -1,98 +1,150 @@
+// components/AutocompleteInput.tsx
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import { useState, useEffect, useCallback } from 'react';
+import { FaMapMarkerAlt } from 'react-icons/fa';
 
-interface AutocompleteInputProps {
-  placeholder: string;
-  className: string;
-  value: string;
-  onChange: (location: {
-    address: string;
-    city: string;
-    latitude: number;
-    longitude: number;
-  }) => void;
+interface LocationType {
+  address: string;
+  city: string;
+  lat: number;
+  lng: number;
 }
 
-const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
-  placeholder,
-  className,
-  value,
-  onChange,
-}) => {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+interface AutocompleteInputProps {
+  label: string;
+  value: string;
+  onChange: (location: LocationType) => void;
+}
+
+const AutocompleteInput = ({ label, value, onChange }: AutocompleteInputProps) => {
   const [inputValue, setInputValue] = useState(value);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  useEffect(() => {
-    setInputValue(value);
-  }, [value]);
-
-  useEffect(() => {
-    if (!inputRef.current || autocompleteRef.current) return;
-
-    const initAutocomplete = () => {
-      if (window.google?.maps?.places) {
-        autocompleteRef.current = new window.google.maps.places.Autocomplete(
-          inputRef.current!,
-          { types: ["geocode"] }
-        );
-
-        autocompleteRef.current.addListener("place_changed", () => {
-          const place = autocompleteRef.current?.getPlace();
-          if (!place?.geometry?.location || !place.address_components) return;
-
-          // Extract city
-          const getAddressComponent = (types: string[]) => 
-            place.address_components?.find(c => types.some(t => c.types.includes(t)))?.long_name || '';
-
-          const city = 
-            getAddressComponent(['locality', 'administrative_area_level_2']) ||
-            getAddressComponent(['administrative_area_level_1']);
-
-          const location = {
-            address: place.formatted_address || '',
-            city,
-            latitude: place.geometry.location.lat(),
-            longitude: place.geometry.location.lng(),
-          };
-
-          console.log('Selected Location:', location);
-          
-          setInputValue(location.address);
-          onChange(location);
-        });
-      }
+  // Debounce function
+  const debounce = (func: Function, delay: number) => {
+    let timeoutId: NodeJS.Timeout;
+    return (...args: any[]) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func(...args), delay);
     };
+  };
 
-    // Initialize when Google Maps is available
-    if (window.google?.maps) {
-      initAutocomplete();
-    } else {
-      const timer = setInterval(() => {
-        if (window.google?.maps) {
-          initAutocomplete();
-          clearInterval(timer);
-        }
-      }, 100);
+  // Fetch suggestions through proxy
+  const fetchSuggestions = useCallback(async (query: string) => {
+    if (!query || query.length < 3) {
+      setSuggestions([]);
+      return;
     }
 
-    return () => {
-      if (autocompleteRef.current) {
-        google.maps.event.clearInstanceListeners(autocompleteRef.current);
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch(`/api/places?input=${encodeURIComponent(query)}&type=geocode`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch suggestions');
       }
-    };
-  }, [onChange]);
+
+      const data = await response.json();
+      
+      if (data.predictions) {
+        setSuggestions(data.predictions.map((p: any) => p.description));
+      }
+    } catch (err) {
+      setError('Error fetching suggestions');
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Debounced fetch
+  const debouncedFetch = useCallback(
+    debounce((query: string) => fetchSuggestions(query), 300),
+    []
+  );
+
+  // Handle input change
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+    debouncedFetch(e.target.value);
+  };
+
+  // Handle suggestion selection
+  const handleSelectSuggestion = async (address: string) => {
+    setInputValue(address);
+    setSuggestions([]);
+
+    try {
+      // Get place details
+      const response = await fetch(`/api/places?input=${encodeURIComponent(address)}&type=geocode`);
+      const data = await response.json();
+      
+      if (data.predictions?.[0]?.place_id) {
+        const detailsResponse = await fetch(
+          `/api/place-details?place_id=${data.predictions[0].place_id}`
+        );
+        const details = await detailsResponse.json();
+        
+        if (details.result) {
+          const location: LocationType = {
+            address: details.result.formatted_address,
+            city: getCity(details.result.address_components),
+            lat: details.result.geometry.location.lat,
+            lng: details.result.geometry.location.lng,
+          };
+          onChange(location);
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching place details:', err);
+      setError('Failed to get location details');
+    }
+  };
+
+  // Helper to extract city
+  const getCity = (components: any[]) => {
+    const cityComponent = components.find(c => 
+      c.types.includes('locality') || 
+      c.types.includes('administrative_area_level_2')
+    );
+    return cityComponent?.long_name || '';
+  };
 
   return (
-    <input
-      ref={inputRef}
-      type="text"
-      placeholder={placeholder}
-      className={className}
-      value={inputValue}
-      onChange={(e) => setInputValue(e.target.value)}
-    />
+    <div className="relative mb-4">
+      <FaMapMarkerAlt className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
+      <input
+        type="text"
+        value={inputValue}
+        onChange={handleInputChange}
+        className="w-full pl-12 pr-10 py-3 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white shadow-sm"
+        placeholder={label}
+      />
+
+      {/* Loading and error states */}
+      {isLoading && <div className="mt-1 text-sm text-gray-500">Loading...</div>}
+      {error && <div className="mt-1 text-sm text-red-500">{error}</div>}
+
+      {/* Suggestions list */}
+      {suggestions.length > 0 && (
+        <ul className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg">
+          {suggestions.map((suggestion, index) => (
+            <li
+              key={index}
+              onClick={() => handleSelectSuggestion(suggestion)}
+              className="p-2 hover:bg-gray-100 cursor-pointer"
+            >
+              {suggestion}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 };
 
-export default React.memo(AutocompleteInput);
+export default AutocompleteInput;

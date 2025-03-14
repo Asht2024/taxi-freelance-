@@ -6,7 +6,6 @@ import Maps from "./Map";
 import ServiceForms from "./ServiceForm";
 import { useRouter } from "next/navigation";
 
-
 declare global {
   interface Window {
     google: typeof google;
@@ -27,7 +26,7 @@ const MainPage = () => {
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
-  
+
   useEffect(() => {
     if (isRedirecting) {
       setIsVisible(false);
@@ -50,6 +49,52 @@ const MainPage = () => {
     lng: 0,
   });
 
+  // const Cities = [
+  //   "Vadodara",
+  //   "Ahmedabad",
+  //   "Rajkot",
+  //   "Hirasar",
+  //   "Dahod",
+  //   "Morbi",
+  // ];
+  // const CalculatePrice = async () => {
+  //   const totalDistane = 0;
+  //   if (totalDistane > 40) {
+  //     setSelectedOption("Outstation");
+  //   } else {
+  //     if (pickupLocation.city == Cities[0]) {
+  //       if (totalDistane <= 15) {
+  //       } else if (totalDistane <= 20) {
+  //       } else if (totalDistane <= 25) {
+  //       } else {
+  //       }
+  //     } else if (pickupLocation.city == Cities[1]) {
+  //       if (dropLocation.city == Cities[4]) {
+  //       } else if (
+  //         dropLocation.city == Cities[2] ||
+  //         dropLocation.city == Cities[5]
+  //       ) {
+  //       } else if (totalDistane <= 20) {
+  //       } else if (totalDistane <= 25) {
+  //       } else if (totalDistane <= 30) {
+  //       } else if (totalDistane <= 35) {
+  //       } else {
+  //       }
+  //     } else if (
+  //       pickupLocation.city == Cities[2] &&
+  //       dropLocation.city == Cities[3]
+  //     ) {
+  //     } else if (pickupLocation.city == Cities[3]) {
+  //       if (dropLocation.city == Cities[2]) {
+  //       } else if (dropLocation.city == Cities[1]) {
+  //       } else {
+  //       }
+  //     } else if (pickupLocation.city == Cities[4]) {
+  //     } else if (pickupLocation.city == Cities[5]) {
+  //     } else {
+  //     }
+  //   }
+  // };
 
 
   const [text, setText] = useState("");
@@ -80,9 +125,13 @@ const MainPage = () => {
         setIsMapLoaded(true);
         return;
       }
-  
+
       // Check if script is already added
-      if (!document.querySelector('script[src*="maps.googleapis.com/maps/api/js"]')) {
+      if (
+        !document.querySelector(
+          'script[src*="maps.googleapis.com/maps/api/js"]'
+        )
+      ) {
         const script = document.createElement("script");
         script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBv0kNWVgU4H3dHz67CuQppiMS5-opfVWI&libraries=places`;
         script.async = true;
@@ -91,7 +140,7 @@ const MainPage = () => {
         document.head.appendChild(script);
       }
     };
-  
+
     loadGoogleMaps();
   }, []);
 
@@ -148,67 +197,67 @@ const MainPage = () => {
           </div>
 
           <div className="space-y-6 mt-20">
-          <div className="flex gap-4">
-  {[
-    { name: "Local", icon: <FaTaxi size={24} /> },
-    { name: "Rental", icon: <FaCarSide size={24} /> },
-    { name: "Outstation", icon: <FaMapMarkedAlt size={24} /> },
-  ].map((option, index) => (
-    <div key={option.name} className="relative group">
-      {/* Selected Option Label */}
-      {selectedOption === option.name && (
-        <motion.div
-          initial={{ y: -10, opacity: 0 }}
-          animate={{ y: -25, opacity: 1 }}
-          transition={{ type: "spring", stiffness: 200 }}
-          className="absolute left-1/2 -translate-x-1/2 -top-6 text-blue-600 font-semibold whitespace-nowrap"
-        >
-          {option.name}
-          <motion.div
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            className="h-1 bg-blue-600 mt-1 rounded-full"
-            transition={{ duration: 0.3 }}
-          />
-        </motion.div>
-      )}
+            <div className="flex gap-4">
+              {[
+                { name: "Local", icon: <FaTaxi size={24} /> },
+                { name: "Rental", icon: <FaCarSide size={24} /> },
+                { name: "Outstation", icon: <FaMapMarkedAlt size={24} /> },
+              ].map((option, index) => (
+                <div key={option.name} className="relative group">
+                  {/* Selected Option Label */}
+                  {selectedOption === option.name && (
+                    <motion.div
+                      initial={{ y: -10, opacity: 0 }}
+                      animate={{ y: -25, opacity: 1 }}
+                      transition={{ type: "spring", stiffness: 200 }}
+                      className="absolute left-1/2 -translate-x-1/2 -top-6 text-blue-600 font-semibold whitespace-nowrap"
+                    >
+                      {option.name}
+                      <motion.div
+                        initial={{ scaleX: 0 }}
+                        animate={{ scaleX: 1 }}
+                        className="h-1 bg-blue-600 mt-1 rounded-full"
+                        transition={{ duration: 0.3 }}
+                      />
+                    </motion.div>
+                  )}
 
-      {/* Hover Tooltip */}
-      {selectedOption !== option.name && (
-        <motion.div
-          initial={{ opacity: 0, y: 5 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="absolute left-1/2 -translate-x-1/2 -top-8 
+                  {/* Hover Tooltip */}
+                  {selectedOption !== option.name && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="absolute left-1/2 -translate-x-1/2 -top-8 
             bg-gray-800 text-white text-xs px-2 py-1 rounded-md
             before:content-[''] before:absolute before:top-full before:left-1/2
             before:-translate-x-1/2 before:border-4 before:border-transparent
             before:border-t-gray-800"
-          style={{
-            transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-            pointerEvents: 'none'
-          }}
-        >
-          {option.name}
-        </motion.div>
-      )}
+                      style={{
+                        transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+                        pointerEvents: "none",
+                      }}
+                    >
+                      {option.name}
+                    </motion.div>
+                  )}
 
-      {/* Button */}
-      <motion.button
-        initial={{ opacity: 0, scale: 0.4 }}
-        animate={{ opacity: 1, scale: 1 }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        transition={{
-          delay: index * 0.1,
-          duration: 0.5,
-          type: "spring",
-        }}
-        onClick={() =>
-          setSelectedOption(
-            option.name as "Local" | "Rental" | "Outstation"
-          )
-        }
-        className={`
+                  {/* Button */}
+                  <motion.button
+                    initial={{ opacity: 0, scale: 0.4 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{
+                      delay: index * 0.1,
+                      duration: 0.5,
+                      type: "spring",
+                    }}
+                    onClick={() =>
+                      setSelectedOption(
+                        option.name as "Local" | "Rental" | "Outstation"
+                      )
+                    }
+                    className={`
           w-16 h-16 flex items-center justify-center rounded-full border-2 
           transition-all duration-300 shadow-md relative
           ${
@@ -217,12 +266,12 @@ const MainPage = () => {
               : "border-gray-300 text-gray-700 hover:bg-gray-50"
           }
         `}
-      >
-        {option.icon}
-      </motion.button>
-    </div>
-  ))}
-</div>
+                  >
+                    {option.icon}
+                  </motion.button>
+                </div>
+              ))}
+            </div>
 
             <motion.button
               initial={{ opacity: 0, y: 20 }}
@@ -231,6 +280,8 @@ const MainPage = () => {
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.3 }}
               onClick={() => {
+                console.log(pickupLocation);
+                console.log(dropLocation);
                 setIsRedirecting(true);
                 router.push(`/Cabs?type=${selectedOption.toLowerCase()}`);
               }}
@@ -241,28 +292,30 @@ const MainPage = () => {
             </motion.button>
 
             <div className="relative min-h-[160px] md:w-4/5">
-              <ServiceForms
+              {isMapLoaded ? (
+                <ServiceForms
                 key={selectedOption}
                 serviceType={selectedOption}
                 pickupAddress={pickupLocation.address}
                 dropAddress={dropLocation.address}
-                onPickupChange={(newLocation) =>
-                  setPickupLocation({
-                    address: newLocation.address,
-                    city: newLocation.city,
-                    lat: newLocation.latitude,
-                    lng: newLocation.longitude,
-                  })
-                }
-                onDropChange={(newLocation) =>
-                  setDropLocation({
-                    address: newLocation.address,
-                    city: newLocation.city,
-                    lat: newLocation.latitude,
-                    lng: newLocation.longitude,
-                  })
-                }
+                onPickupChange={(newLocation) => setPickupLocation({
+                  address: newLocation.address,
+                  city: newLocation.city,
+                  lat: newLocation.lat,
+                  lng: newLocation.lng
+                })}
+                onDropChange={(newLocation) => setDropLocation({
+                  address: newLocation.address,
+                  city: newLocation.city,
+                  lat: newLocation.lat,
+                  lng: newLocation.lng
+                })}
               />
+              ) : (
+                <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                  Loading address services...
+                </div>
+              )}
             </div>
 
             <div className="md:w-1/2 md:absolute md:right-0 md:bottom-10 md:h-auto flex justify-center border-none">

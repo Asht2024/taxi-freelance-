@@ -16,11 +16,12 @@ import {
 } from "react-icons/fa";
 import AutocompleteInput from "./AutoComplete";
 
+// In ServiceForms component
 interface LocationData {
   address: string;
   city: string;
-  latitude: number;
-  longitude: number;
+  lat: number;
+  lng: number;
 }
 
 interface ServiceFormsProps {
@@ -30,6 +31,7 @@ interface ServiceFormsProps {
   onPickupChange: (location: LocationData) => void;
   onDropChange: (location: LocationData) => void;
 }
+
 
 const ServiceForms: React.FC<ServiceFormsProps> = ({
   serviceType,
@@ -76,9 +78,10 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
             <motion.div variants={formVariants} className={rowCommonClass}>
               <FaMapMarkerAlt className={iconCommonClass} />
               <AutocompleteInput
-                placeholder="Pickup Location"
-                className={inputCommonClass}
+                label="Pickup Location"
+                
                 value={pickupAddress}
+                
                 onChange={onPickupChange}
               />
             </motion.div>
@@ -86,9 +89,10 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
             <motion.div variants={formVariants} className={rowCommonClass}>
               <FaMapMarkerAlt className={iconCommonClass} />
               <AutocompleteInput
-                placeholder="Drop Location"
-                className={inputCommonClass}
+                label="Drop Location"
+                
                 value={dropAddress}
+                
                 onChange={onDropChange}
               />
             </motion.div>
@@ -166,9 +170,10 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
             <motion.div variants={formVariants} className={rowCommonClass}>
               <FaMapMarkerAlt className={iconCommonClass} />
               <AutocompleteInput
-                placeholder="Pickup Location"
-                className={inputCommonClass}
+                label="Pickup Location"
+                
                 value={pickupAddress}
+                
                 onChange={onPickupChange}
               />
             </motion.div>
@@ -280,9 +285,10 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
               <motion.div variants={formVariants} className={rowCommonClass}>
                 <FaMapMarkerAlt className={iconCommonClass} />
                 <AutocompleteInput
-                  placeholder="Pickup Location"
-                  className={inputCommonClass}
+                  label="Pickup Location"
+                  
                   value={pickupAddress}
+                  
                   onChange={onPickupChange}
                 />
               </motion.div>
@@ -290,8 +296,7 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
               <motion.div variants={formVariants} className={rowCommonClass}>
                 <FaMapMarkerAlt className={iconCommonClass} />
                 <AutocompleteInput
-                  placeholder="Drop Location"
-                  className={inputCommonClass}
+                  label="Drop Location"
                   value={dropAddress}
                   onChange={onDropChange}
                 />
