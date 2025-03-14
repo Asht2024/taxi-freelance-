@@ -6,6 +6,7 @@ import Maps from "./Map";
 import ServiceForms from "./ServiceForm";
 import { useRouter } from "next/navigation";
 
+
 declare global {
   interface Window {
     google: typeof google;
@@ -26,7 +27,7 @@ const MainPage = () => {
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
-
+  
   useEffect(() => {
     if (isRedirecting) {
       setIsVisible(false);
@@ -48,6 +49,8 @@ const MainPage = () => {
     lat: 0,
     lng: 0,
   });
+
+
 
   const [text, setText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
