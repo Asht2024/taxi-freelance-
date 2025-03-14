@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -21,7 +20,8 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
   onChange,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+  //@ts-ignore
+  const autocompleteRef = useRef<google.maps.places.Autocomplete>();
   const [inputValue, setInputValue] = useState(value);
 
   useEffect(() => {
