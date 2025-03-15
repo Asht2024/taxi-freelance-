@@ -165,7 +165,7 @@ const MainPage = () => {
 
     const timer = setTimeout(handleType, typingSpeed);
     return () => clearTimeout(timer);
-  }, [text, isDeleting, loopNum]);
+  }, [text, isDeleting, loopNum, phrases, typingSpeed]);
 
   return (
     <AnimatePresence>

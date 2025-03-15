@@ -1,6 +1,6 @@
 // components/AutocompleteInput.tsx
 "use client";
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 
 interface LocationType {
@@ -16,20 +16,30 @@ interface AutocompleteInputProps {
   onChange: (location: LocationType) => void;
 }
 
+interface Prediction {
+  description: string;
+  place_id?: string;
+}
+
+interface AddressComponent {
+  types: string[];
+  long_name: string;
+}
+
+// Debounce function outside component
+function debounce<T extends (...args: any[]) => void>(func: T, delay: number) {
+  let timeoutId: NodeJS.Timeout;
+  return (...args: Parameters<T>) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func(...args), delay);
+  };
+}
+
 const AutocompleteInput = ({ label, value, onChange }: AutocompleteInputProps) => {
   const [inputValue, setInputValue] = useState(value);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-
-  // Debounce function
-  const debounce = (func: Function, delay: number) => {
-    let timeoutId: NodeJS.Timeout;
-    return (...args: any[]) => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => func(...args), delay);
-    };
-  };
 
   // Fetch suggestions through proxy
   const fetchSuggestions = useCallback(async (query: string) => {
@@ -51,7 +61,7 @@ const AutocompleteInput = ({ label, value, onChange }: AutocompleteInputProps) =
       const data = await response.json();
       
       if (data.predictions) {
-        setSuggestions(data.predictions.map((p: any) => p.description));
+        setSuggestions(data.predictions.map((p: Prediction) => p.description));
       }
     } catch (err) {
       setError('Error fetching suggestions');
@@ -61,10 +71,10 @@ const AutocompleteInput = ({ label, value, onChange }: AutocompleteInputProps) =
     }
   }, []);
 
-  // Debounced fetch
+  // Debounced fetch with proper dependencies
   const debouncedFetch = useCallback(
     debounce((query: string) => fetchSuggestions(query), 300),
-    []
+    [fetchSuggestions]
   );
 
   // Handle input change
@@ -79,7 +89,6 @@ const AutocompleteInput = ({ label, value, onChange }: AutocompleteInputProps) =
     setSuggestions([]);
 
     try {
-      // Get place details
       const response = await fetch(`/api/places?input=${encodeURIComponent(address)}&type=geocode`);
       const data = await response.json();
       
@@ -105,8 +114,8 @@ const AutocompleteInput = ({ label, value, onChange }: AutocompleteInputProps) =
     }
   };
 
-  // Helper to extract city
-  const getCity = (components: any[]) => {
+  // Helper to extract city with proper typing
+  const getCity = (components: AddressComponent[]) => {
     const cityComponent = components.find(c => 
       c.types.includes('locality') || 
       c.types.includes('administrative_area_level_2')
