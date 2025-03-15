@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FaMapMarkerAlt,
@@ -42,14 +42,14 @@ interface FormData {
 
 type FormDataValue = string | number | string[] | "One Way" | "Round Trip";
 
-const ServiceForms: React.FC<ServiceFormsProps> = ({
+const ServiceForms = ({
   serviceType,
   pickupAddress,
   dropAddress,
   onPickupChange,
   onDropChange,
   onFormValidityChange,
-}) => {
+}: ServiceFormsProps): React.ReactElement => {
   // Form state
   const [formData, setFormData] = useState<FormData>({
     date: "",
@@ -167,15 +167,6 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
               />
             </motion.div>
 
-            <motion.div variants={formVariants} className={rowCommonClass}>
-              <FaMapMarkerAlt className={iconCommonClass} />
-              <AutocompleteInput
-                label="Drop Location"
-                value={dropAddress}
-                onChange={onDropChange}
-              />
-            </motion.div>
-
             <motion.div
               variants={formVariants}
               className="grid grid-cols-2 gap-3 h-[58px]"
@@ -199,6 +190,19 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
                 />
               </div>
             </motion.div>
+
+            <motion.div variants={formVariants} className={rowCommonClass}>
+              <FaMapMarkerAlt className={iconCommonClass} />
+              <AutocompleteInput
+                label="Drop Location"
+                
+                value={dropAddress}
+                
+                onChange={onDropChange}
+              />
+            </motion.div>
+
+            
 
             <motion.div
               variants={formVariants}
@@ -392,15 +396,7 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
               />
             </motion.div>
 
-            <motion.div variants={formVariants} className={rowCommonClass}>
-              <FaMapMarkerAlt className={iconCommonClass} />
-              <AutocompleteInput
-                label="Drop Location"
-                value={dropAddress}
-                onChange={onDropChange}
-              />
-            </motion.div>
-
+            {/* Date & Time Section */}
             <motion.div
               variants={formVariants}
               className="grid grid-cols-2 gap-3 h-[58px]"
@@ -424,6 +420,32 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
                 />
               </div>
             </motion.div>
+
+            <motion.div variants={formVariants} className={rowCommonClass}>
+              <FaMapMarkerAlt className={iconCommonClass} />
+              <AutocompleteInput
+                label="Drop Location"
+                value={dropAddress}
+                onChange={onDropChange}
+              />
+            </motion.div>
+
+            {/* Round Trip Date & Time Section */}
+            {tripType === "Round Trip" && (
+              <motion.div
+                variants={formVariants}
+                className="grid grid-cols-2 gap-4"
+              >
+                <div className={rowCommonClass}>
+                  <FaCalendar className={iconCommonClass} />
+                  <input type="date" className={inputCommonClass} />
+                </div>
+                <div className={rowCommonClass}>
+                  <FaClock className={iconCommonClass} />
+                  <input type="time" className={inputCommonClass} />
+                </div>
+              </motion.div>
+            )}
 
             <motion.div
               variants={formVariants}
@@ -477,31 +499,33 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
 
             {/* Intermediate Cities */}
             <AnimatePresence>
-              {intermediateCities.map((city, index) => (
-                <motion.div
-                  key={index}
-                  variants={formVariants}
-                  className="relative"
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                >
-                  <FaMapMarkerAlt className={iconCommonClass} />
-                  <input
-                    type="text"
-                    placeholder={`Intermediate City ${index + 1}`}
-                    className={inputCommonClass}
-                    value={city}
-                    onChange={(e) => handleUpdateCity(index, e.target.value)}
-                  />
-                  <button
-                    onClick={() => handleRemoveCity(index)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-red-500 hover:text-red-600"
+              <motion.div className="space-y-4">
+                {intermediateCities.map((city, index) => (
+                  <motion.div
+                    key={index}
+                    variants={formVariants}
+                    className="relative"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
                   >
-                    <FaTrash />
-                  </button>
-                </motion.div>
-              ))}
+                    <FaMapMarkerAlt className={iconCommonClass} />
+                    <input
+                      type="text"
+                      placeholder={`Intermediate City ${index + 1}`}
+                      className={inputCommonClass}
+                      value={city}
+                      onChange={(e) => handleUpdateCity(index, e.target.value)}
+                    />
+                    <button
+                      onClick={() => handleRemoveCity(index)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-red-500 hover:text-red-600"
+                    >
+                      <FaTrash />
+                    </button>
+                  </motion.div>
+                ))}
+              </motion.div>
             </AnimatePresence>
 
             <motion.button
