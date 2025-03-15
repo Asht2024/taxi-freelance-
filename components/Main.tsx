@@ -23,18 +23,10 @@ type OptionType = "Local" | "Rental" | "Outstation";
 
 const MainPage = () => {
   const router = useRouter();
-  const [isRedirecting, setIsRedirecting] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(false);
 
-  useEffect(() => {
-    if (isRedirecting) {
-      setIsVisible(false);
-      const timer = setTimeout(() => router.push("/Cabs"), 500);
-      return () => clearTimeout(timer);
-    }
-  }, [isRedirecting, router]);
-
+  // Location states
   const [pickupLocation, setPickupLocation] = useState<LocationType>({
     address: "",
     city: "",
@@ -49,61 +41,12 @@ const MainPage = () => {
     lng: 0,
   });
 
-  // const Cities = [
-  //   "Vadodara",
-  //   "Ahmedabad",
-  //   "Rajkot",
-  //   "Hirasar",
-  //   "Dahod",
-  //   "Morbi",
-  // ];
-  // const CalculatePrice = async () => {
-  //   const totalDistane = 0;
-  //   if (totalDistane > 40) {
-  //     setSelectedOption("Outstation");
-  //   } else {
-  //     if (pickupLocation.city == Cities[0]) {
-  //       if (totalDistane <= 15) {
-  //       } else if (totalDistane <= 20) {
-  //       } else if (totalDistane <= 25) {
-  //       } else {
-  //       }
-  //     } else if (pickupLocation.city == Cities[1]) {
-  //       if (dropLocation.city == Cities[4]) {
-  //       } else if (
-  //         dropLocation.city == Cities[2] ||
-  //         dropLocation.city == Cities[5]
-  //       ) {
-  //       } else if (totalDistane <= 20) {
-  //       } else if (totalDistane <= 25) {
-  //       } else if (totalDistane <= 30) {
-  //       } else if (totalDistane <= 35) {
-  //       } else {
-  //       }
-  //     } else if (
-  //       pickupLocation.city == Cities[2] &&
-  //       dropLocation.city == Cities[3]
-  //     ) {
-  //     } else if (pickupLocation.city == Cities[3]) {
-  //       if (dropLocation.city == Cities[2]) {
-  //       } else if (dropLocation.city == Cities[1]) {
-  //       } else {
-  //       }
-  //     } else if (pickupLocation.city == Cities[4]) {
-  //     } else if (pickupLocation.city == Cities[5]) {
-  //     } else {
-  //     }
-  //   }
-  // };
-
-
+  // Typing animation states
   const [text, setText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [loopNum, setLoopNum] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(150);
   const [selectedOption, setSelectedOption] = useState<OptionType>("Local");
-  const [headerMounted, setHeaderMounted] = useState(false);
-  const [textVisible, setTextVisible] = useState(false);
 
   const phrases: string[] = [
     "Trusted Taxi Solution in Gujarat",
@@ -112,38 +55,29 @@ const MainPage = () => {
     "Taxi service in Ahmedabad airport",
   ];
 
-  useEffect(() => {
-    setHeaderMounted(true);
-    const timer = setTimeout(() => setTextVisible(true), 300);
-    return () => clearTimeout(timer);
-  }, []);
+  // Handle redirection
+  const handleSearchCab = () => {
+    if (!isFormValid) return;
 
-  // Load Google Maps API
-  useEffect(() => {
-    const loadGoogleMaps = () => {
-      if (window.google?.maps) {
-        setIsMapLoaded(true);
-        return;
-      }
+    const route = `/Cabs/${selectedOption}`;
 
-      // Check if script is already added
-      if (
-        !document.querySelector(
-          'script[src*="maps.googleapis.com/maps/api/js"]'
-        )
-      ) {
-        const script = document.createElement("script");
-        script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBv0kNWVgU4H3dHz67CuQppiMS5-opfVWI&libraries=places`;
-        script.async = true;
-        script.defer = true;
-        script.onload = () => setIsMapLoaded(true);
-        document.head.appendChild(script);
-      }
+    // Store complete trip data in localStorage
+    const tripData = {
+      pickupLocation,
+      dropLocation,
+      selectedOption,
+      formData: JSON.parse(localStorage.getItem("tripFormData") || "{}")
     };
 
-    loadGoogleMaps();
-  }, []);
+    localStorage.setItem("currentTripData", JSON.stringify(tripData));
 
+    // Redirect after animation
+    setTimeout(() => {
+      router.push(route);
+    }, 500);
+  };
+
+  // Typing effect
   useEffect(() => {
     const handleType = () => {
       const current = phrases[loopNum % phrases.length];
@@ -167,169 +101,137 @@ const MainPage = () => {
     return () => clearTimeout(timer);
   }, [text, isDeleting, loopNum, phrases, typingSpeed]);
 
+  // Load Google Maps API
+  useEffect(() => {
+    const loadGoogleMaps = () => {
+      if (window.google?.maps) {
+        setIsMapLoaded(true);
+        return;
+      }
+
+      if (!document.querySelector('script[src*="maps.googleapis.com/maps/api/js"]')) {
+        const script = document.createElement("script");
+        script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBv0kNWVgU4H3dHz67CuQppiMS5-opfVWI&libraries=places`;
+        script.async = true;
+        script.defer = true;
+        script.onload = () => setIsMapLoaded(true);
+        document.head.appendChild(script);
+      }
+    };
+
+    loadGoogleMaps();
+  }, []);
+
   return (
     <AnimatePresence>
-      {isVisible && (
-        <motion.div
-          initial={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.5 }}
-          className="relative w-full text-left space-y-4 md:space-y-6 min-w-[320px] p-4 md:p-6 pt-20 sm:pt-24"
-        >
-          <h1
-            className={`text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 
-              bg-clip-text text-transparent transition-all duration-500 ${
-                headerMounted
-                  ? "opacity-100 translate-x-0"
-                  : "opacity-0 -translate-x-12"
-              }`}
-          >
-            Asht Cab
-          </h1>
+      <motion.div
+        initial={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.5 }}
+        className="relative w-full text-left space-y-4 md:space-y-6 min-w-[320px] p-4 md:p-6 pt-20 sm:pt-24"
+      >
+        {/* Header Section */}
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          Asht Cab
+        </h1>
 
-          <div
-            className={`text-lg font-mono text-gray-600 font-semibold transition-opacity duration-500  ${
-              textVisible ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            {text}
-            <span className="ml-1 animate-blink">|</span>
+        <div className="text-lg font-mono text-gray-600 font-semibold">
+          {text}
+          <span className="ml-1 animate-blink">|</span>
+        </div>
+
+        {/* Main Content */}
+        <div className="space-y-6 mt-20">
+          {/* Service Selection Buttons */}
+          <div className="flex gap-4">
+            {[
+              { name: "Local", icon: <FaTaxi size={24} /> },
+              { name: "Rental", icon: <FaCarSide size={24} /> },
+              { name: "Outstation", icon: <FaMapMarkedAlt size={24} /> },
+            ].map((option) => (
+              <div key={option.name} className="relative group">
+                {selectedOption === option.name && (
+                  <motion.div
+                    initial={{ y: -10, opacity: 0 }}
+                    animate={{ y: -25, opacity: 1 }}
+                    className="absolute left-1/2 -translate-x-1/2 -top-6 text-blue-600 font-semibold"
+                  >
+                    {option.name}
+                    <motion.div
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      className="h-1 bg-blue-600 mt-1 rounded-full"
+                    />
+                  </motion.div>
+                )}
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.4 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setSelectedOption(option.name as OptionType)}
+                  className={`w-16 h-16 flex items-center justify-center rounded-full border-2 
+                    ${
+                      selectedOption === option.name
+                        ? "bg-blue-600 text-white border-blue-600 shadow-lg"
+                        : "border-gray-300 text-gray-700 hover:bg-gray-50"
+                    }`}
+                >
+                  {option.icon}
+                </motion.button>
+              </div>
+            ))}
           </div>
 
-          <div className="space-y-6 mt-20">
-            <div className="flex gap-4">
-              {[
-                { name: "Local", icon: <FaTaxi size={24} /> },
-                { name: "Rental", icon: <FaCarSide size={24} /> },
-                { name: "Outstation", icon: <FaMapMarkedAlt size={24} /> },
-              ].map((option, index) => (
-                <div key={option.name} className="relative group">
-                  {/* Selected Option Label */}
-                  {selectedOption === option.name && (
-                    <motion.div
-                      initial={{ y: -10, opacity: 0 }}
-                      animate={{ y: -25, opacity: 1 }}
-                      transition={{ type: "spring", stiffness: 200 }}
-                      className="absolute left-1/2 -translate-x-1/2 -top-6 text-blue-600 font-semibold whitespace-nowrap"
-                    >
-                      {option.name}
-                      <motion.div
-                        initial={{ scaleX: 0 }}
-                        animate={{ scaleX: 1 }}
-                        className="h-1 bg-blue-600 mt-1 rounded-full"
-                        transition={{ duration: 0.3 }}
-                      />
-                    </motion.div>
-                  )}
+          {/* Search Cab Button */}
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            whileHover={{ scale: isFormValid ? 1.05 : 1 }}
+            whileTap={{ scale: isFormValid ? 0.95 : 1 }}
+            onClick={handleSearchCab}
+            disabled={!isFormValid}
+            className={`w-full md:w-auto px-6 py-3 rounded-lg flex items-center justify-center space-x-2 shadow-lg transition-all ${
+              isFormValid
+                ? "bg-blue-600 text-white hover:bg-blue-700"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
+          >
+            <FaSearch size={18} />
+            <span>Search Cab</span>
+          </motion.button>
 
-                  {/* Hover Tooltip */}
-                  {selectedOption !== option.name && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="absolute left-1/2 -translate-x-1/2 -top-8 
-            bg-gray-800 text-white text-xs px-2 py-1 rounded-md
-            before:content-[''] before:absolute before:top-full before:left-1/2
-            before:-translate-x-1/2 before:border-4 before:border-transparent
-            before:border-t-gray-800"
-                      style={{
-                        transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-                        pointerEvents: "none",
-                      }}
-                    >
-                      {option.name}
-                    </motion.div>
-                  )}
-
-                  {/* Button */}
-                  <motion.button
-                    initial={{ opacity: 0, scale: 0.4 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    transition={{
-                      delay: index * 0.1,
-                      duration: 0.5,
-                      type: "spring",
-                    }}
-                    onClick={() =>
-                      setSelectedOption(
-                        option.name as "Local" | "Rental" | "Outstation"
-                      )
-                    }
-                    className={`
-          w-16 h-16 flex items-center justify-center rounded-full border-2 
-          transition-all duration-300 shadow-md relative
-          ${
-            selectedOption === option.name
-              ? "bg-blue-600 text-white border-blue-600 shadow-lg"
-              : "border-gray-300 text-gray-700 hover:bg-gray-50"
-          }
-        `}
-                  >
-                    {option.icon}
-                  </motion.button>
-                </div>
-              ))}
-            </div>
-
-            <motion.button
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-              onClick={() => {
-                console.log(pickupLocation);
-                console.log(dropLocation);
-                setIsRedirecting(true);
-                router.push(`/Cabs?type=${selectedOption.toLowerCase()}`);
-              }}
-              className="w-full md:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg flex items-center justify-center space-x-2 shadow-lg hover:bg-blue-700 transition-all"
-            >
-              <FaSearch size={18} />
-              <span>Search Cab</span>
-            </motion.button>
-
-            <div className="relative min-h-[160px] md:w-4/5">
-              {isMapLoaded ? (
-                <ServiceForms
+          {/* Service Forms */}
+          <div className="relative min-h-[160px] md:w-4/5">
+            {isMapLoaded ? (
+              <ServiceForms
                 key={selectedOption}
                 serviceType={selectedOption}
                 pickupAddress={pickupLocation.address}
                 dropAddress={dropLocation.address}
-                onPickupChange={(newLocation) => setPickupLocation({
-                  address: newLocation.address,
-                  city: newLocation.city,
-                  lat: newLocation.lat,
-                  lng: newLocation.lng
-                })}
-                onDropChange={(newLocation) => setDropLocation({
-                  address: newLocation.address,
-                  city: newLocation.city,
-                  lat: newLocation.lat,
-                  lng: newLocation.lng
-                })}
+                onPickupChange={(newLocation) => setPickupLocation(newLocation)}
+                onDropChange={(newLocation) => setDropLocation(newLocation)}
+                onFormValidityChange={setIsFormValid}
               />
-              ) : (
-                <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                  Loading address services...
-                </div>
-              )}
-            </div>
-
-            <div className="md:w-1/2 md:absolute md:right-0 md:bottom-10 md:h-auto flex justify-center border-none">
-              {isMapLoaded ? (
-                <Maps />
-              ) : (
-                <div className="w-full h-96 bg-gray-100 flex items-center justify-center">
-                  Loading map...
-                </div>
-              )}
-            </div>
+            ) : (
+              <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                Loading address services...
+              </div>
+            )}
           </div>
-        </motion.div>
-      )}
+
+          {/* Map Section */}
+          <div className="md:w-1/2 md:absolute md:right-0 md:bottom-10 md:h-auto flex justify-center border-none">
+            {isMapLoaded ? (
+              <Maps />
+            ) : (
+              <div className="w-full h-96 bg-gray-100 flex items-center justify-center">
+                Loading map...
+              </div>
+            )}
+          </div>
+        </div>
+      </motion.div>
     </AnimatePresence>
   );
 };

@@ -1,18 +1,16 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FaMapMarkerAlt,
   FaCalendar,
   FaClock,
-  FaArrowRight,
-  FaSyncAlt,
-  FaTrash,
   FaPlusCircle,
   FaUsers,
   FaSuitcase,
   FaUserPlus,
   FaWeightHanging,
+  FaTrash,
 } from "react-icons/fa";
 import AutocompleteInput from "./AutoComplete";
 
@@ -30,8 +28,19 @@ interface ServiceFormsProps {
   dropAddress: string;
   onPickupChange: (location: LocationData) => void;
   onDropChange: (location: LocationData) => void;
+  onFormValidityChange: (isValid: boolean) => void;
 }
 
+interface FormData {
+  date: string;
+  time: string;
+  members: number;
+  luggage: number;
+  tripType?: "One Way" | "Round Trip";
+  intermediateCities?: string[];
+}
+
+type FormDataValue = string | number | string[] | "One Way" | "Round Trip";
 
 const ServiceForms: React.FC<ServiceFormsProps> = ({
   serviceType,
@@ -39,7 +48,76 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
   dropAddress,
   onPickupChange,
   onDropChange,
+  onFormValidityChange,
 }) => {
+  // Form state
+  const [formData, setFormData] = useState<FormData>({
+    date: "",
+    time: "",
+    members: 1,
+    luggage: 0,
+    tripType: "One Way",
+    intermediateCities: [],
+  });
+
+  // Trip type state for Outstation
+  const [tripType, setTripType] = useState<"One Way" | "Round Trip">("One Way");
+  const [intermediateCities, setIntermediateCities] = useState<string[]>([]);
+
+  // Check form validity whenever form data changes
+  useEffect(() => {
+    const isFormValid = () => {
+      const baseValidation = 
+        formData.date !== "" &&
+        formData.time !== "" &&
+        formData.members > 0 &&
+        formData.luggage >= 0 &&
+        pickupAddress !== "" &&
+        dropAddress !== "";
+
+      if (serviceType === "Outstation") {
+        return baseValidation && tripType === "One Way" || tripType === "Round Trip";
+      }
+
+      return baseValidation;
+    };
+
+    onFormValidityChange(isFormValid());
+  }, [formData, pickupAddress, dropAddress, tripType, serviceType, onFormValidityChange]);
+
+  // Save form data to localStorage when values change
+  const handleFormChange = (field: keyof FormData, value: FormDataValue) => {
+    const newFormData = { ...formData, [field]: value };
+    setFormData(newFormData);
+    
+    // Save all form data including locations to localStorage
+    const completeFormData = {
+      ...newFormData,
+      serviceType,
+      tripType,
+      intermediateCities,
+      pickupAddress,
+      dropAddress
+    };
+    
+    localStorage.setItem("tripFormData", JSON.stringify(completeFormData));
+  };
+
+  // Load form data from localStorage on component mount
+  useEffect(() => {
+    const savedData = localStorage.getItem("tripFormData");
+    if (savedData) {
+      const parsedData = JSON.parse(savedData);
+      setFormData(parsedData);
+      if (parsedData.tripType) {
+        setTripType(parsedData.tripType);
+      }
+      if (parsedData.intermediateCities) {
+        setIntermediateCities(parsedData.intermediateCities);
+      }
+    }
+  }, []);
+
   const inputCommonClass =
     "w-full pl-12 pr-10 py-3 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white shadow-sm";
   const iconCommonClass =
@@ -51,18 +129,23 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
     visible: { opacity: 1, y: 0 },
   };
 
-  // Outstation state
-  const [tripType, setTripType] = useState<"One Way" | "Round Trip">("One Way");
-  const [intermediateCities, setIntermediateCities] = useState<string[]>([]);
+  const handleAddCity = () => {
+    const newCities = [...intermediateCities, ""];
+    setIntermediateCities(newCities);
+    handleFormChange("intermediateCities", newCities);
+  };
 
-  const handleAddCity = () =>
-    setIntermediateCities([...intermediateCities, ""]);
-  const handleRemoveCity = (index: number) =>
-    setIntermediateCities(intermediateCities.filter((_, i) => i !== index));
+  const handleRemoveCity = (index: number) => {
+    const newCities = intermediateCities.filter((_, i) => i !== index);
+    setIntermediateCities(newCities);
+    handleFormChange("intermediateCities", newCities);
+  };
+
   const handleUpdateCity = (index: number, value: string) => {
     const newCities = [...intermediateCities];
     newCities[index] = value;
     setIntermediateCities(newCities);
+    handleFormChange("intermediateCities", newCities);
   };
 
   const renderForm = () => {
@@ -79,9 +162,7 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
               <FaMapMarkerAlt className={iconCommonClass} />
               <AutocompleteInput
                 label="Pickup Location"
-                
                 value={pickupAddress}
-                
                 onChange={onPickupChange}
               />
             </motion.div>
@@ -90,9 +171,7 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
               <FaMapMarkerAlt className={iconCommonClass} />
               <AutocompleteInput
                 label="Drop Location"
-                
                 value={dropAddress}
-                
                 onChange={onDropChange}
               />
             </motion.div>
@@ -103,11 +182,21 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
             >
               <div className="relative">
                 <FaCalendar className={iconCommonClass} />
-                <input type="date" className={inputCommonClass} />
+                <input 
+                  type="date" 
+                  className={inputCommonClass}
+                  value={formData.date}
+                  onChange={(e) => handleFormChange("date", e.target.value)}
+                />
               </div>
               <div className="relative">
                 <FaClock className={iconCommonClass} />
-                <input type="time" className={inputCommonClass} />
+                <input 
+                  type="time" 
+                  className={inputCommonClass}
+                  value={formData.time}
+                  onChange={(e) => handleFormChange("time", e.target.value)}
+                />
               </div>
             </motion.div>
 
@@ -131,6 +220,8 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
                   className={inputCommonClass}
                   min="1"
                   max="10"
+                  value={formData.members}
+                  onChange={(e) => handleFormChange("members", parseInt(e.target.value))}
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                   <FaUserPlus />
@@ -150,6 +241,8 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
                   className={inputCommonClass}
                   min="0"
                   step="1"
+                  value={formData.luggage}
+                  onChange={(e) => handleFormChange("luggage", parseInt(e.target.value))}
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                   <FaWeightHanging />
@@ -171,9 +264,7 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
               <FaMapMarkerAlt className={iconCommonClass} />
               <AutocompleteInput
                 label="Pickup Location"
-                
                 value={pickupAddress}
-                
                 onChange={onPickupChange}
               />
             </motion.div>
@@ -184,13 +275,24 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
             >
               <div className="relative">
                 <FaCalendar className={iconCommonClass} />
-                <input type="date" className={inputCommonClass} />
+                <input 
+                  type="date" 
+                  className={inputCommonClass}
+                  value={formData.date}
+                  onChange={(e) => handleFormChange("date", e.target.value)}
+                />
               </div>
               <div className="relative">
                 <FaClock className={iconCommonClass} />
-                <input type="time" className={inputCommonClass} />
+                <input 
+                  type="time" 
+                  className={inputCommonClass}
+                  value={formData.time}
+                  onChange={(e) => handleFormChange("time", e.target.value)}
+                />
               </div>
             </motion.div>
+
             <motion.div
               variants={formVariants}
               className="grid grid-cols-2 gap-4"
@@ -211,6 +313,8 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
                   className={inputCommonClass}
                   min="1"
                   max="10"
+                  value={formData.members}
+                  onChange={(e) => handleFormChange("members", parseInt(e.target.value))}
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                   <FaUserPlus />
@@ -230,6 +334,8 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
                   className={inputCommonClass}
                   min="0"
                   step="1"
+                  value={formData.luggage}
+                  onChange={(e) => handleFormChange("luggage", parseInt(e.target.value))}
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                   <FaWeightHanging />
@@ -248,73 +354,74 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
             transition={{ staggerChildren: 0.1 }}
           >
             {/* Trip Type Selector */}
-            <motion.div
-              variants={formVariants}
-              className="flex gap-4 justify-center mb-8"
-            >
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setTripType("One Way")}
-                className={`flex items-center gap-2 px-6 py-2 rounded-full border-2 transition-all ${
+            <motion.div variants={formVariants} className="flex gap-4">
+              <button
+                className={`flex-1 py-2 px-4 rounded-lg ${
                   tripType === "One Way"
-                    ? "bg-blue-600 text-white border-blue-600 shadow-lg"
-                    : "border-gray-300 text-gray-700 hover:bg-gray-50"
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-100 text-gray-600"
                 }`}
+                onClick={() => {
+                  setTripType("One Way");
+                  handleFormChange("tripType", "One Way");
+                }}
               >
-                <FaArrowRight className="text-lg" />
                 One Way
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setTripType("Round Trip")}
-                className={`flex items-center gap-2 px-6 py-2 rounded-full border-2 transition-all ${
+              </button>
+              <button
+                className={`flex-1 py-2 px-4 rounded-lg ${
                   tripType === "Round Trip"
-                    ? "bg-blue-600 text-white border-blue-600 shadow-lg"
-                    : "border-gray-300 text-gray-700 hover:bg-gray-50"
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-100 text-gray-600"
                 }`}
+                onClick={() => {
+                  setTripType("Round Trip");
+                  handleFormChange("tripType", "Round Trip");
+                }}
               >
-                <FaSyncAlt className="text-lg" />
                 Round Trip
-              </motion.button>
+              </button>
             </motion.div>
 
-            {/* From & To City */}
-            <div className="space-y-6">
-              <motion.div variants={formVariants} className={rowCommonClass}>
-                <FaMapMarkerAlt className={iconCommonClass} />
-                <AutocompleteInput
-                  label="Pickup Location"
-                  
-                  value={pickupAddress}
-                  
-                  onChange={onPickupChange}
-                />
-              </motion.div>
+            <motion.div variants={formVariants} className={rowCommonClass}>
+              <FaMapMarkerAlt className={iconCommonClass} />
+              <AutocompleteInput
+                label="Pickup Location"
+                value={pickupAddress}
+                onChange={onPickupChange}
+              />
+            </motion.div>
 
-              <motion.div variants={formVariants} className={rowCommonClass}>
-                <FaMapMarkerAlt className={iconCommonClass} />
-                <AutocompleteInput
-                  label="Drop Location"
-                  value={dropAddress}
-                  onChange={onDropChange}
-                />
-              </motion.div>
-            </div>
+            <motion.div variants={formVariants} className={rowCommonClass}>
+              <FaMapMarkerAlt className={iconCommonClass} />
+              <AutocompleteInput
+                label="Drop Location"
+                value={dropAddress}
+                onChange={onDropChange}
+              />
+            </motion.div>
 
-            {/* Date & Time Section */}
             <motion.div
               variants={formVariants}
-              className="grid grid-cols-2 gap-4"
+              className="grid grid-cols-2 gap-3 h-[58px]"
             >
-              <div className={rowCommonClass}>
+              <div className="relative">
                 <FaCalendar className={iconCommonClass} />
-                <input type="date" className={inputCommonClass} />
+                <input 
+                  type="date" 
+                  className={inputCommonClass}
+                  value={formData.date}
+                  onChange={(e) => handleFormChange("date", e.target.value)}
+                />
               </div>
-              <div className={rowCommonClass}>
+              <div className="relative">
                 <FaClock className={iconCommonClass} />
-                <input type="time" className={inputCommonClass} />
+                <input 
+                  type="time" 
+                  className={inputCommonClass}
+                  value={formData.time}
+                  onChange={(e) => handleFormChange("time", e.target.value)}
+                />
               </div>
             </motion.div>
 
@@ -338,6 +445,8 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
                   className={inputCommonClass}
                   min="1"
                   max="10"
+                  value={formData.members}
+                  onChange={(e) => handleFormChange("members", parseInt(e.target.value))}
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                   <FaUserPlus />
@@ -357,6 +466,8 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
                   className={inputCommonClass}
                   min="0"
                   step="1"
+                  value={formData.luggage}
+                  onChange={(e) => handleFormChange("luggage", parseInt(e.target.value))}
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                   <FaWeightHanging />
@@ -364,67 +475,42 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
               </motion.div>
             </motion.div>
 
-            {/* Intermediate Cities Section */}
-            {tripType === "Round Trip" && (
-              <motion.div
-                variants={formVariants}
-                className="space-y-4 mt-4 bg-blue-50 p-4 rounded-xl"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-blue-800">
-                    Intermediate Cities
-                  </h3>
-                  <span className="text-sm text-blue-600">
-                    {intermediateCities.length} added
-                  </span>
-                </div>
-
-                <AnimatePresence>
-                  {intermediateCities.map((city, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                      transition={{ duration: 0.2 }}
-                      className="relative group"
-                    >
-                      <div className={rowCommonClass}>
-                        <FaMapMarkerAlt className={iconCommonClass} />
-                        <input
-                          value={city}
-                          onChange={(e) =>
-                            handleUpdateCity(index, e.target.value)
-                          }
-                          placeholder={`Stop ${index + 1}`}
-                          className={inputCommonClass}
-                        />
-                        <button
-                          onClick={() => handleRemoveCity(index)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2
-                            text-red-500 hover:text-red-700 transition-colors
-                            p-2 rounded-full hover:bg-red-50"
-                        >
-                          <FaTrash className="text-lg" />
-                        </button>
-                      </div>
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-
-                <motion.button
-                  onClick={handleAddCity}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full py-3 bg-white border-2 border-dashed border-blue-200
-                    rounded-lg text-blue-600 hover:text-blue-700 font-medium
-                    flex items-center justify-center gap-2 transition-all"
+            {/* Intermediate Cities */}
+            <AnimatePresence>
+              {intermediateCities.map((city, index) => (
+                <motion.div
+                  key={index}
+                  variants={formVariants}
+                  className="relative"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
                 >
-                  <FaPlusCircle className="text-lg" />
-                  Add Stop
-                </motion.button>
-              </motion.div>
-            )}
+                  <FaMapMarkerAlt className={iconCommonClass} />
+                  <input
+                    type="text"
+                    placeholder={`Intermediate City ${index + 1}`}
+                    className={inputCommonClass}
+                    value={city}
+                    onChange={(e) => handleUpdateCity(index, e.target.value)}
+                  />
+                  <button
+                    onClick={() => handleRemoveCity(index)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-red-500 hover:text-red-600"
+                  >
+                    <FaTrash />
+                  </button>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+
+            <motion.button
+              variants={formVariants}
+              className="flex items-center gap-2 text-blue-600 hover:text-blue-700"
+              onClick={handleAddCity}
+            >
+              <FaPlusCircle /> Add Intermediate City
+            </motion.button>
           </motion.div>
         );
 
