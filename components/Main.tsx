@@ -273,26 +273,9 @@ const MainPage = () => {
               ))}
             </div>
 
-            <motion.button
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-              onClick={() => {
-                console.log(pickupLocation);
-                console.log(dropLocation);
-                setIsRedirecting(true);
-                router.push(`/Cabs?type=${selectedOption.toLowerCase()}`);
-              }}
-              className="w-full md:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg flex items-center justify-center space-x-2 shadow-lg hover:bg-blue-700 transition-all"
-            >
-              <FaSearch size={18} />
-              <span>Search Cab</span>
-            </motion.button>
+            
 
             <div className="relative min-h-[160px] md:w-4/5">
-              {isMapLoaded ? (
                 <ServiceForms
                 key={selectedOption}
                 serviceType={selectedOption}
@@ -311,13 +294,24 @@ const MainPage = () => {
                   lng: newLocation.lng
                 })}
               />
-              ) : (
-                <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                  Loading address services...
-                </div>
-              )}
             </div>
-
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ duration: 0.3 }}
+              onClick={() => {
+                console.log(pickupLocation);
+                console.log(dropLocation);
+                setIsRedirecting(true);
+                router.push(`/Cabs?type=${selectedOption.toLowerCase()}`);
+              }}
+              className="w-full md:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg flex items-center justify-center space-x-2 shadow-lg hover:bg-blue-700 transition-all"
+            >
+              <FaSearch size={18} />
+              <span>Search Cab</span>
+            </motion.button>
             <div className="md:w-1/2 md:absolute md:right-0 md:bottom-10 md:h-auto flex justify-center border-none">
               {isMapLoaded ? (
                 <Maps />

@@ -86,17 +86,6 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
               />
             </motion.div>
 
-            <motion.div variants={formVariants} className={rowCommonClass}>
-              <FaMapMarkerAlt className={iconCommonClass} />
-              <AutocompleteInput
-                label="Drop Location"
-                
-                value={dropAddress}
-                
-                onChange={onDropChange}
-              />
-            </motion.div>
-
             <motion.div
               variants={formVariants}
               className="grid grid-cols-2 gap-3 h-[58px]"
@@ -110,6 +99,19 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
                 <input type="time" className={inputCommonClass} />
               </div>
             </motion.div>
+
+            <motion.div variants={formVariants} className={rowCommonClass}>
+              <FaMapMarkerAlt className={iconCommonClass} />
+              <AutocompleteInput
+                label="Drop Location"
+                
+                value={dropAddress}
+                
+                onChange={onDropChange}
+              />
+            </motion.div>
+
+            
 
             <motion.div
               variants={formVariants}
@@ -293,17 +295,7 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
                 />
               </motion.div>
 
-              <motion.div variants={formVariants} className={rowCommonClass}>
-                <FaMapMarkerAlt className={iconCommonClass} />
-                <AutocompleteInput
-                  label="Drop Location"
-                  value={dropAddress}
-                  onChange={onDropChange}
-                />
-              </motion.div>
-            </div>
-
-            {/* Date & Time Section */}
+               {/* Date & Time Section */}
             <motion.div
               variants={formVariants}
               className="grid grid-cols-2 gap-4"
@@ -317,6 +309,31 @@ const ServiceForms: React.FC<ServiceFormsProps> = ({
                 <input type="time" className={inputCommonClass} />
               </div>
             </motion.div>
+
+              <motion.div variants={formVariants} className={rowCommonClass}>
+                <FaMapMarkerAlt className={iconCommonClass} />
+                <AutocompleteInput
+                  label="Drop Location"
+                  value={dropAddress}
+                  onChange={onDropChange}
+                />
+              </motion.div>
+            </div>
+
+            {/* Date & Time Section */}
+            {tripType === "Round Trip" && ( <motion.div
+              variants={formVariants}
+              className="grid grid-cols-2 gap-4"
+            >
+              <div className={rowCommonClass}>
+                <FaCalendar className={iconCommonClass} />
+                <input type="date" className={inputCommonClass} />
+              </div>
+              <div className={rowCommonClass}>
+                <FaClock className={iconCommonClass} />
+                <input type="time" className={inputCommonClass} />
+              </div>
+            </motion.div> )}
 
             <motion.div
               variants={formVariants}
