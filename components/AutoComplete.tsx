@@ -26,12 +26,28 @@ interface AddressComponent {
   long_name: string;
 }
 
-// Debounce function outside component
-function debounce<T extends (...args: any[]) => void>(func: T, delay: number) {
+interface GeometryLocation {
+  lat: number;
+  lng: number;
+}
+
+interface PlaceDetailsResult {
+  formatted_address: string;
+  address_components: AddressComponent[];
+  geometry: {
+    location: GeometryLocation;
+  };
+}
+
+// Strongly typed debounce function
+function debounce<F extends (query: string) => void>(
+  func: F,
+  delay: number
+): (this: ThisParameterType<F>, ...args: Parameters<F>) => void {
   let timeoutId: NodeJS.Timeout;
-  return (...args: Parameters<T>) => {
+  return function(this: ThisParameterType<F>, ...args: Parameters<F>) {
     clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => func(...args), delay);
+    timeoutId = setTimeout(() => func.apply(this, args), delay);
   };
 }
 
@@ -71,20 +87,16 @@ const AutocompleteInput = ({ label, value, onChange }: AutocompleteInputProps) =
     }
   }, []);
 
-  // Debounced fetch with proper dependencies
+  // Properly typed debounced fetch with dependencies
   const debouncedFetch = useCallback(
-    debounce((query: string) => fetchSuggestions(query), 300),
+    debounce((query: string) => {
+      fetchSuggestions(query);
+    }, 300),
     [fetchSuggestions]
   );
 
-  // Handle input change
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
-    debouncedFetch(e.target.value);
-  };
-
   // Handle suggestion selection
-  const handleSelectSuggestion = async (address: string) => {
+  const handleSelectSuggestion = useCallback(async (address: string) => {
     setInputValue(address);
     setSuggestions([]);
 
@@ -96,7 +108,7 @@ const AutocompleteInput = ({ label, value, onChange }: AutocompleteInputProps) =
         const detailsResponse = await fetch(
           `/api/place-details?place_id=${data.predictions[0].place_id}`
         );
-        const details = await detailsResponse.json();
+        const details: { result?: PlaceDetailsResult } = await detailsResponse.json();
         
         if (details.result) {
           const location: LocationType = {
@@ -112,16 +124,16 @@ const AutocompleteInput = ({ label, value, onChange }: AutocompleteInputProps) =
       console.error('Error fetching place details:', err);
       setError('Failed to get location details');
     }
-  };
+  }, [onChange]);
 
-  // Helper to extract city with proper typing
-  const getCity = (components: AddressComponent[]) => {
+  // Helper to extract city
+  const getCity = useCallback((components: AddressComponent[]) => {
     const cityComponent = components.find(c => 
       c.types.includes('locality') || 
       c.types.includes('administrative_area_level_2')
     );
     return cityComponent?.long_name || '';
-  };
+  }, []);
 
   return (
     <div className="relative mb-4">
@@ -129,16 +141,17 @@ const AutocompleteInput = ({ label, value, onChange }: AutocompleteInputProps) =
       <input
         type="text"
         value={inputValue}
-        onChange={handleInputChange}
+        onChange={(e) => {
+          setInputValue(e.target.value);
+          debouncedFetch(e.target.value);
+        }}
         className="w-full pl-12 pr-10 py-3 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white shadow-sm"
         placeholder={label}
       />
 
-      {/* Loading and error states */}
       {isLoading && <div className="mt-1 text-sm text-gray-500">Loading...</div>}
       {error && <div className="mt-1 text-sm text-red-500">{error}</div>}
 
-      {/* Suggestions list */}
       {suggestions.length > 0 && (
         <ul className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg">
           {suggestions.map((suggestion, index) => (
