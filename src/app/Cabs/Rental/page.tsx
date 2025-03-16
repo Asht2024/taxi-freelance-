@@ -71,8 +71,8 @@ const RentalPage = () => {
     router.push('/Cabs/Rental/Booking')
   };
   useEffect(() => {
-    const dataString: any = localStorage.getItem("currentTripData");
-    const data: any = JSON.parse(dataString);
+    const dataString = localStorage.getItem("currentTripData") || "";
+    const data = JSON.parse(dataString);
     const processedCars = cars.filter(car => 
       car.passenger >= data.formData?.members && 
       car.luggage >= data.formData?.luggage

@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import BookingModal from "../../../../components/BookingModal";
+
 import { useRouter } from "next/navigation";
 
 
@@ -29,49 +29,64 @@ const OutstationPage = () => {
        { model: "Toyota", image_url: "/inovacysta.png", car_name: "Innova Cysta", local_price_per_km: 150, local_min_price: 1800, rental_price: "4700 5500 17 260", outstation_per_km: 21, outstation_min: 4800, luggage: 7, passenger: 6, calculated_price: 0 },
      ]
      useEffect(() => {
-       const dataString:any = localStorage.getItem("currentTripData")
-       console.log("data is" + localStorage.getItem("currentTripData"))
-       const data = JSON.parse(dataString); // Parse it into a JavaScript object
-       const calculateAllowance = () => {
-        try {
-          const startDate = new Date(`${data.formData.date}T${data.formData.time}`);
-          const endDate = new Date(`${data.formData.dropdate}T${data.formData.droptime}`);
-          
-          const diffMs = endDate.getTime() - startDate.getTime();
-          const diffHours = Math.abs(diffMs / (1000 * 60 * 60));
-          
-          const days = Math.floor(diffHours / 24);
-          const nights = Math.ceil((diffHours % 24) / 12); // Assuming night is 12hrs
-          return (days * 300) + (nights * 250);
-        } catch (error) {
-          console.error("Error calculating allowance:", error);
-          return 0;
-        }
-      };
-       const totaldistance = calculateDistance(
-         data.pickupLocation.lat,
-         data.pickupLocation.lng,
-         data.dropLocation.lat,
-         data.dropLocation.lng
-       );
-       console.log("Total distance: " + totaldistance);
-      const processedCars = cars
-     .filter(car => 
-       car.passenger >= data.formData?.members && 
-       car.luggage >= data.formData?.luggage
-     )
-     .map(car => {
-          let calculatedprice = car.outstation_min + totaldistance*car.outstation_per_km;
-          const Allownce = calculateAllowance()
-          console.log("Allownce: " + Allownce)
-          car.calculated_price = calculatedprice + Allownce;
-       return {
-         ...car, 
-         calculated_price: calculatedprice + Allownce
-       };
-     });
-     setMyCars(processedCars);
-     }, []);
+      const dataString = localStorage.getItem("currentTripData");
+      console.log("data is", dataString);
+    
+      if (!dataString) return;
+    
+      try {
+        const data = JSON.parse(dataString);
+    
+        // Calculate total travel allowance
+        const calculateAllowance = () => {
+          try {
+            const startDate = new Date(`${data.formData.date}T${data.formData.time}`);
+            const endDate = new Date(`${data.formData.dropdate}T${data.formData.droptime}`);
+    
+            const diffMs = endDate.getTime() - startDate.getTime();
+            const diffHours = Math.abs(diffMs / (1000 * 60 * 60));
+    
+            const days = Math.floor(diffHours / 24);
+            const nights = Math.ceil((diffHours % 24) / 12); // Assuming 12 hours = 1 night
+            return (days * 300) + (nights * 250);
+          } catch (error) {
+            console.error("Error calculating allowance:", error);
+            return 0;
+          }
+        };
+    
+        // Calculate distance using provided coordinates
+        const totaldistance = calculateDistance(
+          data.pickupLocation.lat,
+          data.pickupLocation.lng,
+          data.dropLocation.lat,
+          data.dropLocation.lng
+        );
+    
+        console.log("Total distance:", totaldistance);
+    
+        // Filter and calculate pricing for cars
+        const processedCars = cars
+          .filter((car) =>
+            car.passenger >= data.formData?.members &&
+            car.luggage >= data.formData?.luggage
+          )
+          .map((car) => {
+            const calculatedPrice = car.outstation_min + totaldistance * car.outstation_per_km;
+            const allowance = calculateAllowance();
+            console.log("Allowance:", allowance);
+    
+            return {
+              ...car,
+              calculated_price: calculatedPrice + allowance,
+            };
+          });
+    
+        setMyCars(processedCars);
+      } catch (error) {
+        console.error("Error parsing data or processing cars:", error);
+      }
+    }, []);
      const handleonclick = (car: CarType) => {
        const route = '/Cabs/Outstation/Booking';
        localStorage.setItem("selectedcars", JSON.stringify(car));
