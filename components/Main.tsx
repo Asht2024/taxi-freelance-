@@ -134,6 +134,7 @@ const MainPage = () => {
     localStorage.removeItem("currentTripData");
     localStorage.removeItem("tripFormData");
     localStorage.removeItem("selectedcars");
+    localStorage.removeItem("selectedRentalPackage");
     loadGoogleMaps();
   }, []);
 

@@ -1,123 +1,87 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import BookingModal from "../../../../components/BookingModal";
 
-interface LocationType {
-  address: string;
-  city: string;
-  lat: number;
-  lng: number;
+interface CarType {
+  model: string;
+  image_url: string;
+  car_name: string;
+  rental_price: string;
+  luggage: number;
+  passenger: number;
 }
 
-interface RentalPackage {
-  duration: string;
+interface PackageType {
+  hours: number;
+  km: number;
   price: number;
-  extra: {
-    distance: string;
-    time: string;
-  };
+  extraKm: number;
+  extraTime: number;
 }
 
 const RentalPage = () => {
-  const [showBookingModal, setShowBookingModal] = useState(false);
-  const [selectedPackage, setSelectedPackage] = useState<RentalPackage | null>(null);
-  const [tripData, setTripData] = useState({
-    pickupLocation: null as LocationType | null,
-    dropLocation: null as LocationType | null,
-  });
+  const router = useRouter();
+  const [selectedCar, setSelectedCar] = useState<{id: number, packageIndex: number} | null>(null);
+  const [mycars, setMyCars] = useState<CarType[]>([]);
 
-  useEffect(() => {
-    // Get locations from session storage
-    const pickupLocation = sessionStorage.getItem("pickupLocation");
-    const dropLocation = sessionStorage.getItem("dropLocation");
-
-    if (pickupLocation && dropLocation) {
-      setTripData({
-        pickupLocation: JSON.parse(pickupLocation),
-        dropLocation: JSON.parse(dropLocation),
-      });
+  const parsePackages = (rentalString: string) => {
+    const numbers = rentalString.split(' ').map(Number);
+    const packages: PackageType[] = [];
+    
+    if(numbers.length === 4) {
+      packages.push(
+        { hours: 8, km: 80, price: numbers[0], extraKm: numbers[2], extraTime: numbers[3] },
+        { hours: 12, km: 120, price: numbers[1], extraKm: numbers[2], extraTime: numbers[3] }
+      );
+    } else if(numbers.length === 5) {
+      packages.push(
+        { hours: 6, km: 60, price: numbers[0], extraKm: numbers[3], extraTime: numbers[4] },
+        { hours: 8, km: 80, price: numbers[1], extraKm: numbers[3], extraTime: numbers[4] },
+        { hours: 12, km: 120, price: numbers[2], extraKm: numbers[3], extraTime: numbers[4] }
+      );
     }
-  }, []);
-
-  // Function to calculate distance between two points using Haversine formula
-  function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
-    const R = 6371; // Earth's radius in kilometers
-    const dLat = toRad(lat2 - lat1);
-    const dLon = toRad(lon2 - lon1);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
-  }
-
-  function toRad(degrees: number): number {
-    return degrees * (Math.PI / 180);
-  }
-
-  const rentalData = {
-    type: "Rental",
-    carType: "Sedan",
-    model: "Skoda Slavi",
-    capacity: { passengers: 4, luggage: 3 },
-    packages: [
-      {
-        duration: "6hr / 60km",
-        price: 1650,
-        extra: { 
-          distance: tripData.pickupLocation && tripData.dropLocation ? 
-            `${calculateDistance(
-              tripData.pickupLocation.lat,
-              tripData.pickupLocation.lng,
-              tripData.dropLocation.lat,
-              tripData.dropLocation.lng
-            ).toFixed(1)} km` : "Loading...",
-          time: "160min" 
-        },
-      },
-      {
-        duration: "12hr / 120km",
-        price: 2800,
-        extra: { 
-          distance: tripData.pickupLocation && tripData.dropLocation ? 
-            `${calculateDistance(
-              tripData.pickupLocation.lat,
-              tripData.pickupLocation.lng,
-              tripData.dropLocation.lat,
-              tripData.dropLocation.lng
-            ).toFixed(1)} km` : "Loading...",
-          time: "300min" 
-        },
-      },
-      {
-        duration: "24hr / 300km",
-        price: 4500,
-        extra: { 
-          distance: tripData.pickupLocation && tripData.dropLocation ? 
-            `${calculateDistance(
-              tripData.pickupLocation.lat,
-              tripData.pickupLocation.lng,
-              tripData.dropLocation.lat,
-              tripData.dropLocation.lng
-            ).toFixed(1)} km` : "Loading...",
-          time: "24 hours" 
-        },
-      },
-    ],
+    return packages;
   };
 
-  return (
-    <div className="min-h-screen p-8 sm:pt-20">
-      {showBookingModal && (
-        <BookingModal
-          packageDetails={selectedPackage}
-          onClose={() => setShowBookingModal(false)}
-        />
-      )}
+  const cars = [
+    { model: "Skoda Slavia", image_url: "/sedan.png", car_name: "Sedan", 
+      rental_price: "1650 1950 1800 11 160", luggage: 4, passenger: 3 },
+    { model: "Mahindra Scorpio", image_url: "/suv.png", car_name: "SUV", 
+      rental_price: "2450 2850 14 200", luggage: 6, passenger: 6 },
+    { model: "Toyota", image_url: "/inova.png", car_name: "Innova", 
+      rental_price: "3800 4500 17 260", luggage: 7, passenger: 6 },
+    { model: "Toyota", image_url: "/inovacysta.png", car_name: "Innova Cysta", 
+      rental_price: "4700 5500 17 260", luggage: 7, passenger: 6 },
+  ];
+  const handleBookPackage = (car: CarType, pkg: PackageType) => {
+    const bookingData = {
+      car: {
+        model: car.model,
+        image_url: car.image_url,
+        car_name: car.car_name,
+        luggage: car.luggage,
+        passenger: car.passenger
+      },
+      package: pkg
+    };
+    
+    localStorage.setItem("selectedRentalPackage", JSON.stringify(bookingData));
+    router.push('/Cabs/Rental/Booking')
+  };
+  useEffect(() => {
+    const dataString: any = localStorage.getItem("currentTripData");
+    const data: any = JSON.parse(dataString);
+    const processedCars = cars.filter(car => 
+      car.passenger >= data.formData?.members && 
+      car.luggage >= data.formData?.luggage
+    );
+    setMyCars(processedCars);
+  }, []);
 
+  return (
+    <div className="min-h-screen p-8 sm:pt-20 mt-14">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -126,38 +90,94 @@ const RentalPage = () => {
         <motion.h1
           initial={{ x: -50 }}
           animate={{ x: 0 }}
-          className="text-4xl font-bold text-blue-600 mb-6"
+          className="text-4xl font-bold text-blue-600 mb-6 text-center"
         >
-          Rental Cabs
+          Choose Your Rental Package
         </motion.h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {rentalData.packages.map((pkg, index) => (
-            <motion.div
-              key={index}
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow"
-            >
-              <div className="h-48 bg-gray-200 rounded-lg mb-4 animate-pulse" />
-              <h3 className="text-xl font-semibold mb-2">{pkg.duration}</h3>
-              <div className="space-y-2 mb-4">
-                <p className="text-gray-600">Price: ₹{pkg.price}</p>
-                <p className="text-gray-600">Extra: {pkg.extra.distance} per km</p>
-                <p className="text-gray-600">Extra Time: {pkg.extra.time} per hour</p>
-              </div>
-              <button
-                className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                onClick={() => {
-                  setSelectedPackage(pkg);
-                  setShowBookingModal(true);
-                }}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {mycars.map((car, carIndex) => {
+            const packages = parsePackages(car.rental_price);
+            
+            return (
+              <motion.div
+                key={carIndex}
+                initial={{ scale: 0.95 }}
+                animate={{ scale: 1 }}
+                whileHover={{ scale: 1.02 }}
+                className="bg-white rounded-2xl shadow-xl overflow-hidden"
               >
-                Book Now
-              </button>
-            </motion.div>
-          ))}
+                <div className="relative h-48 bg-blue-50">
+                  <img 
+                    src={car.image_url} 
+                    alt={car.car_name}
+                    className="w-full h-full object-contain p-4"
+                  />
+                </div>
+
+                <div className="p-6">
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h3 className="text-2xl font-bold text-gray-800">{car.car_name}</h3>
+                      <p className="text-gray-500 text-sm">{car.model}</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-md text-sm">
+                        {car.passenger} Seats
+                      </span>
+                      <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-md text-sm">
+                        {car.luggage} Luggage
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    {packages.map((pkg, pkgIndex) => (
+                      <motion.div
+                        key={pkgIndex}
+                        whileHover={{ scale: 1.02 }}
+                        className={`p-4 rounded-xl border-2 cursor-pointer transition-all
+                          ${selectedCar?.id === carIndex && selectedCar?.packageIndex === pkgIndex 
+                            ? 'border-blue-600 bg-blue-50' 
+                            : 'border-gray-200 hover:border-blue-400'}`}
+                        onClick={() => setSelectedCar({id: carIndex, packageIndex: pkgIndex})}
+                      >
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <h4 className="text-lg font-semibold text-gray-800">
+                              {pkg.hours} Hours / {pkg.km} KM
+                            </h4>
+                            <p className="text-sm text-gray-600">
+                              Extra: {pkg.extraKm}km and {pkg.extraTime}min
+                            </p>
+                          </div>
+                          <span className="text-2xl font-bold text-blue-600">
+                            ₹{pkg.price}
+                          </span>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  {selectedCar?.id === carIndex && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="mt-6"
+                    >
+                      <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl 
+                        font-semibold text-lg shadow-lg transform transition-all duration-300 
+                        hover:scale-[1.02]"
+                        onClick={() => handleBookPackage(car, packages[selectedCar.packageIndex])}
+                        >
+                        Book Package - ₹{packages[selectedCar.packageIndex].price}
+                      </button>
+                    </motion.div>
+                  )}
+                </div>
+              </motion.div>
+            )
+          })}
         </div>
       </motion.div>
     </div>

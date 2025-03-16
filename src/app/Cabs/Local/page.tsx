@@ -4,12 +4,6 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-interface LocationType {
-  address: string;
-  city: string;
-  lat: number;
-  lng: number;
-}
 
 interface CarType {
   model: string;
@@ -58,9 +52,8 @@ const LocalPage = () => {
     { model: "Toyota", image_url: "/inovacysta.png", car_name: "Innova Cysta", local_price_per_km: 150, local_min_price: 1800, rental_price: "4700 5500 17 260", outstation_per_km: 21, outstation_min: 4800, luggage: 7, passenger: 6, calculated_price: 0 },
   ]
   useEffect(() => {
-    const dataString = localStorage.getItem("currentTripData")
+    const dataString:any = localStorage.getItem("currentTripData")
     console.log("data is" + localStorage.getItem("currentTripData"))
-    //@ts-ignore
     const data = JSON.parse(dataString); // Parse it into a JavaScript object
     const totaldistance = calculateDistance(
       data.pickupLocation.lat,
