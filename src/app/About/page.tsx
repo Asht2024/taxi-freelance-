@@ -10,6 +10,7 @@ import {
   DevicePhoneMobileIcon,
   GlobeAltIcon
 } from '@heroicons/react/24/outline';
+import Footer from '../../../components/Footer';
 
 export default function About() {
   const services = [
@@ -169,16 +170,10 @@ export default function About() {
       </section>
 
       {/* Contact CTA */}
-      <section className="py-16 bg-blue-600 text-white text-center">
-        <div className="max-w-4xl mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-4">Contact Us Now!</h2>
-          <p className="mb-6">
-            Stop worrying and enjoy the most reliable and comfortable cab service with ASHT. We’re ready to turn your journey into a memorable adventure.
-          </p>
-          <button className="bg-white text-blue-600 px-6 py-3 rounded-full hover:bg-blue-100 transition-all">
-            Book Your Ride
-          </button>
-        </div>
+      
+
+      <section className=" text-white ">
+        <Footer/>
       </section>
     </div>
   );

@@ -9,8 +9,9 @@ import {
   UserIcon,
   MapPinIcon,
   ShieldCheckIcon,
-  DevicePhoneMobileIcon
+  
 } from '@heroicons/react/24/outline';
+import Footer from '../../../components/Footer';
 
 export default function Services() {
   const serviceCategories = [
@@ -272,22 +273,8 @@ export default function Services() {
       </section>
 
       {/* Final CTA */}
-      <section className="bg-blue-600 text-white py-16">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-6">Start Your Journey Today!</h2>
-          <p className="mb-8 text-blue-100">
-            Download our app for exclusive offers and instant bookings
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <button className="bg-white text-blue-600 px-8 py-3 rounded-full hover:bg-blue-50 flex items-center gap-2">
-              <DevicePhoneMobileIcon className="w-5 h-5" />
-              Get the App
-            </button>
-            <button className="border-2 border-white px-8 py-3 rounded-full hover:bg-white/10">
-              Contact Support
-            </button>
-          </div>
-        </div>
+      <section className=" text-white ">
+        <Footer/>
       </section>
     </div>
   );
