@@ -40,10 +40,10 @@ const ContactPage = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mt-8">
             Let s Create Something Amazing!
           </h1>
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-600 text-lg mt-3">
             Have a question or want to collaborate? Drop us a message!
           </p>
         </motion.div>
