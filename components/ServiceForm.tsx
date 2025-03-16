@@ -28,7 +28,6 @@ interface ServiceFormsProps {
   dropAddress: string;
   onPickupChange: (location: LocationData) => void;
   onDropChange: (location: LocationData) => void;
-  onFormValidityChange: (isValid: boolean) => void;
 }
 
 interface FormData {
@@ -48,7 +47,6 @@ const ServiceForms = ({
   dropAddress,
   onPickupChange,
   onDropChange,
-  onFormValidityChange,
 }: ServiceFormsProps): React.ReactElement => {
   // Form state
   const [formData, setFormData] = useState<FormData>({
@@ -65,25 +63,7 @@ const ServiceForms = ({
   const [intermediateCities, setIntermediateCities] = useState<string[]>([]);
 
   // Check form validity whenever form data changes
-  useEffect(() => {
-    const isFormValid = () => {
-      const baseValidation = 
-        formData.date !== "" &&
-        formData.time !== "" &&
-        formData.members > 0 &&
-        formData.luggage >= 0 &&
-        pickupAddress !== "" &&
-        dropAddress !== "";
 
-      if (serviceType === "Outstation") {
-        return baseValidation && tripType === "One Way" || tripType === "Round Trip";
-      }
-
-      return baseValidation;
-    };
-
-    onFormValidityChange(isFormValid());
-  }, [formData, pickupAddress, dropAddress, tripType, serviceType, onFormValidityChange]);
 
   // Save form data to localStorage when values change
   const handleFormChange = (field: keyof FormData, value: FormDataValue) => {
@@ -99,7 +79,6 @@ const ServiceForms = ({
       pickupAddress,
       dropAddress
     };
-    
     localStorage.setItem("tripFormData", JSON.stringify(completeFormData));
   };
 

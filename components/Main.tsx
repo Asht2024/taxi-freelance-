@@ -24,7 +24,6 @@ type OptionType = "Local" | "Rental" | "Outstation";
 const MainPage = () => {
   const router = useRouter();
   const [isMapLoaded, setIsMapLoaded] = useState(false);
-  const [isFormValid, setIsFormValid] = useState(false);
 
   // Location states
   const [pickupLocation, setPickupLocation] = useState<LocationType>({
@@ -55,29 +54,44 @@ const MainPage = () => {
     "Taxi service in Ahmedabad airport",
   ];
 
-  // Handle redirection
   const handleSearchCab = () => {
-    if (!isFormValid) return;
-
-    const route = `/Cabs/${selectedOption}`;
-
-    // Store complete trip data in localStorage
+    const data = JSON.parse(localStorage.getItem("tripFormData")||"{}");
     const tripData = {
       pickupLocation,
       dropLocation,
       selectedOption,
-      formData: JSON.parse(localStorage.getItem("tripFormData") || "{}")
+      formData: data
     };
 
     localStorage.setItem("currentTripData", JSON.stringify(tripData));
+    if(!pickupLocation.address || !data.date || !data.time || !data.luggage|| !data.members){
+      alert("Please enter all input!")
+      return;
+    }
+    const route = `/Cabs/${selectedOption}`;
+    if(selectedOption == "Local") {
+        if(!dropLocation.address){
+          alert("Please enter drop location!")
+          return;
+        } 
+    }
+    else if(selectedOption != "Rental"){
+      if(!dropLocation.address){
+        alert("Please enter drop location!")
+        return;
+      }
+      else if(data.serviceType != "Outstation"){
+         
+      }
+    }
+    
+    
 
-    // Redirect after animation
     setTimeout(() => {
-      router.push(route);
+     router.push(route); 
     }, 500);
   };
 
-  // Typing effect
   useEffect(() => {
     const handleType = () => {
       const current = phrases[loopNum % phrases.length];
@@ -99,9 +113,8 @@ const MainPage = () => {
 
     const timer = setTimeout(handleType, typingSpeed);
     return () => clearTimeout(timer);
-  }, [text, isDeleting, loopNum, phrases, typingSpeed]);
+  }, [text, isDeleting, loopNum, typingSpeed]);
 
-  // Load Google Maps API
   useEffect(() => {
     const loadGoogleMaps = () => {
       if (window.google?.maps) {
@@ -118,7 +131,9 @@ const MainPage = () => {
         document.head.appendChild(script);
       }
     };
-
+    localStorage.removeItem("currentTripData");
+    localStorage.removeItem("tripFormData");
+    localStorage.removeItem("selectedcars");
     loadGoogleMaps();
   }, []);
 
@@ -145,11 +160,12 @@ const MainPage = () => {
           {/* Service Selection Buttons */}
           <div className="flex gap-4">
             {[
-              { name: "Local", icon: <FaTaxi size={24} /> },
-              { name: "Rental", icon: <FaCarSide size={24} /> },
-              { name: "Outstation", icon: <FaMapMarkedAlt size={24} /> },
-            ].map((option) => (
+              { name: "Local" as OptionType, icon: <FaTaxi size={24} /> },
+              { name: "Rental" as OptionType, icon: <FaCarSide size={24} /> },
+              { name: "Outstation" as OptionType, icon: <FaMapMarkedAlt size={24} /> },
+            ].map((option, index) => (
               <div key={option.name} className="relative group">
+                {/* Active Option Indicator */}
                 {selectedOption === option.name && (
                   <motion.div
                     initial={{ y: -10, opacity: 0 }}
@@ -164,13 +180,40 @@ const MainPage = () => {
                     />
                   </motion.div>
                 )}
+
+                {/* Hover Tooltip */}
+                {selectedOption !== option.name && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="absolute left-1/2 -translate-x-1/2 -top-8 
+                      bg-gray-800 text-white text-xs px-2 py-1 rounded-md
+                      before:content-[''] before:absolute before:top-full before:left-1/2
+                      before:-translate-x-1/2 before:border-4 before:border-transparent
+                      before:border-t-gray-800"
+                    style={{
+                      transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+                      pointerEvents: "none",
+                    }}
+                  >
+                    {option.name}
+                  </motion.div>
+                )}
+
+                {/* Service Button */}
                 <motion.button
                   initial={{ opacity: 0, scale: 0.4 }}
                   animate={{ opacity: 1, scale: 1 }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => setSelectedOption(option.name as OptionType)}
+                  transition={{
+                    delay: index * 0.1,
+                    duration: 0.5,
+                    type: "spring",
+                  }}
+                  onClick={() => setSelectedOption(option.name)}
                   className={`w-16 h-16 flex items-center justify-center rounded-full border-2 
+                    transition-all duration-300 shadow-md relative
                     ${
                       selectedOption === option.name
                         ? "bg-blue-600 text-white border-blue-600 shadow-lg"
@@ -183,130 +226,28 @@ const MainPage = () => {
             ))}
           </div>
 
+          {/* Service Forms */}
+          <div className="relative min-h-[160px] md:w-4/5">
+            <ServiceForms
+              key={selectedOption}
+              serviceType={selectedOption}
+              pickupAddress={pickupLocation.address}
+              dropAddress={dropLocation.address}
+              onPickupChange={(newLocation) => setPickupLocation(newLocation)}
+              onDropChange={(newLocation) => setDropLocation(newLocation)}
+            />
+          </div>
+
           {/* Search Cab Button */}
           <motion.button
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            whileHover={{ scale: isFormValid ? 1.05 : 1 }}
-            whileTap={{ scale: isFormValid ? 0.95 : 1 }}
             onClick={handleSearchCab}
-            disabled={!isFormValid}
-            className={`w-full md:w-auto px-6 py-3 rounded-lg flex items-center justify-center space-x-2 shadow-lg transition-all ${
-              isFormValid
-                ? "bg-blue-600 text-white hover:bg-blue-700"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            }`}
+            className={`w-full md:w-auto px-6 py-3 rounded-lg flex items-center justify-center space-x-2 shadow-lg transition-all bg-blue-600 text-white hover:bg-blue-700`}
           >
             <FaSearch size={18} />
             <span>Search Cab</span>
           </motion.button>
-
-<<<<<<< HEAD
-          {/* Service Forms */}
-          <div className="relative min-h-[160px] md:w-4/5">
-            {isMapLoaded ? (
-              <ServiceForms
-=======
-                  {/* Hover Tooltip */}
-                  {selectedOption !== option.name && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="absolute left-1/2 -translate-x-1/2 -top-8 
-            bg-gray-800 text-white text-xs px-2 py-1 rounded-md
-            before:content-[''] before:absolute before:top-full before:left-1/2
-            before:-translate-x-1/2 before:border-4 before:border-transparent
-            before:border-t-gray-800"
-                      style={{
-                        transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-                        pointerEvents: "none",
-                      }}
-                    >
-                      {option.name}
-                    </motion.div>
-                  )}
-
-                  {/* Button */}
-                  <motion.button
-                    initial={{ opacity: 0, scale: 0.4 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    transition={{
-                      delay: index * 0.1,
-                      duration: 0.5,
-                      type: "spring",
-                    }}
-                    onClick={() =>
-                      setSelectedOption(
-                        option.name as "Local" | "Rental" | "Outstation"
-                      )
-                    }
-                    className={`
-          w-16 h-16 flex items-center justify-center rounded-full border-2 
-          transition-all duration-300 shadow-md relative
-          ${
-            selectedOption === option.name
-              ? "bg-blue-600 text-white border-blue-600 shadow-lg"
-              : "border-gray-300 text-gray-700 hover:bg-gray-50"
-          }
-        `}
-                  >
-                    {option.icon}
-                  </motion.button>
-                </div>
-              ))}
-            </div>
-
-            
-
-            <div className="relative min-h-[160px] md:w-4/5">
-                <ServiceForms
->>>>>>> a4379b5504ea08fa7a46d286579a7c6e403bb026
-                key={selectedOption}
-                serviceType={selectedOption}
-                pickupAddress={pickupLocation.address}
-                dropAddress={dropLocation.address}
-                onPickupChange={(newLocation) => setPickupLocation(newLocation)}
-                onDropChange={(newLocation) => setDropLocation(newLocation)}
-                onFormValidityChange={setIsFormValid}
-              />
-<<<<<<< HEAD
-            ) : (
-              <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                Loading address services...
-              </div>
-            )}
-=======
-            </div>
-            <motion.button
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-              onClick={() => {
-                console.log(pickupLocation);
-                console.log(dropLocation);
-                setIsRedirecting(true);
-                router.push(`/Cabs?type=${selectedOption.toLowerCase()}`);
-              }}
-              className="w-full md:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg flex items-center justify-center space-x-2 shadow-lg hover:bg-blue-700 transition-all"
-            >
-              <FaSearch size={18} />
-              <span>Search Cab</span>
-            </motion.button>
-            <div className="md:w-1/2 md:absolute md:right-0 md:bottom-10 md:h-auto flex justify-center border-none">
-              {isMapLoaded ? (
-                <Maps />
-              ) : (
-                <div className="w-full h-96 bg-gray-100 flex items-center justify-center">
-                  Loading map...
-                </div>
-              )}
-            </div>
->>>>>>> a4379b5504ea08fa7a46d286579a7c6e403bb026
-          </div>
 
           {/* Map Section */}
           <div className="md:w-1/2 md:absolute md:right-0 md:bottom-10 md:h-auto flex justify-center border-none">
