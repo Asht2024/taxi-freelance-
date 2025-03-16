@@ -33,9 +33,11 @@ interface ServiceFormsProps {
 interface FormData {
   date: string;
   time: string;
+  dropdate: string;
+  droptime: string;
   members: number;
   luggage: number;
-  tripType?: "One Way" | "Round Trip";
+  tripType: "One Way" | "Round Trip";
   intermediateCities?: string[];
 }
 
@@ -52,11 +54,15 @@ const ServiceForms = ({
   const [formData, setFormData] = useState<FormData>({
     date: "",
     time: "",
+    dropdate:"",
+    droptime:"",
     members: 1,
     luggage: 0,
-    tripType: "One Way",
+    tripType:"One Way",
     intermediateCities: [],
   });
+
+
 
   // Trip type state for Outstation
   const [tripType, setTripType] = useState<"One Way" | "Round Trip">("One Way");
@@ -64,12 +70,12 @@ const ServiceForms = ({
 
   // Check form validity whenever form data changes
 
-
+  
   // Save form data to localStorage when values change
   const handleFormChange = (field: keyof FormData, value: FormDataValue) => {
     const newFormData = { ...formData, [field]: value };
     setFormData(newFormData);
-    
+  
     // Save all form data including locations to localStorage
     const completeFormData = {
       ...newFormData,
@@ -81,9 +87,18 @@ const ServiceForms = ({
     };
     localStorage.setItem("tripFormData", JSON.stringify(completeFormData));
   };
+  const handleTripTypeChange = (newType: "One Way" | "Round Trip") => {
+    setTripType(newType);
+  };
+
+  useEffect(() => {
+    handleFormChange("tripType", tripType);
+  }, [tripType]);
 
   // Load form data from localStorage on component mount
   useEffect(() => {
+    setTripType("One Way");
+    handleFormChange("tripType", "One Way");
     const savedData = localStorage.getItem("tripFormData");
     if (savedData) {
       const parsedData = JSON.parse(savedData);
@@ -342,12 +357,9 @@ const ServiceForms = ({
                 className={`flex-1 py-2 px-4 rounded-lg ${
                   tripType === "One Way"
                     ? "bg-blue-600 text-white"
-                    : "bg-gray-100 text-gray-600"
+                    : "border-blue-600 border-2 text-blue-600"
                 }`}
-                onClick={() => {
-                  setTripType("One Way");
-                  handleFormChange("tripType", "One Way");
-                }}
+                onClick={() => handleTripTypeChange("One Way")}
               >
                 One Way
               </button>
@@ -355,12 +367,9 @@ const ServiceForms = ({
                 className={`flex-1 py-2 px-4 rounded-lg ${
                   tripType === "Round Trip"
                     ? "bg-blue-600 text-white"
-                    : "bg-gray-100 text-gray-600"
+                    : "border-blue-600 border-2 text-blue-600"
                 }`}
-                onClick={() => {
-                  setTripType("Round Trip");
-                  handleFormChange("tripType", "Round Trip");
-                }}
+                onClick={() => handleTripTypeChange("Round Trip")}
               >
                 Round Trip
               </button>
@@ -417,11 +426,11 @@ const ServiceForms = ({
               >
                 <div className={rowCommonClass}>
                   <FaCalendar className={iconCommonClass} />
-                  <input type="date" className={inputCommonClass} />
+                  <input type="date" value={formData.dropdate} className={inputCommonClass} onChange={(e) => handleFormChange("dropdate", e.target.value)} />
                 </div>
                 <div className={rowCommonClass}>
                   <FaClock className={iconCommonClass} />
-                  <input type="time" className={inputCommonClass} />
+                  <input type="time" value={formData.droptime} className={inputCommonClass} onChange={(e) => handleFormChange("droptime", e.target.value)} />
                 </div>
               </motion.div>
             )}
@@ -533,4 +542,4 @@ const ServiceForms = ({
   );
 };
 
-export default ServiceForms;
+export default ServiceForms; 

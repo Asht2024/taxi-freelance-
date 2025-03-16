@@ -149,7 +149,7 @@ export default function RentalBookingPage() {
                   onClick={() => router.push("/payment")}
                   className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-xl transition-all duration-300 font-semibold text-lg mt-6"
                 >
-                  Confirm & Pay ₹{(rentalPackage.price + rentalPackage.price*0.05).toFixed(2)}
+                  Confirm & Pay ₹{(rentalPackage.price + rentalPackage.price*0.05).toFixed(2)} (<span className="text-sm text-gray-600 mt-2">Inc. Tax 5%</span>)
                 </button>
               </motion.div>
             )}
@@ -184,7 +184,7 @@ export default function RentalBookingPage() {
               
               <div className="bg-blue-50 p-4 rounded-xl">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-lg font-semibold text-gray-900">Base Price (<span className="text-sm text-gray-600 mt-2">Inc. Taxes</span>)</span>
+                  <span className="text-lg font-semibold text-gray-900">Base Price (<span className="text-sm text-gray-600 mt-2">Inc. Tax 5%</span>)</span>
                   
                   <span className="text-2xl font-bold text-blue-600">
                     ₹{(rentalPackage.price + rentalPackage.price*0.05).toFixed(2)}

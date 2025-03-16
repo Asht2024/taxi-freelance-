@@ -32,14 +32,14 @@ const MainPage = () => {
     lat: 0,
     lng: 0,
   });
-
+  
   const [dropLocation, setDropLocation] = useState<LocationType>({
     address: "",
     city: "",
     lat: 0,
     lng: 0,
   });
-
+  
   // Typing animation states
   const [text, setText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
@@ -80,13 +80,13 @@ const MainPage = () => {
         alert("Please enter drop location!")
         return;
       }
-      else if(data.serviceType != "Outstation"){
-         
+      else if(data.tripType == "Outstation"){
+         if(!data.dropdate || !data.droptime){
+           alert("Please enter drop date OR time!")
+             return;
+         }
       }
     }
-    
-    
-
     setTimeout(() => {
      router.push(route); 
     }, 500);
