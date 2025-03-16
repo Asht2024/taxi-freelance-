@@ -518,7 +518,7 @@ const ServiceForms = ({
 
             <motion.button
               variants={formVariants}
-              className="flex items-center gap-2 text-blue-600 hover:text-blue-700"
+              className="flex items-center gap-2 text-white hover:text-blue-700"
               onClick={handleAddCity}
             >
               <FaPlusCircle /> Add Intermediate City
