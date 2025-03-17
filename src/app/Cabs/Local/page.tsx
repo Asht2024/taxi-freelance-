@@ -106,7 +106,7 @@ const LocalPage = () => {
     },
   ];
   useEffect(() => {
-    const dataString: any = localStorage.getItem("currentTripData");
+    const dataString = localStorage.getItem("currentTripData") || "";
     console.log("data is" + localStorage.getItem("currentTripData"));
     const data = JSON.parse(dataString); // Parse it into a JavaScript object
     const totaldistance = calculateDistance(

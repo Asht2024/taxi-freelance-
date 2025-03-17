@@ -47,7 +47,7 @@ const RentalPage = () => {
 
   const cars = [
     { model: "Skoda Slavia", image_url: "/sedan.png", car_name: "Sedan", 
-      rental_price: "1650 1950 1800 11 160", luggage: 4, passenger: 3 },
+      rental_price: "1650 1950 2850 11 160", luggage: 4, passenger: 3 },
     { model: "Mahindra Scorpio", image_url: "/suv.png", car_name: "SUV", 
       rental_price: "2450 2850 14 200", luggage: 6, passenger: 6 },
     { model: "Toyota", image_url: "/inova.png", car_name: "Innova", 
@@ -71,8 +71,8 @@ const RentalPage = () => {
     router.push('/Cabs/Rental/Booking')
   };
   useEffect(() => {
-    const dataString: any = localStorage.getItem("currentTripData");
-    const data: any = JSON.parse(dataString);
+    const dataString = localStorage.getItem("currentTripData") || "";
+    const data = JSON.parse(dataString);
     const processedCars = cars.filter(car => 
       car.passenger >= data.formData?.members && 
       car.luggage >= data.formData?.luggage
