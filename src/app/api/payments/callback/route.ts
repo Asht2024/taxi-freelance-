@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
-import CryptoJS from "crypto-js";
+import crypto from "crypto";
+import { Buffer } from "buffer";
+
+export const runtime = "nodejs"; // Ensure Node.js runtime
 
 export async function POST(req: Request) {
   try {
@@ -8,8 +11,12 @@ export async function POST(req: Request) {
     const xVerify = req.headers.get("X-VERIFY")!;
 
     // Verify checksum
-    const checksum = CryptoJS.SHA256(`${body.response}${salt}`).toString();
-    if (xVerify !== `${checksum}###${process.env.PHONEPE_KEY_INDEX}`) {
+    const checksum = crypto
+      .createHash("sha256")
+      .update(`${body.response}${salt}`)
+      .digest("hex");
+    const expectedVerify = `${checksum}###${process.env.PHONEPE_KEY_INDEX}`;
+    if (xVerify !== expectedVerify) {
       return NextResponse.json({ error: "Invalid checksum" }, { status: 400 });
     }
 
@@ -19,16 +26,12 @@ export async function POST(req: Request) {
     );
 
     // Handle payment status
-    if (decodedResponse.code === "PAYMENT_SUCCESS") {
-      // Save to database or update order status
-      return NextResponse.redirect(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/payment/success`
-      );
-    }
+    const redirectURL =
+      decodedResponse.code === "PAYMENT_SUCCESS"
+        ? `${process.env.NEXT_PUBLIC_BASE_URL}/payment/success`
+        : `${process.env.NEXT_PUBLIC_BASE_URL}/payment/failed`;
 
-    return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/payment/failed`
-    );
+    return NextResponse.redirect(redirectURL);
   } catch (error) {
     console.error("Callback Error:", error);
     return NextResponse.redirect(

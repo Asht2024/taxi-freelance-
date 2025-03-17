@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
-import CryptoJS from "crypto-js";
+import crypto from "crypto";
+import { Buffer } from "buffer";
+
+export const runtime = "nodejs"; // Ensure Node.js runtime
 
 export async function POST(req: Request) {
   try {
@@ -32,7 +35,10 @@ export async function POST(req: Request) {
     // Generate X-VERIFY header
     const salt = process.env.PHONEPE_SALT_KEY!;
     const stringToHash = base64Payload + "/pg/v1/pay" + salt;
-    const sha256Hash = CryptoJS.SHA256(stringToHash).toString();
+    const sha256Hash = crypto
+      .createHash("sha256")
+      .update(stringToHash)
+      .digest("hex");
     const xVerify = sha256Hash + "###" + process.env.PHONEPE_KEY_INDEX;
 
     // Send request to PhonePe API
