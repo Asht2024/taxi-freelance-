@@ -23,7 +23,7 @@ type OptionType = "Local" | "Rental" | "Outstation";
 
 const MainPage = () => {
   const router = useRouter();
-  const [isMapLoaded, setIsMapLoaded] = useState(false);
+
 
   // Location states
   const [pickupLocation, setPickupLocation] = useState<LocationType>({
@@ -115,28 +115,7 @@ const MainPage = () => {
     return () => clearTimeout(timer);
   }, [text, isDeleting, loopNum, typingSpeed]);
 
-  useEffect(() => {
-    const loadGoogleMaps = () => {
-      if (window.google?.maps) {
-        setIsMapLoaded(true);
-        return;
-      }
-
-      if (!document.querySelector('script[src*="maps.googleapis.com/maps/api/js"]')) {
-        const script = document.createElement("script");
-        script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBv0kNWVgU4H3dHz67CuQppiMS5-opfVWI&libraries=places`;
-        script.async = true;
-        script.defer = true;
-        script.onload = () => setIsMapLoaded(true);
-        document.head.appendChild(script);
-      }
-    };
-    localStorage.removeItem("currentTripData");
-    localStorage.removeItem("tripFormData");
-    localStorage.removeItem("selectedcars");
-    localStorage.removeItem("selectedRentalPackage");
-    loadGoogleMaps();
-  }, []);
+  
 
   return (
     <AnimatePresence>
@@ -252,15 +231,9 @@ const MainPage = () => {
           </motion.button>
 
           {/* Map Section */}
-          <div className="md:w-1/2 md:absolute md:right-0 md:bottom-10 md:h-auto flex justify-center border-none">
-            {isMapLoaded ? (
-              <Maps />
-            ) : (
-              <div className="w-full h-96 bg-gray-100 flex items-center justify-center">
-                Loading map...
-              </div>
-            )}
-          </div>
+          <div className="hidden md:flex md:w-1/2 md:absolute md:right-0 md:bottom-40 md:h-auto justify-center">
+  <Maps />
+</div>
         </div>
       </motion.div>
     </AnimatePresence>
