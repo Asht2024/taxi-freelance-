@@ -26,7 +26,7 @@ export const Navbar = ({
   return (
     <nav 
       className={cn(
-        "fixed top-0 w-full bg-white/80 dark:bg-black/80 backdrop-blur-sm z-50 border-b border-gray-200 dark:border-gray-800 transition-transform duration-500 ease-out",
+        "fixed top-0 w-full h-14 bg-white/80 dark:bg-black/80 backdrop-blur-sm z-50 border-b border-gray-200 dark:border-gray-800 transition-transform duration-500 ease-out",
         isMounted ? "translate-y-0" : "-translate-y-full",
         className
       )}
