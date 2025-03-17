@@ -516,13 +516,13 @@ const ServiceForms = ({
               </motion.div>
             </AnimatePresence>
 
-            <motion.button
+            { tripType !== "One Way" && (<motion.button
               variants={formVariants}
               className="flex items-center gap-2 text-white hover:text-blue-700"
               onClick={handleAddCity}
             >
               <FaPlusCircle /> Add Intermediate City
-            </motion.button>
+            </motion.button>)}
           </motion.div>
         );
 

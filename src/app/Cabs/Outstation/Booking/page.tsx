@@ -59,15 +59,17 @@ export default function OutstationBookingPage() {
     // Calculate driver allowance
     if (tripDataString) {
       const data = JSON.parse(tripDataString);
-      try {
-        const startDate = new Date(`${data.formData.date}T${data.formData.time}`);
-        const endDate = new Date(`${data.formData.dropdate}T${data.formData.droptime}`);
-        const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 12)); // 12hrs considered as night
-        setDriverAllowance((diffDays * 300) + (nights * 250));
-      } catch (error) {
-        console.error("Error calculating allowance:", error);
+      if(data.formData?.tripType == "Round Trip"){
+        try {
+          const startDate = new Date(`${data.formData.date}T${data.formData.time}`);
+          const endDate = new Date(`${data.formData.dropdate}T${data.formData.droptime}`);
+          const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 12)); // 12hrs considered as night
+          setDriverAllowance((diffDays * 300) + (nights * 250));
+        } catch (error) {
+          console.error("Error calculating allowance:", error);
+        }
       }
     }
   }, []);
@@ -211,19 +213,19 @@ export default function OutstationBookingPage() {
 
               <div className="bg-blue-50 p-4 rounded-xl space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-gray-700">Base Fare:</span>
-                  <span className="font-semibold">₹{carDetails.calculated_price.toFixed(2)}</span>
+                  <span className="text-gray-700">Base Fare:</span><span className="text-sm text-gray-600">(Inc. Tax 5%)</span>
+                  <span className="font-semibold">₹{(carDetails.calculated_price+carDetails.calculated_price*0.05).toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-700">Driver Allowance:</span>
-                  <span className="font-semibold">₹{driverAllowance.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between border-t pt-2">
+                {driverAllowance !=0 && <div className="flex justify-between">
+                  <span className="text-gray-700">Driver Allowance:</span><span className="text-sm text-gray-600">(Inc. Tax 5%)</span>
+                  <span className="font-semibold">₹{(driverAllowance+driverAllowance*0.05).toFixed(2)}</span>
+                </div>}
+                {driverAllowance !=0 && <div className="flex justify-between border-t pt-2">
                   <span className="text-lg font-bold text-blue-600">Total<span className="text-sm text-gray-600 mt-2">(Inc. Tax 5%)</span></span>
                   <span className="text-lg font-bold text-blue-600">
                     ₹{((carDetails.calculated_price + driverAllowance)+(carDetails.calculated_price + driverAllowance)*0.05).toFixed(2)}
                   </span>
-                </div>
+                </div>}
               </div>
             </div>
           </div>
