@@ -486,7 +486,7 @@ const ServiceForms = ({
             </motion.div>
 
             {/* Intermediate Cities */}
-            <AnimatePresence>
+           {tripType !== "One Way" && (<AnimatePresence>
               <motion.div className="space-y-4">
                 {intermediateCities.map((city, index) => (
                   <motion.div
@@ -514,9 +514,9 @@ const ServiceForms = ({
                   </motion.div>
                 ))}
               </motion.div>
-            </AnimatePresence>
+            </AnimatePresence>) }
 
-            { tripType !== "One Way" && (<motion.button
+            {tripType !== "One Way" && (<motion.button
               variants={formVariants}
               className="flex items-center gap-2 text-white hover:text-blue-700"
               onClick={handleAddCity}
