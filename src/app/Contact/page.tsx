@@ -148,8 +148,8 @@ const ContactPage = () => {
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold mb-2">Call Us</h3>
-                    <p className="text-gray-600">+91 98765 43210</p>
-                    <p className="text-gray-600">+91 12345 67890</p>
+                    <p className="text-gray-600">+919925566614</p>
+                    
                   </div>
                 </div>
               </div>
@@ -178,13 +178,13 @@ const ContactPage = () => {
                   <div>
                     <h3 className="text-xl font-semibold mb-2">Follow Us</h3>
                     <div className="flex space-x-4">
-                      <a href="#" className="text-blue-600 hover:text-blue-800">
-                        Twitter
+                      <a href="https://www.facebook.com/share/1AGEETjpmj/?mibextid=wwXIfr" className="text-blue-600 hover:text-blue-800">
+                        Facebook
                       </a>
-                      <a href="#" className="text-purple-600 hover:text-purple-800">
+                      <a href="https://www.instagram.com/ashtcab?igsh=MXdsbHl6NjVpd25rYg%3D%3D&utm_source=qr" className="text-purple-600 hover:text-purple-800">
                         Instagram
                       </a>
-                      <a href="#" className="text-gray-600 hover:text-gray-800">
+                      <a href="https://www.linkedin.com/in/asht-cab-services-private-limited-7948a02a7" className="text-gray-600 hover:text-gray-800">
                         LinkedIn
                       </a>
                     </div>

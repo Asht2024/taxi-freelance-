@@ -97,10 +97,10 @@ const PrivacyPage = () => {
             <p className="leading-relaxed">
               If you have any questions or suggestions about our Privacy Policy, do not hesitate to contact us at:
               <a
-                href="mailto:complain@ashtcabservices.in"
+                href="mailto:info@ashtcabservices.in"
                 className="ml-1 text-indigo-600 hover:text-purple-600 transition-colors duration-300"
               >
-                complain@ashtcabservices.in
+                info@ashtcabservices.in
               </a>
             </p>
           </section>

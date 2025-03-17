@@ -100,10 +100,10 @@ const RefundPolicyPage = () => {
             <p className="leading-relaxed">
               For refund-related queries:
               <a
-                href="mailto:complain@ashtcabservices.in"
+                href="mailto:info@ashtcabservices.in"
                 className="ml-1 text-green-600 hover:text-emerald-600 transition-colors duration-300"
               >
-                complain@ashtcabservices.in
+                info@ashtcabservices.in
               </a>
             </p>
           </section>
