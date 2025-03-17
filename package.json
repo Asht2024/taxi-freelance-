@@ -15,7 +15,10 @@
     "@prisma/client": "^6.5.0",
     "@react-three/drei": "^10.0.4",
     "@react-three/fiber": "^9.1.0",
+    "@types/uuid": "^10.0.0",
+    "axios": "^1.8.3",
     "clsx": "^2.1.1",
+    "crypto-js": "^4.2.0",
     "google": "^2.1.0",
     "i": "^0.3.7",
     "motion": "^12.4.10",
@@ -25,11 +28,13 @@
     "react-dom": "^19.0.0",
     "react-icons": "^4.12.0",
     "tailwind-merge": "^3.0.2",
-    "three": "^0.174.0"
+    "three": "^0.174.0",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/crypto-js": "^4.2.2",
     "@types/google.maps": "^3.58.1",
     "@types/node": "^20",
     "@types/react": "^19",
