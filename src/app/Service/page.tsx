@@ -88,7 +88,7 @@ export default function Services() {
               Book Instantly <ArrowRightIcon className="w-5 h-5" />
             </button>
             <button className="border-2 border-white px-6 py-3 rounded-full hover:bg-white/10 transition-all">
-              24/7 Support: +91 98765 43210
+              24/7 Support: +91 9925566614
             </button>
           </div>
         </div>

@@ -120,7 +120,7 @@ const Footer = () => {
             <div className="flex items-start space-x-3">
               <MapPinIcon className="w-5 h-5 text-blue-400 mt-1" />
               <p>
-                123 Business Street, Ahmedabad<br />Gujarat 380001
+              13, Ratnaraj Green, B/H HP Petrol Pump, Nana Chiloda,<br /> Ahmedabad-382330
               </p>
             </div>
             <div className="flex items-center space-x-3">
