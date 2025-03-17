@@ -145,6 +145,7 @@ const MainPage = () => {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
         className="relative w-full text-left space-y-4 md:space-y-6 min-w-[320px] p-4 md:p-6 pt-20 sm:pt-24"
+        
       >
         {/* Header Section */}
         <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">

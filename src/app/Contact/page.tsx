@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import '../globals.css'
 import {
   EnvelopeIcon,
   PhoneIcon,
@@ -10,7 +11,7 @@ import {
   UserIcon,
   ChatBubbleLeftEllipsisIcon
 } from "@heroicons/react/24/outline";
-import Footer from "../../../components/Footer";
+
 
 type FormData = {
   name: string;
@@ -32,7 +33,7 @@ const ContactPage = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
+    <div className="flex flex-col min-h-screen ">
       <div className="flex-grow py-12 px-4">
         <div className="max-w-6xl mx-auto">
           {/* Header Section */}
@@ -195,10 +196,8 @@ const ContactPage = () => {
         </div>
       </div>
 
-      {/* Footer Section */}
-      <footer className="w-full  text-white">
-        <Footer />
-      </footer>
+      
+      
     </div>
   );
 };

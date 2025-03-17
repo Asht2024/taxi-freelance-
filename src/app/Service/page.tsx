@@ -11,7 +11,8 @@ import {
   ShieldCheckIcon,
   
 } from '@heroicons/react/24/outline';
-import Footer from '../../../components/Footer';
+import '../globals.css'
+
 
 export default function Services() {
   const serviceCategories = [
@@ -66,7 +67,9 @@ export default function Services() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div 
+    className="min-h-screen"
+  >
       <Head>
         <title>Our Services - Asht Cab Services</title>
       </Head>
@@ -273,9 +276,7 @@ export default function Services() {
       </section>
 
       {/* Final CTA */}
-      <section className=" text-white ">
-        <Footer/>
-      </section>
+     
     </div>
   );
 }

@@ -10,7 +10,8 @@ import {
   DevicePhoneMobileIcon,
   GlobeAltIcon
 } from '@heroicons/react/24/outline';
-import Footer from '../../../components/Footer';
+import '../globals.css'
+
 
 export default function About() {
   const services = [
@@ -54,7 +55,7 @@ export default function About() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen ">
       <Head>
         <title>About Us - Asht Cab Services</title>
       </Head>
@@ -172,9 +173,7 @@ export default function About() {
       {/* Contact CTA */}
       
 
-      <section className=" text-white ">
-        <Footer/>
-      </section>
+    
     </div>
   );
 }

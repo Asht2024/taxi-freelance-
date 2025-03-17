@@ -126,9 +126,9 @@ const Footer = () => {
             © 2024 ASHT Cab Services. All rights reserved
           </p>
           <div className="flex space-x-6">
-            <a href="#" className="text-gray-400 hover:text-blue-300 text-sm">Privacy Policy</a>
-            <a href="#" className="text-gray-400 hover:text-blue-300 text-sm">Terms of Service</a>
-            <a href="#" className="text-gray-400 hover:text-blue-300 text-sm">Safety Standards</a>
+            <a href="/Privacy" className="text-gray-400 hover:text-blue-300 text-sm">Privacy Policy</a>
+            <a href="/Terms" className="text-gray-400 hover:text-blue-300 text-sm">Terms and Conditions</a>
+            <a href="/Refund" className="text-gray-400 hover:text-blue-300 text-sm">Refund and Cancellation policy</a>
           </div>
         </motion.div>
       </div>
