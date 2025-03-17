@@ -73,7 +73,6 @@ const AutocompleteInput = ({ label, value, onChange }: AutocompleteInputProps) =
       if (!response.ok) {
         throw new Error('Failed to fetch suggestions');
       }
-
       const data = await response.json();
       
       if (data.predictions) {

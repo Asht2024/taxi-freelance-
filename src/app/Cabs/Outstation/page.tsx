@@ -22,7 +22,7 @@ interface CarType {
 const OutstationPage = () => {
     const router = useRouter();
     const [mycars, setMyCars] = useState<CarType[]>([]);
-    const cars =  [
+    const cars = [
        { model: "Skoda Slavia", image_url: "/sedan.png", car_name: "Sedan", local_price_per_km: 35, local_min_price: 550, rental_price: "1650 1950 1800 11 160", outstation_per_km: 11, outstation_min: 1800, luggage: 4, passenger: 3, calculated_price: 0 },
        { model: "Mahindra Scorpio", image_url: "/suv.png", car_name: "SUV", local_price_per_km: 75, local_min_price: 1000, rental_price: "2450 2850 3550 14 200", outstation_per_km: 14, outstation_min: 2500, luggage: 6, passenger: 6, calculated_price: 0 },
        { model: "Toyota", image_url: "/inova.png", car_name: "Innova", local_price_per_km: 125, local_min_price: 1800, rental_price: "3800 4500 17 260", outstation_per_km: 18, outstation_min: 3800, luggage: 7, passenger: 6, calculated_price: 0 },

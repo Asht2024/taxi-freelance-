@@ -26,19 +26,71 @@ const MainPage = () => {
 
 
   // Location states
-  const [pickupLocation, setPickupLocation] = useState<LocationType>({
-    address: "",
-    city: "",
-    lat: 0,
-    lng: 0,
-  });
-  
+ 
+
   const [dropLocation, setDropLocation] = useState<LocationType>({
     address: "",
     city: "",
     lat: 0,
     lng: 0,
   });
+  const [pickupLocation, setPickupLocation] = useState<LocationType>({
+    address: "Your current location",
+    city: "",
+    lat: 0,
+    lng: 0,
+  });
+  
+  const getAddressFromCoords = async (lat: number, lng: number) => {
+    console.log("Fetching address for:", lat, lng);
+    try {
+      const response = await fetch("/api/get-address", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ latitude: lat, longitude: lng }),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.error || "Address fetch failed");
+      }
+      setPickupLocation({
+        address: data.address,
+        city: data.city,
+        lat: data.lat,
+        lng: data.lng,
+      });
+    } catch (error) {
+      console.error("Error fetching address:", error);
+      alert("Could not fetch location details. Please enter manually.");
+    }
+  };
+  
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by this browser.");
+      return;
+    }
+  
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setPickupLocation((prev) => ({
+          ...prev,
+          lat: latitude,
+          lng: longitude,
+        }));
+         
+        // Fetch address
+        getAddressFromCoords(latitude, longitude);
+      },
+      (error) => {
+        console.error("Geolocation error:", error);
+        alert("Please enable location permissions.");
+      }
+    );
+  }, []);
   
   // Typing animation states
   const [text, setText] = useState("");
@@ -55,40 +107,38 @@ const MainPage = () => {
   ];
 
   const handleSearchCab = () => {
-    const data = JSON.parse(localStorage.getItem("tripFormData")||"{}");
+    const data = JSON.parse(localStorage.getItem("tripFormData") || "{}");
     const tripData = {
       pickupLocation,
       dropLocation,
       selectedOption,
-      formData: data
+      formData: data,
     };
 
     localStorage.setItem("currentTripData", JSON.stringify(tripData));
-    if(!pickupLocation.address || !data.date || !data.time || !data.luggage|| !data.members){
-      alert("Please enter all input!")
+    if (!pickupLocation.address || !data.date || !data.time || !data.members) {
+      alert("Please enter all input!");
       return;
     }
     const route = `/Cabs/${selectedOption}`;
-    if(selectedOption == "Local") {
-        if(!dropLocation.address){
-          alert("Please enter drop location!")
-          return;
-        } 
-    }
-    else if(selectedOption != "Rental"){
-      if(!dropLocation.address){
-        alert("Please enter drop location!")
+    if (selectedOption == "Local") {
+      if (!dropLocation.address) {
+        alert("Please enter drop location!");
         return;
       }
-      else if(data.tripType == "Outstation"){
-         if(!data.dropdate || !data.droptime){
-           alert("Please enter drop date OR time!")
-             return;
-         }
+    } else if (selectedOption != "Rental") {
+      if (!dropLocation.address) {
+        alert("Please enter drop location!");
+        return;
+      } else if (data.tripType == "Outstation") {
+        if (!data.dropdate || !data.droptime) {
+          alert("Please enter drop date OR time!");
+          return;
+        }
       }
     }
     setTimeout(() => {
-     router.push(route); 
+      router.push(route);
     }, 500);
   };
 
@@ -124,7 +174,6 @@ const MainPage = () => {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
         className="relative w-full text-left space-y-4 md:space-y-6 min-w-[320px] p-4 md:p-6 pt-20 sm:pt-24"
-        
       >
         {/* Header Section */}
         <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -143,7 +192,10 @@ const MainPage = () => {
             {[
               { name: "Local" as OptionType, icon: <FaTaxi size={24} /> },
               { name: "Rental" as OptionType, icon: <FaCarSide size={24} /> },
-              { name: "Outstation" as OptionType, icon: <FaMapMarkedAlt size={24} /> },
+              {
+                name: "Outstation" as OptionType,
+                icon: <FaMapMarkedAlt size={24} />,
+              },
             ].map((option, index) => (
               <div key={option.name} className="relative group">
                 {/* Active Option Indicator */}

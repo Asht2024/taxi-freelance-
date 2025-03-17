@@ -42,7 +42,7 @@ const Loader = ({ isLoading }) => {
             }}
           >
             <Image
-              src="/logo.svg"
+              src="/ashtlogo.png"
               width={70}
               height={70}
               priority

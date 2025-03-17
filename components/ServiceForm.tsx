@@ -54,15 +54,13 @@ const ServiceForms = ({
   const [formData, setFormData] = useState<FormData>({
     date: "",
     time: "",
-    dropdate:"",
-    droptime:"",
+    dropdate: "",
+    droptime: "",
     members: 1,
     luggage: 0,
-    tripType:"One Way",
+    tripType: "One Way",
     intermediateCities: [],
   });
-
-
 
   // Trip type state for Outstation
   const [tripType, setTripType] = useState<"One Way" | "Round Trip">("One Way");
@@ -70,12 +68,11 @@ const ServiceForms = ({
 
   // Check form validity whenever form data changes
 
-  
   // Save form data to localStorage when values change
   const handleFormChange = (field: keyof FormData, value: FormDataValue) => {
     const newFormData = { ...formData, [field]: value };
     setFormData(newFormData);
-  
+
     // Save all form data including locations to localStorage
     const completeFormData = {
       ...newFormData,
@@ -83,7 +80,7 @@ const ServiceForms = ({
       tripType,
       intermediateCities,
       pickupAddress,
-      dropAddress
+      dropAddress,
     };
     localStorage.setItem("tripFormData", JSON.stringify(completeFormData));
   };
@@ -112,12 +109,6 @@ const ServiceForms = ({
     }
   }, []);
 
-  const inputCommonClass =
-    "w-full pl-12 pr-10 py-3 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white shadow-sm";
-  const iconCommonClass =
-    "absolute left-4 top-1/2 -translate-y-1/2 text-blue-500";
-  const rowCommonClass = "relative h-[58px]";
-
   const formVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
@@ -141,7 +132,11 @@ const ServiceForms = ({
     setIntermediateCities(newCities);
     handleFormChange("intermediateCities", newCities);
   };
-
+  const inputCommonClass =
+    "w-full pl-12 pr-10 py-3 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white shadow-sm";
+  const iconCommonClass =
+    "absolute left-4 top-1/2 -translate-y-1/2 text-blue-500";
+  const rowCommonClass = "relative h-[58px]";
   const renderForm = () => {
     switch (serviceType) {
       case "Local":
@@ -165,20 +160,37 @@ const ServiceForms = ({
               variants={formVariants}
               className="grid grid-cols-2 gap-3 h-[58px]"
             >
+              {/* Pickup Date Field */}
               <div className="relative">
-                <FaCalendar className={iconCommonClass} />
-                <input 
-                  type="date" 
-                  className={inputCommonClass}
+                <FaCalendar className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
+                <label
+                  htmlFor="pickupDate"
+                  className={`${inputCommonClass} flex items-center pl-10 whitespace-nowrap`}
+                >
+                  {formData.date ? formData.date : "PickUp Date"}
+                </label>
+                <input
+                  id="pickupDate"
+                  type="date"
+                  className="absolute inset-0  outline-none bg-transparent text-transparent cursor-pointer"
                   value={formData.date}
                   onChange={(e) => handleFormChange("date", e.target.value)}
                 />
               </div>
+
+              {/* Pickup Time Field */}
               <div className="relative">
-                <FaClock className={iconCommonClass} />
-                <input 
-                  type="time" 
-                  className={inputCommonClass}
+                <FaClock className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
+                <label
+                  htmlFor="pickupTime"
+                  className={`${inputCommonClass} flex items-center pl-10 whitespace-nowrap`}
+                >
+                  {formData.time ? formData.time : "PickUp Time"}
+                </label>
+                <input
+                  id="pickupTime"
+                  type="time"
+                  className="absolute inset-0 outline-none bg-transparent text-transparent cursor-pointer"
                   value={formData.time}
                   onChange={(e) => handleFormChange("time", e.target.value)}
                 />
@@ -189,14 +201,10 @@ const ServiceForms = ({
               <FaMapMarkerAlt className={iconCommonClass} />
               <AutocompleteInput
                 label="Drop Location"
-                
                 value={dropAddress}
-                
                 onChange={onDropChange}
               />
             </motion.div>
-
-            
 
             <motion.div
               variants={formVariants}
@@ -219,7 +227,9 @@ const ServiceForms = ({
                   min="1"
                   max="10"
                   value={formData.members}
-                  onChange={(e) => handleFormChange("members", parseInt(e.target.value))}
+                  onChange={(e) =>
+                    handleFormChange("members", parseInt(e.target.value))
+                  }
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                   <FaUserPlus />
@@ -240,7 +250,9 @@ const ServiceForms = ({
                   min="0"
                   step="1"
                   value={formData.luggage}
-                  onChange={(e) => handleFormChange("luggage", parseInt(e.target.value))}
+                  onChange={(e) =>
+                    handleFormChange("luggage", parseInt(e.target.value))
+                  }
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                   <FaWeightHanging />
@@ -271,20 +283,37 @@ const ServiceForms = ({
               variants={formVariants}
               className="grid grid-cols-2 gap-3 h-[58px]"
             >
+              {/* Pickup Date Field */}
               <div className="relative">
-                <FaCalendar className={iconCommonClass} />
-                <input 
-                  type="date" 
-                  className={inputCommonClass}
+                <FaCalendar className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
+                <label
+                  htmlFor="pickupDate"
+                  className={`${inputCommonClass} flex items-center pl-10 whitespace-nowrap`}
+                >
+                  {formData.date ? formData.date : "PickUp Date"}
+                </label>
+                <input
+                  id="pickupDate"
+                  type="date"
+                  className="absolute inset-0 bg-transparent outline-none text-transparent cursor-pointer"
                   value={formData.date}
                   onChange={(e) => handleFormChange("date", e.target.value)}
                 />
               </div>
+
+              {/* Pickup Time Field */}
               <div className="relative">
-                <FaClock className={iconCommonClass} />
-                <input 
-                  type="time" 
-                  className={inputCommonClass}
+                <FaClock className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
+                <label
+                  htmlFor="pickupTime"
+                  className={`${inputCommonClass} flex items-center pl-10 whitespace-nowrap`}
+                >
+                  {formData.time ? formData.time : "PickUp Time"}
+                </label>
+                <input
+                  id="pickupTime"
+                  type="time"
+                  className="absolute inset-0 bg-transparent outline-none text-transparent cursor-pointer"
                   value={formData.time}
                   onChange={(e) => handleFormChange("time", e.target.value)}
                 />
@@ -312,7 +341,9 @@ const ServiceForms = ({
                   min="1"
                   max="10"
                   value={formData.members}
-                  onChange={(e) => handleFormChange("members", parseInt(e.target.value))}
+                  onChange={(e) =>
+                    handleFormChange("members", parseInt(e.target.value))
+                  }
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                   <FaUserPlus />
@@ -333,7 +364,9 @@ const ServiceForms = ({
                   min="0"
                   step="1"
                   value={formData.luggage}
-                  onChange={(e) => handleFormChange("luggage", parseInt(e.target.value))}
+                  onChange={(e) =>
+                    handleFormChange("luggage", parseInt(e.target.value))
+                  }
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                   <FaWeightHanging />
@@ -389,20 +422,37 @@ const ServiceForms = ({
               variants={formVariants}
               className="grid grid-cols-2 gap-3 h-[58px]"
             >
+              {/* Pickup Date Field */}
               <div className="relative">
-                <FaCalendar className={iconCommonClass} />
-                <input 
-                  type="date" 
-                  className={inputCommonClass}
+                <FaCalendar className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
+                <label
+                  htmlFor="pickupDate"
+                  className={`${inputCommonClass} flex items-center pl-10 whitespace-nowrap`}
+                >
+                  {formData.date ? formData.date : "PickUp Date"}
+                </label>
+                <input
+                  id="pickupDate"
+                  type="date"
+                  className="absolute inset-0  outline-none bg-transparent text-transparent cursor-pointer"
                   value={formData.date}
                   onChange={(e) => handleFormChange("date", e.target.value)}
                 />
               </div>
+
+              {/* Pickup Time Field */}
               <div className="relative">
-                <FaClock className={iconCommonClass} />
-                <input 
-                  type="time" 
-                  className={inputCommonClass}
+                <FaClock className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
+                <label
+                  htmlFor="pickupTime"
+                  className={`${inputCommonClass} flex items-center pl-10 whitespace-nowrap`}
+                >
+                  {formData.time ? formData.time : "PickUp Time"}
+                </label>
+                <input
+                  id="pickupTime"
+                  type="time"
+                  className="absolute inset-0 outline-none bg-transparent text-transparent cursor-pointer"
                   value={formData.time}
                   onChange={(e) => handleFormChange("time", e.target.value)}
                 />
@@ -421,20 +471,47 @@ const ServiceForms = ({
             {/* Round Trip Date & Time Section */}
             {tripType === "Round Trip" && (
               <motion.div
-                variants={formVariants}
-                className="grid grid-cols-2 gap-4"
-              >
-                <div className={rowCommonClass}>
-                  <FaCalendar className={iconCommonClass} />
-                  <input type="date" value={formData.dropdate} className={inputCommonClass} onChange={(e) => handleFormChange("dropdate", e.target.value)} />
-                </div>
-                <div className={rowCommonClass}>
-                  <FaClock className={iconCommonClass} />
-                  <input type="time" value={formData.droptime} className={inputCommonClass} onChange={(e) => handleFormChange("droptime", e.target.value)} />
-                </div>
-              </motion.div>
-            )}
+              variants={formVariants}
+              className="grid grid-cols-2 gap-3 h-[58px]"
+            >
+              {/* Pickup Date Field */}
+              <div className="relative">
+                <FaCalendar className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
+                <label
+                  htmlFor="DropDate"
+                  className={`${inputCommonClass} flex items-center pl-10 whitespace-nowrap`}
+                >
+                  {formData.dropdate ? formData.dropdate : "drop Date"}
+                </label>
+                <input
+                  id="DropDate"
+                  type="date"
+                  className="absolute inset-0  outline-none bg-transparent text-transparent cursor-pointer"
+                  value={formData.dropdate}
+                  onChange={(e) => handleFormChange("dropdate", e.target.value)}
+                />
+              </div>
 
+              {/* Pickup Time Field */}
+              <div className="relative">
+                <FaClock className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
+                <label
+                  htmlFor="dropTime"
+                  className={`${inputCommonClass} flex items-center pl-10 whitespace-nowrap`}
+                >
+                  {formData.droptime ? formData.droptime : "PickUp Time"}
+                </label>
+                <input
+                  id="dropTime"
+                  type="time"
+                  className="absolute inset-0 outline-none bg-transparent text-transparent cursor-pointer"
+                  value={formData.droptime}
+                  onChange={(e) => handleFormChange("droptime", e.target.value)}
+                />
+              </div>
+            </motion.div>
+            )}
+              
             <motion.div
               variants={formVariants}
               className="grid grid-cols-2 gap-4"
@@ -456,7 +533,9 @@ const ServiceForms = ({
                   min="1"
                   max="10"
                   value={formData.members}
-                  onChange={(e) => handleFormChange("members", parseInt(e.target.value))}
+                  onChange={(e) =>
+                    handleFormChange("members", parseInt(e.target.value))
+                  }
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                   <FaUserPlus />
@@ -477,7 +556,9 @@ const ServiceForms = ({
                   min="0"
                   step="1"
                   value={formData.luggage}
-                  onChange={(e) => handleFormChange("luggage", parseInt(e.target.value))}
+                  onChange={(e) =>
+                    handleFormChange("luggage", parseInt(e.target.value))
+                  }
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                   <FaWeightHanging />
@@ -486,43 +567,49 @@ const ServiceForms = ({
             </motion.div>
 
             {/* Intermediate Cities */}
-            <AnimatePresence>
-              <motion.div className="space-y-4">
-                {intermediateCities.map((city, index) => (
-                  <motion.div
-                    key={index}
-                    variants={formVariants}
-                    className="relative"
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                  >
-                    <FaMapMarkerAlt className={iconCommonClass} />
-                    <input
-                      type="text"
-                      placeholder={`Intermediate City ${index + 1}`}
-                      className={inputCommonClass}
-                      value={city}
-                      onChange={(e) => handleUpdateCity(index, e.target.value)}
-                    />
-                    <button
-                      onClick={() => handleRemoveCity(index)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-red-500 hover:text-red-600"
+            {tripType !== "One Way" && (
+              <AnimatePresence>
+                <motion.div className="space-y-4">
+                  {intermediateCities.map((city, index) => (
+                    <motion.div
+                      key={index}
+                      variants={formVariants}
+                      className="relative"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
                     >
-                      <FaTrash />
-                    </button>
-                  </motion.div>
-                ))}
-              </motion.div>
-            </AnimatePresence>
+                      <FaMapMarkerAlt className={iconCommonClass} />
+                      <input
+                        type="text"
+                        placeholder={`Intermediate City ${index + 1}`}
+                        className={inputCommonClass}
+                        value={city}
+                        onChange={(e) =>
+                          handleUpdateCity(index, e.target.value)
+                        }
+                      />
+                      <button
+                        onClick={() => handleRemoveCity(index)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-red-500 hover:text-red-600"
+                      >
+                        <FaTrash />
+                      </button>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </AnimatePresence>
+            )}
 
-            { tripType !== "One Way" && (<motion.button
-              variants={formVariants}
-              className="flex items-center gap-2 text-white hover:text-blue-700"
-              onClick={handleAddCity}
-            >
-              <FaPlusCircle /> Add Intermediate City
-            </motion.button>)}
+            {tripType !== "One Way" && (
+              <motion.button
+                variants={formVariants}
+                className="flex items-center gap-2 text-white hover:text-blue-700"
+                onClick={handleAddCity}
+              >
+                <FaPlusCircle /> Add Intermediate City
+              </motion.button>
+            )}
           </motion.div>
         );
 
@@ -542,4 +629,4 @@ const ServiceForms = ({
   );
 };
 
-export default ServiceForms; 
+export default ServiceForms;
