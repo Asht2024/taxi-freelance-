@@ -62,8 +62,10 @@ const OutstationPage = () => {
      )
      .map(car => {
           let calculatedprice = car.outstation_min + totaldistance*car.outstation_per_km;
-          const Allownce = calculateAllowance()
-          console.log("Allownce: " + Allownce)
+          let Allownce = 0 ;
+          if(data.formData?.tripType == "Round Trip"){
+            Allownce = calculateAllowance()
+          }
           car.calculated_price = calculatedprice + Allownce;
        return {
          ...car, 
