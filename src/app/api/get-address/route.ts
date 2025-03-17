@@ -27,9 +27,10 @@ export async function POST(request: Request) {
     }
 
     // Extract city from address components
-    const cityComponent = data.results[0].address_components.find(
-      (component: any) => component.types.includes("locality")
-    );
+    const cityComponent = data.results?.[0]?.address_components?.find(
+        (component: { types: string[] }) => component.types.includes("locality")
+      );
+      
 
     return NextResponse.json({
       address: data.results[0].formatted_address,
