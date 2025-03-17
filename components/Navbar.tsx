@@ -3,6 +3,7 @@ import React, { useState, useEffect,JSX } from "react";
 import { cn } from "../lib/utils";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export const Navbar = ({
   navItems,
@@ -22,20 +23,20 @@ export const Navbar = ({
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
+ const router = useRouter()
   return (
     <nav 
       className={cn(
-        "fixed top-0 w-full bg-white/80 dark:bg-black/80 backdrop-blur-sm z-50 border-b border-gray-200 dark:border-gray-800 transition-transform duration-500 ease-out",
+        "fixed top-0 w-full h-14 bg-white/80 dark:bg-black/80 backdrop-blur-sm z-50 border-b border-gray-200 dark:border-gray-800 transition-transform duration-500 ease-out",
         isMounted ? "translate-y-0" : "-translate-y-full",
         className
       )}
     >
       <div className="container mx-auto px-4 py-3 flex justify-between ">
         {/* Logo */}
-        <div className="text-xl font-bold">
+        <div className="text-xl font-bold cursor-pointer" onClick={()=>{router.push("/")}}>
           <Image 
-            src="/logo.svg" 
+            src="/ashtlogo.png" 
             alt="Logo" 
             width={40} 
             height={40} 

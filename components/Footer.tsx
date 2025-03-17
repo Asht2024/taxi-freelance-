@@ -6,12 +6,11 @@ import {
   EnvelopeIcon,
   PhoneIcon,
   MapPinIcon,
-  GlobeAltIcon
+  
 } from '@heroicons/react/24/outline';
 
 import {
   FaFacebookF,
-  FaTwitter,
   FaInstagram,
   FaLinkedinIn
 } from 'react-icons/fa';
@@ -46,11 +45,30 @@ const Footer = () => {
               Revolutionizing urban mobility with safe, smart and sustainable transportation solutions.
             </p>
             <div className="flex space-x-4 mt-4">
-              <GlobeAltIcon className="w-6 h-6 text-blue-400 hover:text-blue-300 cursor-pointer" />
-              <FaFacebookF className="w-5 h-5 text-blue-400 hover:text-blue-300 cursor-pointer" />
-              <FaTwitter className="w-5 h-5 text-blue-400 hover:text-blue-300 cursor-pointer" />
-              <FaInstagram className="w-5 h-5 text-blue-400 hover:text-blue-300 cursor-pointer" />
-              <FaLinkedinIn className="w-5 h-5 text-blue-400 hover:text-blue-300 cursor-pointer" />
+              
+            <a
+    href="https://www.facebook.com/share/1AGEETjpmj/?mibextid=wwXIfr"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <FaFacebookF className="w-5 h-5 text-blue-400 hover:text-blue-300 cursor-pointer" />
+  </a>
+
+  <a
+    href="https://www.instagram.com/ashtcab?igsh=MXdsbHl6NjVpd25rYg%3D%3D&utm_source=qr"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <FaInstagram className="w-5 h-5 text-blue-400 hover:text-blue-300 cursor-pointer" />
+  </a>
+
+  <a
+    href="https://www.linkedin.com/in/asht-cab-services-private-limited-7948a02a7"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <FaLinkedinIn className="w-5 h-5 text-blue-400 hover:text-blue-300 cursor-pointer" />
+  </a>
             </div>
           </motion.div>
 
@@ -102,16 +120,16 @@ const Footer = () => {
             <div className="flex items-start space-x-3">
               <MapPinIcon className="w-5 h-5 text-blue-400 mt-1" />
               <p>
-                123 Business Street, Ahmedabad<br />Gujarat 380001
+              13, Ratnaraj Green, B/H HP Petrol Pump, Nana Chiloda,<br /> Ahmedabad-382330
               </p>
             </div>
             <div className="flex items-center space-x-3">
               <PhoneIcon className="w-5 h-5 text-blue-400" />
-              <p>+91 98765 43210</p>
+              <p>+919925566614</p>
             </div>
             <div className="flex items-center space-x-3">
               <EnvelopeIcon className="w-5 h-5 text-blue-400" />
-              <p>contact@ashtcab.com</p>
+              <p>info@ashtcabservices.in</p>
             </div>
           </motion.div>
         </div>
