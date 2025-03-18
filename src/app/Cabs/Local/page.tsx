@@ -53,7 +53,7 @@ const LocalPage = () => {
   ];
   const cars = [
     {
-      model: "Skoda Slavia",
+      model: "Swift Dzire or Equivalent",
       image_url: "/sedan.png",
       car_name: "Sedan",
       local_price_per_km: 35,
@@ -66,7 +66,7 @@ const LocalPage = () => {
       calculated_price: 0,
     },
     {
-      model: "Mahindra Scorpio",
+      model: "Ertiga or Equivalent",
       image_url: "/suv.png",
       car_name: "SUV",
       local_price_per_km: 75,
@@ -79,7 +79,7 @@ const LocalPage = () => {
       calculated_price: 0,
     },
     {
-      model: "Toyota",
+      model: "Marrazo or Equivalent",
       image_url: "/inova.png",
       car_name: "Innova",
       local_price_per_km: 125,
@@ -92,7 +92,7 @@ const LocalPage = () => {
       calculated_price: 0,
     },
     {
-      model: "Toyota",
+      model: "or Equivalent",
       image_url: "/inovacysta.png",
       car_name: "Innova Cysta",
       local_price_per_km: 150,

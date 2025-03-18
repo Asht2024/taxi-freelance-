@@ -46,13 +46,13 @@ const RentalPage = () => {
   };
 
   const cars = [
-    { model: "Skoda Slavia", image_url: "/sedan.png", car_name: "Sedan", 
+    { model: "Swift Dzire or Equivalent", image_url: "/sedan.png", car_name: "Sedan", 
       rental_price: "1650 1950 2850 11 160", luggage: 4, passenger: 3 },
-    { model: "Mahindra Scorpio", image_url: "/suv.png", car_name: "SUV", 
+    { model: "Ertiga or Equivalent", image_url: "/suv.png", car_name: "SUV", 
       rental_price: "2450 2850 14 200", luggage: 6, passenger: 6 },
-    { model: "Toyota", image_url: "/inova.png", car_name: "Innova", 
+    { model: "Marrazo or Equivalent", image_url: "/inova.png", car_name: "Innova", 
       rental_price: "3800 4500 17 260", luggage: 7, passenger: 6 },
-    { model: "Toyota", image_url: "/inovacysta.png", car_name: "Innova Cysta", 
+    { model: "or Equivalent", image_url: "/inovacysta.png", car_name: "Innova Cysta", 
       rental_price: "4700 5500 17 260", luggage: 7, passenger: 6 },
   ];
   const handleBookPackage = (car: CarType, pkg: PackageType) => {

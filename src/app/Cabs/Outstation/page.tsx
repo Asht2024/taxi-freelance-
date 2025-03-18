@@ -20,23 +20,23 @@ interface CarType {
   calculated_price: number;
 }
 const OutstationPage = () => {
+  const [day , setDays] = useState<number>(0)
     const router = useRouter();
     const [mycars, setMyCars] = useState<CarType[]>([]);
     const cars = [
-       { model: "Skoda Slavia", image_url: "/sedan.png", car_name: "Sedan", local_price_per_km: 35, local_min_price: 550, rental_price: "1650 1950 1800 11 160", outstation_per_km: 11, outstation_min: 1800, luggage: 4, passenger: 3, calculated_price: 0 },
-       { model: "Mahindra Scorpio", image_url: "/suv.png", car_name: "SUV", local_price_per_km: 75, local_min_price: 1000, rental_price: "2450 2850 3550 14 200", outstation_per_km: 14, outstation_min: 2500, luggage: 6, passenger: 6, calculated_price: 0 },
-       { model: "Toyota", image_url: "/inova.png", car_name: "Innova", local_price_per_km: 125, local_min_price: 1800, rental_price: "3800 4500 17 260", outstation_per_km: 18, outstation_min: 3800, luggage: 7, passenger: 6, calculated_price: 0 },
-       { model: "Toyota", image_url: "/inovacysta.png", car_name: "Innova Cysta", local_price_per_km: 150, local_min_price: 1800, rental_price: "4700 5500 17 260", outstation_per_km: 21, outstation_min: 4800, luggage: 7, passenger: 6, calculated_price: 0 },
+       {outstation_oneway:18, model: "Swift Dzire or Equivalent", image_url: "/sedan.png", car_name: "Sedan", local_price_per_km: 35, local_min_price: 550, rental_price: "1650 1950 1800 11 160", outstation_per_km: 11, outstation_min: 1800, luggage: 4, passenger: 3, calculated_price: 0 },
+       {outstation_oneway:21 , model: "Ertiga or Equivalent", image_url: "/suv.png", car_name: "SUV", local_price_per_km: 75, local_min_price: 1000, rental_price: "2450 2850 3550 14 200", outstation_per_km: 14, outstation_min: 2500, luggage: 6, passenger: 6, calculated_price: 0 },
+       {outstation_oneway:28,  model: "Marrazo or Equivalent", image_url: "/inova.png", car_name: "Innova", local_price_per_km: 125, local_min_price: 1800, rental_price: "3800 4500 17 260", outstation_per_km: 18, outstation_min: 3800, luggage: 7, passenger: 7, calculated_price: 0 },
+       {outstation_oneway:30 , model: "or Equivalent", image_url: "/inovacysta.png", car_name: "Innova Cysta", local_price_per_km: 150, local_min_price: 1800, rental_price: "4700 5500 17 260", outstation_per_km: 21, outstation_min: 4800, luggage: 7, passenger: 6, calculated_price: 0 },
      ]
      useEffect(() => {
       const dataString = localStorage.getItem("currentTripData");
       console.log("data is", dataString);
-    
       if (!dataString) return;
     
       try {
-        const data = JSON.parse(dataString);
-    
+        const data = JSON.parse(dataString); 
+         
         // Calculate total travel allowance
         const calculateAllowance = () => {
           try {
@@ -47,6 +47,7 @@ const OutstationPage = () => {
             const diffHours = Math.abs(diffMs / (1000 * 60 * 60));
     
             const days = Math.floor(diffHours / 24);
+            setDays(days)
             const nights = Math.ceil((diffHours % 24) / 12); // Assuming 12 hours = 1 night
             return (days * 300) + (nights * 250);
           } catch (error) {
@@ -72,11 +73,25 @@ const OutstationPage = () => {
             car.luggage >= data.formData?.luggage
           )
           .map((car) => {
-            const calculatedPrice = car.outstation_min + totaldistance * car.outstation_per_km;
+
+            let calculatedPrice = 0
             let allowance = 0
             if(data.formData.tripType != "One Way"){
             allowance = calculateAllowance();
-            console.log("Allowance:", allowance);
+            const mydistance = day*300;
+            if(totaldistance >= mydistance){
+              calculatedPrice = totaldistance*car.outstation_per_km
+            }
+            else{
+              calculatedPrice = mydistance*car.outstation_per_km
+            }
+            } else{
+              if(totaldistance <= 105){
+                calculatedPrice = car.outstation_min
+              }
+              else{
+                calculatedPrice = car.outstation_min + (totaldistance - 105)*car.outstation_oneway
+              }
             }
             return {
               ...car,

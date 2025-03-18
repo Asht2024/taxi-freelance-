@@ -24,9 +24,7 @@ type OptionType = "Local" | "Rental" | "Outstation";
 const MainPage = () => {
   const router = useRouter();
 
-
   // Location states
- 
 
   const [dropLocation, setDropLocation] = useState<LocationType>({
     address: "",
@@ -40,7 +38,7 @@ const MainPage = () => {
     lat: 0,
     lng: 0,
   });
-  
+
   const getAddressFromCoords = async (lat: number, lng: number) => {
     console.log("Fetching address for:", lat, lng);
     try {
@@ -49,9 +47,9 @@ const MainPage = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ latitude: lat, longitude: lng }),
       });
-  
+
       const data = await response.json();
-  
+
       if (!response.ok) {
         throw new Error(data.error || "Address fetch failed");
       }
@@ -66,13 +64,13 @@ const MainPage = () => {
       alert("Could not fetch location details. Please enter manually.");
     }
   };
-  
+
   useEffect(() => {
     if (!navigator.geolocation) {
       alert("Geolocation is not supported by this browser.");
       return;
     }
-  
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
@@ -81,7 +79,7 @@ const MainPage = () => {
           lat: latitude,
           lng: longitude,
         }));
-         
+
         // Fetch address
         getAddressFromCoords(latitude, longitude);
       },
@@ -91,7 +89,7 @@ const MainPage = () => {
       }
     );
   }, []);
-  
+
   // Typing animation states
   const [text, setText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
@@ -165,8 +163,6 @@ const MainPage = () => {
     return () => clearTimeout(timer);
   }, [text, isDeleting, loopNum, typingSpeed]);
 
-  
-
   return (
     <AnimatePresence>
       <motion.div
@@ -181,36 +177,34 @@ const MainPage = () => {
         </h1>
 
         <div className="hidden md:block text-lg font-mono text-gray-600 font-semibold">
-  {text}
-  <span className="ml-1 animate-blink">|</span>
-</div>
-
+          {text}
+          <span className="ml-1 animate-blink">|</span>
+        </div>
 
         {/* Main Content */}
         <div className="space-y-6 mt-20">
           {/* Service Selection Buttons */}
           <div className="flex gap-4">
             {[
-              { name: "Local" as OptionType, icon: <FaTaxi size={24} /> },
-              { name: "Rental" as OptionType, icon: <FaCarSide size={24} /> },
-              {
-                name: "Outstation" as OptionType,
-                icon: <FaMapMarkedAlt size={24} />,
-              },
+              { name: "Local", icon: <FaTaxi size={24} /> },
+              { name: "Rental", icon: <FaCarSide size={24} /> },
+              { name: "Outstation", icon: <FaMapMarkedAlt size={24} /> },
             ].map((option, index) => (
               <div key={option.name} className="relative group">
-                {/* Active Option Indicator */}
+                {/* Selected Option Label */}
                 {selectedOption === option.name && (
                   <motion.div
                     initial={{ y: -10, opacity: 0 }}
                     animate={{ y: -25, opacity: 1 }}
-                    className="absolute left-1/2 -translate-x-1/2 -top-6 text-blue-600 font-semibold"
+                    transition={{ type: "spring", stiffness: 200 }}
+                    className="absolute left-1/2 -translate-x-1/2 -top-6 text-blue-600 font-semibold whitespace-nowrap"
                   >
                     {option.name}
                     <motion.div
                       initial={{ scaleX: 0 }}
                       animate={{ scaleX: 1 }}
                       className="h-1 bg-blue-600 mt-1 rounded-full"
+                      transition={{ duration: 0.3 }}
                     />
                   </motion.div>
                 )}
@@ -221,10 +215,10 @@ const MainPage = () => {
                     initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="absolute left-1/2 -translate-x-1/2 -top-8 
-                      bg-gray-800 text-white text-xs px-2 py-1 rounded-md
-                      before:content-[''] before:absolute before:top-full before:left-1/2
-                      before:-translate-x-1/2 before:border-4 before:border-transparent
-                      before:border-t-gray-800"
+            bg-gray-800 text-white text-xs px-2 py-1 rounded-md
+            before:content-[''] before:absolute before:top-full before:left-1/2
+            before:-translate-x-1/2 before:border-4 before:border-transparent
+            before:border-t-gray-800"
                     style={{
                       transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
                       pointerEvents: "none",
@@ -234,7 +228,7 @@ const MainPage = () => {
                   </motion.div>
                 )}
 
-                {/* Service Button */}
+                {/* Button */}
                 <motion.button
                   initial={{ opacity: 0, scale: 0.4 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -245,14 +239,20 @@ const MainPage = () => {
                     duration: 0.5,
                     type: "spring",
                   }}
-                  onClick={() => setSelectedOption(option.name)}
-                  className={`w-16 h-16 flex items-center justify-center rounded-full border-2 
-                    transition-all duration-300 shadow-md relative
-                    ${
-                      selectedOption === option.name
-                        ? "bg-blue-600 text-white border-blue-600 shadow-lg"
-                        : "border-gray-300 text-gray-700 hover:bg-gray-50"
-                    }`}
+                  onClick={() =>
+                    setSelectedOption(
+                      option.name as "Local" | "Rental" | "Outstation"
+                    )
+                  }
+                  className={`
+          w-16 h-16 flex items-center justify-center rounded-full border-2 
+          transition-all duration-300 shadow-md relative
+          ${
+            selectedOption === option.name
+              ? "bg-blue-600 text-white border-blue-600 shadow-lg"
+              : "border-gray-300 text-gray-700 hover:bg-gray-50"
+          }
+        `}
                 >
                   {option.icon}
                 </motion.button>
@@ -285,8 +285,8 @@ const MainPage = () => {
 
           {/* Map Section */}
           <div className="hidden md:flex md:w-1/2 md:absolute md:right-0 md:bottom-40 md:h-auto justify-center">
-  <Maps />
-</div>
+            <Maps />
+          </div>
         </div>
       </motion.div>
     </AnimatePresence>
