@@ -24,7 +24,10 @@ type OptionType = "Local" | "Rental" | "Outstation";
 const MainPage = () => {
   const router = useRouter();
 
+
   // Location states
+ 
+
   const [dropLocation, setDropLocation] = useState<LocationType>({
     address: "",
     city: "",
@@ -37,7 +40,58 @@ const MainPage = () => {
     lat: 0,
     lng: 0,
   });
-
+  
+  const getAddressFromCoords = async (lat: number, lng: number) => {
+    console.log("Fetching address for:", lat, lng);
+    try {
+      const response = await fetch("/api/get-address", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ latitude: lat, longitude: lng }),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.error || "Address fetch failed");
+      }
+      setPickupLocation({
+        address: data.address,
+        city: data.city,
+        lat: data.lat,
+        lng: data.lng,
+      });
+    } catch (error) {
+      console.error("Error fetching address:", error);
+      alert("Could not fetch location details. Please enter manually.");
+    }
+  };
+  
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by this browser.");
+      return;
+    }
+  
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setPickupLocation((prev) => ({
+          ...prev,
+          lat: latitude,
+          lng: longitude,
+        }));
+         
+        // Fetch address
+        getAddressFromCoords(latitude, longitude);
+      },
+      (error) => {
+        console.error("Geolocation error:", error);
+        alert("Please enable location permissions.");
+      }
+    );
+  }, []);
+  
   // Typing animation states
   const [text, setText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
@@ -52,31 +106,6 @@ const MainPage = () => {
     "Taxi service in Ahmedabad airport",
   ];
 
-  // Typing animation logic
-  useEffect(() => {
-    const handleType = () => {
-      const current = phrases[loopNum % phrases.length];
-      const updated = isDeleting
-        ? current.substring(0, text.length - 1)
-        : current.substring(0, text.length + 1);
-
-      setText(updated);
-
-      if (!isDeleting && updated === current) {
-        setTimeout(() => setIsDeleting(true), 1000);
-      } else if (isDeleting && updated === "") {
-        setIsDeleting(false);
-        setLoopNum((prev) => prev + 1);
-      }
-
-      setTypingSpeed(isDeleting ? 20 : 40);
-    };
-
-    const timer = setTimeout(handleType, typingSpeed);
-    return () => clearTimeout(timer);
-  }, [text, isDeleting, loopNum, typingSpeed]);
-
-  // Handle search cab
   const handleSearchCab = () => {
     const data = JSON.parse(localStorage.getItem("tripFormData") || "{}");
     const tripData = {
@@ -113,24 +142,49 @@ const MainPage = () => {
     }, 500);
   };
 
+  useEffect(() => {
+    const handleType = () => {
+      const current = phrases[loopNum % phrases.length];
+      const updated = isDeleting
+        ? current.substring(0, text.length - 1)
+        : current.substring(0, text.length + 1);
+
+      setText(updated);
+
+      if (!isDeleting && updated === current) {
+        setTimeout(() => setIsDeleting(true), 1000);
+      } else if (isDeleting && updated === "") {
+        setIsDeleting(false);
+        setLoopNum((prev) => prev + 1);
+      }
+
+      setTypingSpeed(isDeleting ? 20 : 40);
+    };
+
+    const timer = setTimeout(handleType, typingSpeed);
+    return () => clearTimeout(timer);
+  }, [text, isDeleting, loopNum, typingSpeed]);
+
+  
+
   return (
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
-        className="relative w-full text-left space-y-4 md:space-y-6 min-w-[320px] p-4 md:p-6 pt-8 sm:pt-24"
+        className="relative w-full text-left space-y-4 md:space-y-6 min-w-[320px] p-4 md:p-6 pt-9 sm:pt-24"
       >
         {/* Header Section */}
         <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
           Asht Cab
         </h1>
 
-        {/* Typing Animation (Hidden on Mobile) */}
-        <div className="text-lg font-mono text-gray-600 font-semibold hidden md:block">
-          {text}
-          <span className="ml-1 animate-blink">|</span>
-        </div>
+        <div className="hidden md:block text-lg font-mono text-gray-600 font-semibold">
+  {text}
+  <span className="ml-1 animate-blink">|</span>
+</div>
+
 
         {/* Main Content */}
         <div className="space-y-6 mt-20">
@@ -231,8 +285,8 @@ const MainPage = () => {
 
           {/* Map Section */}
           <div className="hidden md:flex md:w-1/2 md:absolute md:right-0 md:bottom-40 md:h-auto justify-center">
-            <Maps />
-          </div>
+  <Maps />
+</div>
         </div>
       </motion.div>
     </AnimatePresence>
