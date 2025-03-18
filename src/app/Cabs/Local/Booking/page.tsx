@@ -2,7 +2,9 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+
+import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
 
 interface TripData {
   pickupLocation: {
@@ -36,20 +38,22 @@ interface CarDetails {
 }
 
 export default function BookingPage() {
-  const router = useRouter();
+  
   const [tripData, setTripData] = useState<TripData | null>(null);
   const [carDetails, setCarDetails] = useState<CarDetails | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     contact: "",
-    email: ""
+    email: "",
   });
   const [isDetailsSubmitted, setIsDetailsSubmitted] = useState(false);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [paymentError, setPaymentError] = useState("");
 
   useEffect(() => {
     const tripDataString = localStorage.getItem("currentTripData");
     const carDataString = localStorage.getItem("selectedcars");
-    
+
     if (tripDataString) setTripData(JSON.parse(tripDataString));
     if (carDataString) setCarDetails(JSON.parse(carDataString));
   }, []);
@@ -59,7 +63,42 @@ export default function BookingPage() {
     setIsDetailsSubmitted(true);
   };
 
-  if (!tripData || !carDetails) return <div>Loading...</div>;
+  const initiatePhonePePayment = async () => {
+    setIsProcessingPayment(true);
+    setPaymentError("");
+
+    try {
+      const transactionId = uuidv4();
+      const totalAmount = carDetails!.calculated_price * 1.05; // Include 5% tax
+      const amount = Math.round(totalAmount * 100); // Convert to paise
+
+      const response = await axios.post("/api/payments/initiate", {
+        transactionId,
+        amount,
+        contact: formData.contact,
+        email: formData.email,
+        name: formData.name,
+      });
+
+      if (response.data.url) {
+        window.location.href = response.data.url; // Redirect to PhonePe payment page
+      } else {
+        setPaymentError("Payment initiation failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Payment error:", error);
+      setPaymentError("Error processing payment. Please check your details.");
+    } finally {
+      setIsProcessingPayment(false);
+    }
+  };
+
+  if (!tripData || !carDetails)
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+      </div>
+    );
 
   return (
     <motion.div
@@ -75,7 +114,7 @@ export default function BookingPage() {
           className="bg-white rounded-2xl shadow-lg p-6 h-fit"
         >
           <h2 className="text-3xl font-bold text-blue-600 mb-6">Booking Details</h2>
-          
+
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <DetailCard
@@ -109,19 +148,25 @@ export default function BookingPage() {
                     label="Full Name"
                     type="text"
                     value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
                   />
                   <InputField
                     label="Contact Number"
                     type="tel"
                     value={formData.contact}
-                    onChange={(e) => setFormData({...formData, contact: e.target.value})}
+                    onChange={(e) =>
+                      setFormData({ ...formData, contact: e.target.value })
+                    }
                   />
                   <InputField
                     label="Email Address"
                     type="email"
                     value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
                   />
                 </div>
 
@@ -142,11 +187,28 @@ export default function BookingPage() {
                 <DetailItem title="Contact" value={formData.contact} />
                 <DetailItem title="Email" value={formData.email} />
                 <button
-                  onClick={() => router.push("/payment")}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-xl transition-all duration-300 font-semibold text-lg mt-6"
+                  onClick={initiatePhonePePayment}
+                  disabled={isProcessingPayment}
+                  className={`w-full ${
+                    isProcessingPayment
+                      ? "bg-gray-400"
+                      : "bg-green-600 hover:bg-green-700"
+                  } text-white py-3 px-6 rounded-xl transition-all duration-300 font-semibold text-lg mt-6`}
                 >
-                  Confirm & Pay ₹{(carDetails.calculated_price + carDetails.calculated_price*0.05).toFixed(2)} <span className="text-sm text-gray-600 mt-2">Inc. Tax 5%</span>
+                  {isProcessingPayment ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      Processing...
+                    </div>
+                  ) : (
+                    `Confirm & Pay ₹${(carDetails.calculated_price * 1.05).toFixed(2)}`
+                  )}
                 </button>
+                {paymentError && (
+                  <div className="text-red-600 text-center mt-4">
+                    {paymentError}
+                  </div>
+                )}
               </motion.div>
             )}
           </div>
@@ -159,20 +221,20 @@ export default function BookingPage() {
           className="bg-white rounded-2xl shadow-lg p-6 h-fit"
         >
           <h2 className="text-3xl font-bold text-blue-600 mb-6">Car Details</h2>
-          
+
           <div className="flex flex-col items-center space-y-6">
             <img
               src={carDetails.image_url}
               alt={carDetails.car_name}
               className="w-full h-64 object-contain rounded-xl"
             />
-            
+
             <div className="w-full space-y-4">
               <h3 className="text-2xl font-bold text-gray-900">
                 {carDetails.car_name}
               </h3>
               <p className="text-gray-600">{carDetails.model}</p>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <DetailItem
                   title="Passengers"
@@ -185,19 +247,17 @@ export default function BookingPage() {
                   icon="🧳"
                 />
               </div>
-              
+
               <div className="bg-blue-50 p-4 rounded-xl">
                 <div className="flex justify-between items-center">
                   <span className="text-lg font-semibold text-gray-900">
                     Total Price:
                   </span>
                   <span className="text-2xl font-bold text-blue-600">
-                    ₹{carDetails.calculated_price.toFixed(2)}
+                    ₹{(carDetails.calculated_price * 1.05).toFixed(2)}
                   </span>
                 </div>
-                <p className="text-sm text-gray-600 mt-2">
-                  Inc tax 5%
-                </p>
+                <p className="text-sm text-gray-600 mt-2">Inc tax 5%</p>
               </div>
             </div>
           </div>
@@ -207,7 +267,16 @@ export default function BookingPage() {
   );
 }
 
-const DetailCard = ({ title, value, icon }: { title: string; value: string; icon: string }) => (
+// Reusable Components
+const DetailCard = ({
+  title,
+  value,
+  icon,
+}: {
+  title: string;
+  value: string;
+  icon: string;
+}) => (
   <div className="bg-gray-50 p-4 rounded-xl">
     <div className="flex items-center gap-2 mb-2">
       <span className="text-xl">{icon}</span>
@@ -217,7 +286,15 @@ const DetailCard = ({ title, value, icon }: { title: string; value: string; icon
   </div>
 );
 
-const DetailItem = ({ title, value, icon }: { title: string; value: string | number; icon?: string }) => (
+const DetailItem = ({
+  title,
+  value,
+  icon,
+}: {
+  title: string;
+  value: string | number;
+  icon?: string;
+}) => (
   <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
     <div className="flex items-center gap-2">
       {icon && <span className="text-lg">{icon}</span>}
@@ -227,7 +304,12 @@ const DetailItem = ({ title, value, icon }: { title: string; value: string | num
   </div>
 );
 
-const InputField = ({ label, type, value, onChange }: { 
+const InputField = ({
+  label,
+  type,
+  value,
+  onChange,
+}: {
   label: string;
   type: string;
   value: string;
