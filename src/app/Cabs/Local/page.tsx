@@ -21,6 +21,7 @@ interface CarType {
 const LocalPage = () => {
   const router = useRouter();
   const [mycars, setMyCars] = useState<CarType[]>([]);
+  const [totalDistance, setTotalDistance] = useState<number>(0); 
   function toRad(degrees: number): number {
     return degrees * (Math.PI / 180);
   }
@@ -115,6 +116,7 @@ const LocalPage = () => {
       data.dropLocation.lat,
       data.dropLocation.lng
     );
+    setTotalDistance(totaldistance);
     console.log("Total distance: " + totaldistance);
     if (totaldistance > 40) {
       alert(
@@ -303,6 +305,8 @@ const LocalPage = () => {
                   />
                 </div>
 
+                
+
                 {/* Car Details */}
                 <div className="p-6">
                   <div className="flex justify-between items-start mb-4">
@@ -329,7 +333,9 @@ const LocalPage = () => {
                       </p>
                     )}
                   </div>
-
+                  <p className="text-sm text-gray-600 font-medium">
+                    Total Distance: {totalDistance.toFixed(1)} km
+                  </p>
                   {/* Features */}
                   <div className="flex justify-between items-center border-t border-gray-100 pt-4">
                     <div className="flex items-center space-x-2">

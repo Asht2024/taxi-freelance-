@@ -41,6 +41,7 @@ interface TripData {
 export default function OutstationBookingPage() {
   const [tripData, setTripData] = useState<TripData | null>(null);
   const [carDetails, setCarDetails] = useState<CarDetails | null>(null);
+  const [paymentOption, setPaymentOption] = useState<"full" | "partial">("full");
   const [formData, setFormData] = useState({
     name: "",
     contact: "",
@@ -81,14 +82,16 @@ export default function OutstationBookingPage() {
     setIsDetailsSubmitted(true);
   };
 
-  const initiatePhonePePayment = async () => {
+  const initiatePhonePePayment = async (paymentType: "full" | "partial") => {
     setIsProcessingPayment(true);
     setPaymentError("");
-
+    
     try {
       const transactionId = uuidv4();
-      const totalAmount = (carDetails!.calculated_price + driverAllowance) * 1.05; // Include 5% tax
-      const amount = Math.round(totalAmount * 100); // Convert to paise
+      const baseAmount = carDetails!.calculated_price + driverAllowance;
+      const totalAmount = paymentType === "partial" ? baseAmount * 0.3 : baseAmount;
+      const amountWithTax = totalAmount * 1.05;
+      const amount = Math.round(amountWithTax * 100);
 
       const response = await axios.post("/api/payments/initiate", {
         transactionId,
@@ -99,7 +102,7 @@ export default function OutstationBookingPage() {
       });
 
       if (response.data.url) {
-        window.location.href = response.data.url; // Redirect to PhonePe payment page
+        window.location.href = response.data.url;
       } else {
         setPaymentError("Payment initiation failed. Please try again.");
       }
@@ -203,31 +206,77 @@ export default function OutstationBookingPage() {
               </motion.form>
             ) : (
               <motion.div className="space-y-4">
-                <DetailItem title="Name" value={formData.name} />
-                <DetailItem title="Contact" value={formData.contact} />
-                <DetailItem title="Email" value={formData.email} />
-                <button
-                  onClick={initiatePhonePePayment}
-                  disabled={isProcessingPayment}
-                  className={`w-full ${
-                    isProcessingPayment ? "bg-gray-400" : "bg-green-600 hover:bg-green-700"
-                  } text-white py-3 px-6 rounded-xl font-semibold text-lg mt-4`}
-                >
-                  {isProcessingPayment ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      Processing...
-                    </div>
-                  ) : (
-                    `Pay ₹${((carDetails.calculated_price + driverAllowance) * 1.05).toFixed(2)}`
-                  )}
-                </button>
-                {paymentError && (
-                  <div className="text-red-600 text-center mt-4">
-                    {paymentError}
-                  </div>
-                )}
-              </motion.div>
+          <DetailItem title="Name" value={formData.name} />
+          <DetailItem title="Contact" value={formData.contact} />
+          <DetailItem title="Email" value={formData.email} />
+
+          <div className="grid grid-cols-2 gap-4">
+            <button
+              type="button"
+              onClick={() => setPaymentOption("partial")}
+              className={`p-4 rounded-xl border-2 transition-all ${
+                paymentOption === "partial"
+                  ? "border-blue-600 bg-blue-50"
+                  : "border-gray-300 hover:border-blue-400"
+              }`}
+            >
+              <div className="text-left">
+                <p className="font-semibold text-lg">Pay 30% Now</p>
+                <p className="text-gray-600 text-sm">
+                  ₹{((carDetails.calculated_price + driverAllowance) * 0.3 * 1.05).toFixed(2)}
+                </p>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setPaymentOption("full")}
+              className={`p-4 rounded-xl border-2 transition-all ${
+                paymentOption === "full"
+                  ? "border-blue-600 bg-blue-50"
+                  : "border-gray-300 hover:border-blue-400"
+              }`}
+            >
+              <div className="text-left">
+                <p className="font-semibold text-lg">Pay Full Amount</p>
+                <p className="text-gray-600 text-sm">
+                  ₹{((carDetails.calculated_price + driverAllowance) * 1.05).toFixed(2)}
+                </p>
+              </div>
+            </button>
+          </div>
+
+          <button
+            onClick={() => initiatePhonePePayment(paymentOption)}
+            disabled={isProcessingPayment}
+            className={`w-full ${
+              isProcessingPayment
+                ? "bg-gray-400"
+                : "bg-green-600 hover:bg-green-700"
+            } text-white py-3 px-6 rounded-xl font-semibold text-lg mt-4`}
+          >
+            {isProcessingPayment ? (
+              <div className="flex items-center justify-center gap-2">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                Processing...
+              </div>
+            ) : paymentOption === "partial" ? (
+              `Pay 30% Now (₹${(
+                (carDetails.calculated_price + driverAllowance) * 0.3 * 1.05
+              ).toFixed(2)})`
+            ) : (
+              `Pay Full Amount (₹${(
+                (carDetails.calculated_price + driverAllowance) * 1.05
+              ).toFixed(2)})`
+            )}
+          </button>
+
+          {paymentError && (
+            <div className="text-red-600 text-center mt-4">
+              {paymentError}
+            </div>
+          )}
+        </motion.div>
             )}
           </div>
         </motion.div>
@@ -259,23 +308,27 @@ export default function OutstationBookingPage() {
               </div>
 
               <div className="bg-blue-50 p-4 rounded-xl space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-gray-700">Base Fare:</span>
-                  <span className="font-semibold">₹{(carDetails.calculated_price * 1.05).toFixed(2)}</span>
-                </div>
-                {driverAllowance !== 0 && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-700">Driver Allowance:</span>
-                    <span className="font-semibold">₹{(driverAllowance * 1.05).toFixed(2)}</span>
-                  </div>
-                )}
-                <div className="flex justify-between border-t pt-2">
-                  <span className="text-lg font-bold text-blue-600">Total</span>
-                  <span className="text-lg font-bold text-blue-600">
-                    ₹{((carDetails.calculated_price + driverAllowance) * 1.05).toFixed(2)}
-                  </span>
-                </div>
-              </div>
+          <div className="flex justify-between">
+            <span className="text-gray-700">Base Fare:</span>
+            <span className="font-semibold">
+              ₹{(carDetails.calculated_price * 1.05).toFixed(2)}
+            </span>
+          </div>
+          {driverAllowance !== 0 && (
+            <div className="flex justify-between">
+              <span className="text-gray-700">Driver Allowance:</span>
+              <span className="font-semibold">
+                ₹{(driverAllowance * 1.05).toFixed(2)}
+              </span>
+            </div>
+          )}
+          <div className="flex justify-between border-t pt-2">
+            <span className="text-lg font-bold text-blue-600">Total</span>
+            <span className="text-lg font-bold text-blue-600">
+              ₹{((carDetails.calculated_price + driverAllowance) * 1.05).toFixed(2)}
+            </span>
+          </div>
+        </div>
             </div>
           </div>
         </motion.div>
@@ -322,3 +375,22 @@ const InputField = ({ label, type, value, onChange }: {
     />
   </div>
 );
+
+
+
+
+
+  
+
+  
+
+ 
+
+ 
+      
+
+     
+    
+
+  
+

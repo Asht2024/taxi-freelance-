@@ -23,6 +23,7 @@ const OutstationPage = () => {
   const [day , setDays] = useState<number>(0)
     const router = useRouter();
     const [mycars, setMyCars] = useState<CarType[]>([]);
+    const [totalDistance, setTotalDistance] = useState<number>(0); 
     const cars = [
        {outstation_oneway:18, model: "Swift Dzire or Equivalent", image_url: "/sedan.png", car_name: "Sedan", local_price_per_km: 35, local_min_price: 550, rental_price: "1650 1950 1800 11 160", outstation_per_km: 11, outstation_min: 1800, luggage: 4, passenger: 3, calculated_price: 0 },
        {outstation_oneway:21 , model: "Ertiga or Equivalent", image_url: "/suv.png", car_name: "SUV", local_price_per_km: 75, local_min_price: 1000, rental_price: "2450 2850 3550 14 200", outstation_per_km: 14, outstation_min: 2500, luggage: 6, passenger: 6, calculated_price: 0 },
@@ -63,7 +64,7 @@ const OutstationPage = () => {
           data.dropLocation.lat,
           data.dropLocation.lng
         );
-    
+        setTotalDistance(totaldistance)
         console.log("Total distance:", totaldistance);
     
         // Filter and calculate pricing for cars
@@ -183,7 +184,9 @@ const OutstationPage = () => {
                       </p>
                     )}
                   </div>
-
+                  <p className="text-sm text-gray-600 font-medium">
+                    Total Distance: {totalDistance.toFixed(1)} km
+                  </p>
                   {/* Features */}
                   <div className="flex justify-between items-center border-t border-gray-100 pt-4">
                     <div className="flex items-center space-x-2">
