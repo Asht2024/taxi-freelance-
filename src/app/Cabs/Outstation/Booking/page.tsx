@@ -2,7 +2,8 @@
 
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
 
 interface LocationType {
   address: string;
@@ -38,28 +39,29 @@ interface TripData {
 }
 
 export default function OutstationBookingPage() {
-  const router = useRouter();
   const [tripData, setTripData] = useState<TripData | null>(null);
   const [carDetails, setCarDetails] = useState<CarDetails | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     contact: "",
-    email: ""
+    email: "",
   });
   const [isDetailsSubmitted, setIsDetailsSubmitted] = useState(false);
   const [driverAllowance, setDriverAllowance] = useState(0);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [paymentError, setPaymentError] = useState("");
 
   useEffect(() => {
     const tripDataString = localStorage.getItem("currentTripData");
     const carDataString = localStorage.getItem("selectedcars");
-    
+
     if (tripDataString) setTripData(JSON.parse(tripDataString));
     if (carDataString) setCarDetails(JSON.parse(carDataString));
 
     // Calculate driver allowance
     if (tripDataString) {
       const data = JSON.parse(tripDataString);
-      if(data.formData?.tripType == "Round Trip"){
+      if (data.formData?.tripType === "Round Trip") {
         try {
           const startDate = new Date(`${data.formData.date}T${data.formData.time}`);
           const endDate = new Date(`${data.formData.dropdate}T${data.formData.droptime}`);
@@ -77,6 +79,36 @@ export default function OutstationBookingPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsDetailsSubmitted(true);
+  };
+
+  const initiatePhonePePayment = async () => {
+    setIsProcessingPayment(true);
+    setPaymentError("");
+
+    try {
+      const transactionId = uuidv4();
+      const totalAmount = (carDetails!.calculated_price + driverAllowance) * 1.05; // Include 5% tax
+      const amount = Math.round(totalAmount * 100); // Convert to paise
+
+      const response = await axios.post("/api/payments/initiate", {
+        transactionId,
+        amount,
+        contact: formData.contact,
+        email: formData.email,
+        name: formData.name,
+      });
+
+      if (response.data.url) {
+        window.location.href = response.data.url; // Redirect to PhonePe payment page
+      } else {
+        setPaymentError("Payment initiation failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Payment error:", error);
+      setPaymentError("Error processing payment. Please check your details.");
+    } finally {
+      setIsProcessingPayment(false);
+    }
   };
 
   if (!tripData || !carDetails) return (
@@ -147,19 +179,19 @@ export default function OutstationBookingPage() {
                     label="Full Name"
                     type="text"
                     value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   />
                   <InputField
                     label="Contact Number"
                     type="tel"
                     value={formData.contact}
-                    onChange={(e) => setFormData({...formData, contact: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
                   />
                   <InputField
                     label="Email Address"
                     type="email"
                     value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   />
                 </div>
                 <button
@@ -175,11 +207,26 @@ export default function OutstationBookingPage() {
                 <DetailItem title="Contact" value={formData.contact} />
                 <DetailItem title="Email" value={formData.email} />
                 <button
-                  onClick={() => router.push("/payment")}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-xl font-semibold text-lg mt-4"
+                  onClick={initiatePhonePePayment}
+                  disabled={isProcessingPayment}
+                  className={`w-full ${
+                    isProcessingPayment ? "bg-gray-400" : "bg-green-600 hover:bg-green-700"
+                  } text-white py-3 px-6 rounded-xl font-semibold text-lg mt-4`}
                 >
-                  Pay ₹{(carDetails.calculated_price + driverAllowance).toFixed(2)} <span className="text-sm text-gray-600 mt-2">(Inc. Tax 5%)</span>
+                  {isProcessingPayment ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      Processing...
+                    </div>
+                  ) : (
+                    `Pay ₹${((carDetails.calculated_price + driverAllowance) * 1.05).toFixed(2)}`
+                  )}
                 </button>
+                {paymentError && (
+                  <div className="text-red-600 text-center mt-4">
+                    {paymentError}
+                  </div>
+                )}
               </motion.div>
             )}
           </div>
@@ -213,19 +260,21 @@ export default function OutstationBookingPage() {
 
               <div className="bg-blue-50 p-4 rounded-xl space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-gray-700">Base Fare:</span><span className="text-sm text-gray-600">(Inc. Tax 5%)</span>
-                  <span className="font-semibold">₹{(carDetails.calculated_price+carDetails.calculated_price*0.05).toFixed(2)}</span>
+                  <span className="text-gray-700">Base Fare:</span>
+                  <span className="font-semibold">₹{(carDetails.calculated_price * 1.05).toFixed(2)}</span>
                 </div>
-                {driverAllowance !=0 && <div className="flex justify-between">
-                  <span className="text-gray-700">Driver Allowance:</span><span className="text-sm text-gray-600">(Inc. Tax 5%)</span>
-                  <span className="font-semibold">₹{(driverAllowance+driverAllowance*0.05).toFixed(2)}</span>
-                </div>}
-                {driverAllowance !=0 && <div className="flex justify-between border-t pt-2">
-                  <span className="text-lg font-bold text-blue-600">Total<span className="text-sm text-gray-600 mt-2">(Inc. Tax 5%)</span></span>
+                {driverAllowance !== 0 && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-700">Driver Allowance:</span>
+                    <span className="font-semibold">₹{(driverAllowance * 1.05).toFixed(2)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between border-t pt-2">
+                  <span className="text-lg font-bold text-blue-600">Total</span>
                   <span className="text-lg font-bold text-blue-600">
-                    ₹{((carDetails.calculated_price + driverAllowance)+(carDetails.calculated_price + driverAllowance)*0.05).toFixed(2)}
+                    ₹{((carDetails.calculated_price + driverAllowance) * 1.05).toFixed(2)}
                   </span>
-                </div>}
+                </div>
               </div>
             </div>
           </div>
@@ -235,7 +284,7 @@ export default function OutstationBookingPage() {
   );
 }
 
-// Reuse these components from previous implementation
+// Reusable Components
 const DetailCard = ({ title, value, icon }: { title: string; value: string; icon: string }) => (
   <div className="bg-gray-50 p-4 rounded-xl">
     <div className="flex items-center gap-2 mb-2">
