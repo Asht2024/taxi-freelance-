@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "../../components/Navbar";
 import { AnimatePresence } from "framer-motion";
 import Footer from "../../components/Footer";
+import AuthProvider from '../../components/AuthProvider'
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -34,12 +35,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <AuthProvider>
         <Navbar navItems={navItems} />
         <AnimatePresence mode="wait">
           {children}
           
         </AnimatePresence>
         <Footer/>
+        </AuthProvider>
       </body>
     </html>
   );

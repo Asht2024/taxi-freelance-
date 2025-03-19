@@ -4,7 +4,8 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
-
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface RentalPackage {
   hours: number;
@@ -15,6 +16,7 @@ interface RentalPackage {
 }
 
 interface CarDetails {
+  id: string;
   model: string;
   image_url: string;
   car_name: string;
@@ -38,6 +40,8 @@ interface TripData {
 }
 
 export default function RentalBookingPage() {
+  const { data: session } = useSession();
+  const router = useRouter();
   const [tripData, setTripData] = useState<TripData | null>(null);
   const [carDetails, setCarDetails] = useState<CarDetails | null>(null);
   const [rentalPackage, setRentalPackage] = useState<RentalPackage | null>(null);
@@ -71,14 +75,24 @@ export default function RentalBookingPage() {
 
   // Initiate PhonePe payment
   const initiatePhonePePayment = async () => {
+    if (!session) {
+      alert("Please login to proceed with payment.");
+      return;
+    }
+  
     setIsProcessingPayment(true);
     setPaymentError("");
+    let transactionId: string | null = null;
   
     try {
-      const transactionId = uuidv4();
-      const amount = Number((rentalPackage!.price + rentalPackage!.price * 0.05).toFixed(2)) * 100; // Convert to paise
+      transactionId = uuidv4();
+      const amount = Number((rentalPackage!.price * 1.05).toFixed(2)) * 100;
   
-      const response = await axios.post("/api/payments/initiate", {
+      
+      
+  
+      // Proceed with payment
+      const paymentResponse = await axios.post("/api/payments/initiate", {
         transactionId,
         amount,
         contact: formData.contact,
@@ -86,18 +100,26 @@ export default function RentalBookingPage() {
         name: formData.name,
       });
   
-      if (response.data.url) {
-        window.location.href = response.data.url; // Redirect to PhonePe payment page
+      if (paymentResponse.data?.url) {
+        window.location.href = paymentResponse.data.url;
       } else {
-        setPaymentError("Payment initiation failed. Please try again.");
+        throw new Error("Payment URL not received");
       }
     } catch (error) {
       console.error("Payment error:", error);
-      setPaymentError("Error processing payment. Please check your details.");
+      setPaymentError(error.message || "Payment processing failed");
+  
+      // Cleanup failed booking if created
+      if (transactionId) {
+        await axios.patch(`/api/bookings/${transactionId}`, {
+          paymentStatus: "failed",
+        }).catch(console.error);
+      }
     } finally {
       setIsProcessingPayment(false);
     }
   };
+
   // Show loading spinner if data is not loaded
   if (!tripData || !carDetails || !rentalPackage)
     return (

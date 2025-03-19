@@ -1,0 +1,82 @@
+"use client"
+import { useSession, signIn } from "next-auth/react";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import BookingCard from "./BookingCard";
+
+export default function UserProfilePage() {
+  const { data: session } = useSession();
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      if (session?.user.id) {
+        try {
+          const response = await axios.get(`/api/bookings?userId=${session.user.id}`);
+          setBookings(response.data);
+        } catch (error) {
+          console.error("Error fetching bookings:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchBookings();
+  }, [session]);
+
+  if (!session) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Please login to view your profile</h1>
+          <button
+            onClick={() => signIn()}
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+          >
+            Login
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen mt-14 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
+          <div className="flex items-center gap-6">
+            <img
+              src={session.user.image}
+              alt="Profile"
+              className="w-20 h-20 rounded-full"
+            />
+            <div>
+              <h1 className="text-3xl font-bold text-gray-800">{session.user.name}</h1>
+              <p className="text-gray-600">{session.user.email}</p>
+            </div>
+          </div>
+        </div>
+
+        <h2 className="text-2xl font-bold text-gray-800 mb-6">Booking History</h2>
+        
+        {loading ? (
+          <div className="flex justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600"></div>
+          </div>
+        ) : bookings.length === 0 ? (
+          <div className="text-center py-12 text-gray-500">
+            No bookings found
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {bookings.map((booking: any) => (
+              <BookingCard key={booking.id} booking={booking} />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

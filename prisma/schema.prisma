@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgresql://neondb_owner:npg_f2snTl1jBASb@ep-jolly-term-a5bjlvsc-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require"
 }
 
 model Car {
@@ -24,7 +24,9 @@ model Car {
   // Relations
   LocalBookings LocalBooking[]
   FixedPrices   FixedPrice[]
+  bookings      Booking[] // ✅ This is the missing reverse relation
 }
+
 
 model LocationInfo {
   id            Int     @id @default(autoincrement())
@@ -61,3 +63,62 @@ model FixedPrice {
   // ✅ Add this to fix the error
   LocalBookings LocalBooking[] // **This creates the opposite relation**
 }
+
+
+
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?  @db.Text
+  access_token      String?  @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?  @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  accounts      Account[]
+  sessions      Session[]
+  bookings      Booking[]
+}
+
+model Booking {
+  id            String   @id @default(cuid())
+  userId        String
+  carId         Int      // ✅ was String, changed to Int
+  amount        Float
+  paymentId     String  @unique
+  paymentStatus String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  tripData      Json
+
+  // Relations
+  user User @relation(fields: [userId], references: [id])
+  car  Car  @relation(fields: [carId], references: [id]) // ✅ fixed type match
+}
+

@@ -8,6 +8,7 @@ import {
 import Maps from "./Map";
 import ServiceForms from "./ServiceForm";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 declare global {
   interface Window {
@@ -26,6 +27,9 @@ type OptionType = "Local" | "Rental" | "Outstation";
 
 const MainPage = () => {
   const router = useRouter();
+  const session=useSession();
+
+  
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], [0, -200]);
@@ -74,7 +78,9 @@ const MainPage = () => {
     if (!navigator.geolocation) {
       alert("Geolocation is not supported by this browser.");
       return;
+      
     }
+    console.log(session)
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
