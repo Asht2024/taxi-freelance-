@@ -77,8 +77,8 @@ export default function RentalBookingPage() {
   
     try {
       const transactionId = uuidv4();
-      const amount = Number((rentalPackage!.price + rentalPackage!.price * 0.05).toFixed(2)) * 100; // Convert to paise
-  
+      const baseAmount = Number((rentalPackage!.price + rentalPackage!.price * 0.05).toFixed(2)) * 100; // Convert to paise
+      const amount = paymentOption === "partial" ? baseAmount * 0.35 : baseAmount;
       const response = await axios.post("/api/payments/initiate", {
         transactionId,
         amount,
@@ -209,9 +209,9 @@ export default function RentalBookingPage() {
                   }`}
                 >
                   <div className="text-left">
-                    <p className="font-semibold text-lg">Pay 30% Now</p>
+                    <p className="font-semibold text-lg">Pay 35% Now</p>
                     <p className="text-gray-600 text-sm">
-                      ₹{(rentalPackage.price * 0.3 * 1.05).toFixed(2)}
+                      ₹{(rentalPackage.price * 0.35 * 1.05).toFixed(2)}
                     </p>
                   </div>
                 </button>

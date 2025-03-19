@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 
 interface CarType {
@@ -25,10 +26,10 @@ const OutstationPage = () => {
     const [mycars, setMyCars] = useState<CarType[]>([]);
     const [totalDistance, setTotalDistance] = useState<number>(0); 
     const cars = [
-       {outstation_oneway:18, model: "Swift Dzire or Equivalent", image_url: "/sedan.png", car_name: "Sedan", local_price_per_km: 35, local_min_price: 550, rental_price: "1650 1950 1800 11 160", outstation_per_km: 11, outstation_min: 1800, luggage: 4, passenger: 3, calculated_price: 0 },
+       {outstation_oneway:18, model: "Swift Dzire or Equivalent", image_url: "/sedan.png", car_name: "Sedan", local_price_per_km: 35, local_min_price: 550, rental_price: "1650 1950 1800 11 160", outstation_per_km: 11, outstation_min: 1800, luggage: 4, passenger: 4, calculated_price: 0 },
        {outstation_oneway:21 , model: "Ertiga or Equivalent", image_url: "/suv.png", car_name: "SUV", local_price_per_km: 75, local_min_price: 1000, rental_price: "2450 2850 3550 14 200", outstation_per_km: 14, outstation_min: 2500, luggage: 6, passenger: 6, calculated_price: 0 },
        {outstation_oneway:28,  model: "Marrazo or Equivalent", image_url: "/inova.png", car_name: "Innova", local_price_per_km: 125, local_min_price: 1800, rental_price: "3800 4500 17 260", outstation_per_km: 18, outstation_min: 3800, luggage: 7, passenger: 7, calculated_price: 0 },
-       {outstation_oneway:30 , model: "or Equivalent", image_url: "/inovacysta.png", car_name: "Innova Cysta", local_price_per_km: 150, local_min_price: 1800, rental_price: "4700 5500 17 260", outstation_per_km: 21, outstation_min: 4800, luggage: 7, passenger: 6, calculated_price: 0 },
+       {outstation_oneway:30 , model: "or Equivalent", image_url: "/inovacysta.png", car_name: "Innova Cysta", local_price_per_km: 150, local_min_price: 1800, rental_price: "4700 5500 17 260", outstation_per_km: 21, outstation_min: 4800, luggage: 7, passenger: 7, calculated_price: 0 },
      ]
      useEffect(() => {
       const dataString = localStorage.getItem("currentTripData");
@@ -37,38 +38,19 @@ const OutstationPage = () => {
     
       try {
         const data = JSON.parse(dataString); 
-         
-        // Calculate total travel allowance
-        const calculateAllowance = () => {
+        async function calculateDistance() {
           try {
-            const startDate = new Date(`${data.formData.date}T${data.formData.time}`);
-            const endDate = new Date(`${data.formData.dropdate}T${data.formData.droptime}`);
+              const response = await axios.post("/api/get-distance", {
+                  lat1:data.pickupLocation.lat,
+                  lng1:data.pickupLocation.lng,
+                  lat2:data.dropLocation.lat,
+                  lng2:data.dropLocation.lng,
+              });
     
-            const diffMs = endDate.getTime() - startDate.getTime();
-            const diffHours = Math.abs(diffMs / (1000 * 60 * 60));
-    
-            const days = Math.floor(diffHours / 24);
-            setDays(days)
-            const nights = Math.ceil((diffHours % 24) / 12); // Assuming 12 hours = 1 night
-            return (days * 300) + (nights * 250);
-          } catch (error) {
-            console.error("Error calculating allowance:", error);
-            return 0;
-          }
-        };
-    
-        // Calculate distance using provided coordinates
-        const totaldistance = calculateDistance(
-          data.pickupLocation.lat,
-          data.pickupLocation.lng,
-          data.dropLocation.lat,
-          data.dropLocation.lng
-        );
-        setTotalDistance(totaldistance)
-        console.log("Total distance:", totaldistance);
-    
-        // Filter and calculate pricing for cars
-        const processedCars = cars
+              if (response.data.success) {
+                setTotalDistance(response.data.distance);
+                const totaldistance = response.data.distance;
+                const processedCars = cars
           .filter((car) =>
             car.passenger >= data.formData?.members &&
             car.luggage >= data.formData?.luggage
@@ -101,6 +83,37 @@ const OutstationPage = () => {
           });
     
         setMyCars(processedCars);
+              } else {
+                  alert("No route found");
+                  gohome();
+                  return
+              }
+          } catch (er) {
+            console.log(er)
+             return 
+          }
+      };
+      calculateDistance();
+        // Calculate total travel allowance
+        const calculateAllowance = () => {
+          try {
+            const startDate = new Date(`${data.formData.date}T${data.formData.time}`);
+            const endDate = new Date(`${data.formData.dropdate}T${data.formData.droptime}`);
+    
+            const diffMs = endDate.getTime() - startDate.getTime();
+            const diffHours = Math.abs(diffMs / (1000 * 60 * 60));
+    
+            const days = Math.floor(diffHours / 24);
+            setDays(days)
+            const nights = Math.ceil((diffHours % 24) / 12); // Assuming 12 hours = 1 night
+            return (days * 300) + (nights * 250);
+          } catch (error) {
+            console.error("Error calculating allowance:", error);
+            return 0;
+          }
+        };
+      
+        
       } catch (error) {
         console.error("Error parsing data or processing cars:", error);
       }
@@ -110,22 +123,11 @@ const OutstationPage = () => {
        localStorage.setItem("selectedcars", JSON.stringify(car));
        router.push(route);
      };
+     const gohome = () => {
+      const route = "/";
+      router.push(route);
+    };
   // Function to calculate distance between two points using Haversine formula
-  function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
-    const R = 6371; // Earth's radius in kilometers
-    const dLat = toRad(lat2 - lat1);
-    const dLon = toRad(lon2 - lon1);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
-  }
-
-  function toRad(degrees: number): number {
-    return degrees * (Math.PI / 180);
-  }
 
   return (
     <div className="min-h-screen p-8 mt-14 sm:pt-20">

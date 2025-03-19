@@ -70,8 +70,8 @@ export default function BookingPage() {
 
     try {
       const transactionId = uuidv4();
-      const baseAmount = carDetails!.calculated_price;
-      const totalAmount = amountType === "partial" ? baseAmount * 0.3 : baseAmount;
+      const baseAmount = carDetails!.calculated_price*1.05;
+      const totalAmount = amountType === "partial" ? baseAmount * 0.35 : baseAmount;
       const amount = Math.round(totalAmount * 100); // Convert to paise
 
       const response = await axios.post("/api/payments/initiate", {
@@ -200,9 +200,9 @@ export default function BookingPage() {
               }`}
             >
               <div className="text-left">
-                <p className="font-semibold text-lg">Pay 30% Now</p>
+                <p className="font-semibold text-lg">Pay 35% Now</p>
                 <p className="text-gray-600 text-sm">
-                  ₹{(carDetails.calculated_price * 0.3).toFixed(2)}
+                  ₹{(carDetails.calculated_price *1.05* 0.35).toFixed(2)}
                 </p>
               </div>
             </button>
@@ -240,7 +240,7 @@ export default function BookingPage() {
                 Processing...
               </div>
             ) : paymentOption === "partial" ? (
-              `Pay 30% Now (₹${(carDetails.calculated_price * 0.3).toFixed(2)})`
+              `Pay 35% Now (₹${(carDetails.calculated_price * 0.35).toFixed(2)})`
             ) : (
               `Pay Full Amount (₹${(carDetails.calculated_price * 1.05).toFixed(2)})`
             )}

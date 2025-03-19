@@ -88,8 +88,8 @@ export default function OutstationBookingPage() {
     
     try {
       const transactionId = uuidv4();
-      const baseAmount = carDetails!.calculated_price + driverAllowance;
-      const totalAmount = paymentType === "partial" ? baseAmount * 0.3 : baseAmount;
+      const baseAmount = carDetails!.calculated_price*1.05 + driverAllowance;
+      const totalAmount = paymentType === "partial" ? baseAmount * 0.35 : baseAmount;
       const amountWithTax = totalAmount * 1.05;
       const amount = Math.round(amountWithTax * 100);
 
@@ -221,9 +221,9 @@ export default function OutstationBookingPage() {
               }`}
             >
               <div className="text-left">
-                <p className="font-semibold text-lg">Pay 30% Now</p>
+                <p className="font-semibold text-lg">Pay 35% Now</p>
                 <p className="text-gray-600 text-sm">
-                  ₹{((carDetails.calculated_price + driverAllowance) * 0.3 * 1.05).toFixed(2)}
+                  ₹{((carDetails.calculated_price*1.05 + driverAllowance) * 0.35).toFixed(2)}
                 </p>
               </div>
             </button>
@@ -240,7 +240,7 @@ export default function OutstationBookingPage() {
               <div className="text-left">
                 <p className="font-semibold text-lg">Pay Full Amount</p>
                 <p className="text-gray-600 text-sm">
-                  ₹{((carDetails.calculated_price + driverAllowance) * 1.05).toFixed(2)}
+                  ₹{((carDetails.calculated_price*1.05 + driverAllowance)).toFixed(2)}
                 </p>
               </div>
             </button>
@@ -261,12 +261,12 @@ export default function OutstationBookingPage() {
                 Processing...
               </div>
             ) : paymentOption === "partial" ? (
-              `Pay 30% Now (₹${(
-                (carDetails.calculated_price + driverAllowance) * 0.3 * 1.05
+              `Pay 35% Now (₹${(
+                (carDetails.calculated_price*1.05 + driverAllowance) * 0.35
               ).toFixed(2)})`
             ) : (
               `Pay Full Amount (₹${(
-                (carDetails.calculated_price + driverAllowance) * 1.05
+                (carDetails.calculated_price*1.05 + driverAllowance)
               ).toFixed(2)})`
             )}
           </button>

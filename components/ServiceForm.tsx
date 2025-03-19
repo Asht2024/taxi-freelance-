@@ -172,7 +172,7 @@ const ServiceForms = ({
                 <input
                   id="pickupDate"
                   type="date"
-                  className="absolute inset-0  outline-none bg-transparent text-transparent cursor-pointer"
+                  className="absolute inset-0  text-sm outline-none bg-transparent text-transparent cursor-pointer"
                   value={formData.date}
                   onChange={(e) => handleFormChange("date", e.target.value)}
                 />
@@ -190,7 +190,7 @@ const ServiceForms = ({
                 <input
                   id="pickupTime"
                   type="time"
-                  className="absolute inset-0 outline-none bg-transparent text-transparent cursor-pointer"
+                  className="absolute inset-0 text-sm outline-none bg-transparent text-transparent cursor-pointer"
                   value={formData.time}
                   onChange={(e) => handleFormChange("time", e.target.value)}
                 />
@@ -295,7 +295,7 @@ const ServiceForms = ({
                 <input
                   id="pickupDate"
                   type="date"
-                  className="absolute inset-0 bg-transparent outline-none text-transparent cursor-pointer"
+                  className="absolute inset-0 text-sm bg-transparent outline-none text-transparent cursor-pointer"
                   value={formData.date}
                   onChange={(e) => handleFormChange("date", e.target.value)}
                 />
@@ -313,7 +313,7 @@ const ServiceForms = ({
                 <input
                   id="pickupTime"
                   type="time"
-                  className="absolute inset-0 bg-transparent outline-none text-transparent cursor-pointer"
+                  className="absolute inset-0 text-sm bg-transparent outline-none text-transparent cursor-pointer"
                   value={formData.time}
                   onChange={(e) => handleFormChange("time", e.target.value)}
                 />
@@ -434,7 +434,7 @@ const ServiceForms = ({
                 <input
                   id="pickupDate"
                   type="date"
-                  className="absolute inset-0  outline-none bg-transparent text-transparent cursor-pointer"
+                  className="absolute inset-0 text-sm outline-none bg-transparent text-transparent cursor-pointer"
                   value={formData.date}
                   onChange={(e) => handleFormChange("date", e.target.value)}
                 />
@@ -452,7 +452,7 @@ const ServiceForms = ({
                 <input
                   id="pickupTime"
                   type="time"
-                  className="absolute inset-0 outline-none bg-transparent text-transparent cursor-pointer"
+                  className="absolute text-sm inset-0 outline-none bg-transparent text-transparent cursor-pointer"
                   value={formData.time}
                   onChange={(e) => handleFormChange("time", e.target.value)}
                 />
@@ -486,7 +486,7 @@ const ServiceForms = ({
                 <input
                   id="DropDate"
                   type="date"
-                  className="absolute inset-0  outline-none bg-transparent text-transparent cursor-pointer"
+                  className="absolute inset-0 text-sm  outline-none bg-transparent text-transparent cursor-pointer"
                   value={formData.dropdate}
                   onChange={(e) => handleFormChange("dropdate", e.target.value)}
                 />
@@ -504,7 +504,7 @@ const ServiceForms = ({
                 <input
                   id="dropTime"
                   type="time"
-                  className="absolute inset-0 outline-none bg-transparent text-transparent cursor-pointer"
+                  className="absolute inset-0  text-sm outline-none bg-transparent text-transparent cursor-pointer"
                   value={formData.droptime}
                   onChange={(e) => handleFormChange("droptime", e.target.value)}
                 />

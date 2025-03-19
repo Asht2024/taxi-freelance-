@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 interface CarType {
   model: string;
@@ -22,28 +23,7 @@ const LocalPage = () => {
   const router = useRouter();
   const [mycars, setMyCars] = useState<CarType[]>([]);
   const [totalDistance, setTotalDistance] = useState<number>(0); 
-  function toRad(degrees: number): number {
-    return degrees * (Math.PI / 180);
-  }
-  // Function to calculate distance between two points using Haversine formula in kilo meter
-  function calculateDistance(
-    lat1: number,
-    lon1: number,
-    lat2: number,
-    lon2: number
-  ): number {
-    const R = 6371; // Earth's radius in kilometers
-    const dLat = toRad(lat2 - lat1);
-    const dLon = toRad(lon2 - lon1);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(toRad(lat1)) *
-        Math.cos(toRad(lat2)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
-  }
+  
   const Cities = [
     "Vadodara",
     "Ahmedabad",
@@ -63,7 +43,7 @@ const LocalPage = () => {
       outstation_per_km: 11,
       outstation_min: 1800,
       luggage: 4,
-      passenger: 3,
+      passenger: 4,
       calculated_price: 0,
     },
     {
@@ -89,7 +69,7 @@ const LocalPage = () => {
       outstation_per_km: 18,
       outstation_min: 3800,
       luggage: 7,
-      passenger: 6,
+      passenger: 7,
       calculated_price: 0,
     },
     {
@@ -102,175 +82,200 @@ const LocalPage = () => {
       outstation_per_km: 21,
       outstation_min: 4800,
       luggage: 7,
-      passenger: 6,
+      passenger: 7,
       calculated_price: 0,
     },
   ];
+
   useEffect(() => {
     const dataString = localStorage.getItem("currentTripData") || "";
     console.log("data is" + localStorage.getItem("currentTripData"));
     const data = JSON.parse(dataString); // Parse it into a JavaScript object
-    const totaldistance = calculateDistance(
-      data.pickupLocation.lat,
-      data.pickupLocation.lng,
-      data.dropLocation.lat,
-      data.dropLocation.lng
-    );
-    setTotalDistance(totaldistance);
-    console.log("Total distance: " + totaldistance);
-    if (totaldistance > 40) {
-      alert(
-        "your Totaldistance more than 40km then continue your booking in outstation one-way"
-      );
-    }
     const pickupcity = data.pickupLocation.city;
     const dropcity = data.dropLocation.city;
-    // Process cars in a single flow
-    const processedCars = cars
-      .filter(
-        (car) =>
-          car.passenger >= data.formData?.members &&
-          car.luggage >= data.formData?.luggage
-      )
-      .map((car) => {
-        let calculatedprice = 0;
-        if (pickupcity == Cities[0]) {
-          if (car.car_name == "Sedan") {
-            if (totaldistance <= 15) {
-              calculatedprice = 700;
-            } else if (totaldistance <= 20) {
-              calculatedprice = 1000;
-            } else if (totaldistance <= 25) {
-              calculatedprice = 1250;
+    async function calculateDistance() {
+        try {
+            const response = await axios.post("/api/get-distance", {
+                lat1:data.pickupLocation.lat,
+                lng1:data.pickupLocation.lng,
+                lat2:data.dropLocation.lat,
+                lng2:data.dropLocation.lng,
+            });
+  
+            if (response.data.success) {
+              setTotalDistance(response.data.distance);
+              const totaldistance = response.data.distance;
+              if (totaldistance > 40) {
+                alert(
+                  "your Totaldistance more than 40km then continue your booking in outstation one-way"
+                );
+                gooutstation();
+              }
+                const processedCars = cars
+                .filter(
+                  (car) =>
+                    car.passenger >= data.formData?.members &&
+                    car.luggage >= data.formData?.luggage
+                )
+                .map((car) => {
+                  let calculatedprice = 0;
+                  if (pickupcity == Cities[0]) {
+                    if (car.car_name == "Sedan") {
+                      if (totaldistance <= 15) {
+                        calculatedprice = 700;
+                      } else if (totaldistance <= 20) {
+                        calculatedprice = 1000;
+                      } else if (totaldistance <= 25) {
+                        calculatedprice = 1250;
+                      } else {
+                        calculatedprice =
+                          1250 + (totaldistance - 25) * car.local_price_per_km;
+                      }
+                    } else if (car.car_name == "SUV") {
+                      if (totaldistance <= 15) {
+                        calculatedprice = 1300;
+                      } else if (totaldistance <= 20) {
+                        calculatedprice = 1600;
+                      } else if (totaldistance <= 25) {
+                        calculatedprice = 2000;
+                      } else {
+                        calculatedprice =
+                          2000 + (totaldistance - 25) * car.local_price_per_km;
+                      }
+                    } else {
+                      calculatedprice =
+                        car.local_min_price +
+                        (totaldistance - 5) * car.local_price_per_km;
+                    }
+                  } else if (pickupcity == Cities[1]) {
+                    if (car.car_name == "Sedan") {
+                      if (dropcity == Cities[4]) {
+                        calculatedprice = 3700;
+                      } else if (dropcity == Cities[2] || dropcity == Cities[5]) {
+                        calculatedprice = 2800;
+                      } else if (totaldistance <= 20) {
+                        calculatedprice = 700;
+                      } else if (totaldistance <= 25) {
+                        calculatedprice = 950;
+                      } else if (totaldistance <= 30) {
+                        calculatedprice = 1250;
+                      } else if (totaldistance <= 35) {
+                        calculatedprice = 1550;
+                      } else {
+                        calculatedprice = 1850;
+                      }
+                    } else if (car.car_name == "SUV") {
+                      if (dropcity == Cities[4]) {
+                        calculatedprice = 4500;
+                      } else if (dropcity == Cities[2] || dropcity == Cities[5]) {
+                        calculatedprice = 3500;
+                      } else if (totaldistance <= 20) {
+                        calculatedprice = 1500;
+                      } else if (totaldistance <= 25) {
+                        calculatedprice = 1800;
+                      } else if (totaldistance <= 30) {
+                        calculatedprice = 2200;
+                      } else if (totaldistance <= 35) {
+                        calculatedprice = 2500;
+                      } else {
+                        calculatedprice = 2800;
+                      }
+                    } else if (car.car_name == "Innova") {
+                      if (dropcity == Cities[4]) {
+                        calculatedprice = 5600;
+                      } else if (dropcity == Cities[2] || dropcity == Cities[5]) {
+                        calculatedprice = 6000;
+                      } else if (totaldistance <= 20) {
+                        calculatedprice = 2500;
+                      } else if (totaldistance <= 25) {
+                        calculatedprice = 2500;
+                      } else if (totaldistance <= 30) {
+                        calculatedprice = 3000;
+                      } else if (totaldistance <= 35) {
+                        calculatedprice = 3200;
+                      } else {
+                        calculatedprice = 3500;
+                      }
+                    } else {
+                      if (dropcity == Cities[4]) {
+                        calculatedprice = 6500;
+                      } else if (dropcity == Cities[2] || dropcity == Cities[5]) {
+                        calculatedprice = 7000;
+                      } else if (totaldistance <= 20) {
+                        calculatedprice = 3000;
+                      } else if (totaldistance <= 25) {
+                        calculatedprice = 3000;
+                      } else if (totaldistance <= 30) {
+                        calculatedprice = 3500;
+                      } else if (totaldistance <= 35) {
+                        calculatedprice = 3700;
+                      } else {
+                        calculatedprice = 3800;
+                      }
+                    }
+                  } else if (
+                    (pickupcity == Cities[2] && dropcity == Cities[3]) ||
+                    (dropcity == Cities[2] && pickupcity == Cities[3])
+                  ) {
+                    if (car.car_name == "Sedan") {
+                      calculatedprice = 1150;
+                    } else if (car.car_name == "SUV") {
+                      calculatedprice = 1800;
+                    } else if (car.car_name == "Innova") {
+                      calculatedprice = 3000;
+                    } else {
+                      calculatedprice = 4000;
+                    }
+                  } else if (
+                    (pickupcity == Cities[2] && dropcity == Cities[1]) ||
+                    (pickupcity == Cities[6] && dropcity == Cities[1])
+                  ) {
+                    if (car.car_name == "Sedan") {
+                      calculatedprice = 2800;
+                    } else if (car.car_name == "SUV") {
+                      calculatedprice = 3500;
+                    } else if (car.car_name == "Innova") {
+                      calculatedprice = 6000;
+                    } else {
+                      calculatedprice = 7000;
+                    }
+                  } else {
+                    calculatedprice =
+                      car.local_min_price + (totaldistance - 5) * car.local_price_per_km;
+                  }
+          
+                  car.calculated_price = calculatedprice;
+          
+                  return {
+                    ...car,
+                    calculated_price: calculatedprice,
+                  }; // Create NEW objects
+                });
+                setMyCars(processedCars);
             } else {
-              calculatedprice =
-                1250 + (totaldistance - 25) * car.local_price_per_km;
+                alert("No route found");
+                gohome();
+                return
             }
-          } else if (car.car_name == "SUV") {
-            if (totaldistance <= 15) {
-              calculatedprice = 1300;
-            } else if (totaldistance <= 20) {
-              calculatedprice = 1600;
-            } else if (totaldistance <= 25) {
-              calculatedprice = 2000;
-            } else {
-              calculatedprice =
-                2000 + (totaldistance - 25) * car.local_price_per_km;
-            }
-          } else {
-            calculatedprice =
-              car.local_min_price +
-              (totaldistance - 5) * car.local_price_per_km;
-          }
-        } else if (pickupcity == Cities[1]) {
-          if (car.car_name == "Sedan") {
-            if (dropcity == Cities[4]) {
-              calculatedprice = 3700;
-            } else if (dropcity == Cities[2] || dropcity == Cities[5]) {
-              calculatedprice = 2800;
-            } else if (totaldistance <= 20) {
-              calculatedprice = 700;
-            } else if (totaldistance <= 25) {
-              calculatedprice = 950;
-            } else if (totaldistance <= 30) {
-              calculatedprice = 1250;
-            } else if (totaldistance <= 35) {
-              calculatedprice = 1550;
-            } else {
-              calculatedprice = 1850;
-            }
-          } else if (car.car_name == "SUV") {
-            if (dropcity == Cities[4]) {
-              calculatedprice = 4500;
-            } else if (dropcity == Cities[2] || dropcity == Cities[5]) {
-              calculatedprice = 3500;
-            } else if (totaldistance <= 20) {
-              calculatedprice = 1500;
-            } else if (totaldistance <= 25) {
-              calculatedprice = 1800;
-            } else if (totaldistance <= 30) {
-              calculatedprice = 2200;
-            } else if (totaldistance <= 35) {
-              calculatedprice = 2500;
-            } else {
-              calculatedprice = 2800;
-            }
-          } else if (car.car_name == "Innova") {
-            if (dropcity == Cities[4]) {
-              calculatedprice = 5600;
-            } else if (dropcity == Cities[2] || dropcity == Cities[5]) {
-              calculatedprice = 6000;
-            } else if (totaldistance <= 20) {
-              calculatedprice = 2500;
-            } else if (totaldistance <= 25) {
-              calculatedprice = 2500;
-            } else if (totaldistance <= 30) {
-              calculatedprice = 3000;
-            } else if (totaldistance <= 35) {
-              calculatedprice = 3200;
-            } else {
-              calculatedprice = 3500;
-            }
-          } else {
-            if (dropcity == Cities[4]) {
-              calculatedprice = 6500;
-            } else if (dropcity == Cities[2] || dropcity == Cities[5]) {
-              calculatedprice = 7000;
-            } else if (totaldistance <= 20) {
-              calculatedprice = 3000;
-            } else if (totaldistance <= 25) {
-              calculatedprice = 3000;
-            } else if (totaldistance <= 30) {
-              calculatedprice = 3500;
-            } else if (totaldistance <= 35) {
-              calculatedprice = 3700;
-            } else {
-              calculatedprice = 3800;
-            }
-          }
-        } else if (
-          (pickupcity == Cities[2] && dropcity == Cities[3]) ||
-          (dropcity == Cities[2] && pickupcity == Cities[3])
-        ) {
-          if (car.car_name == "Sedan") {
-            calculatedprice = 1150;
-          } else if (car.car_name == "SUV") {
-            calculatedprice = 1800;
-          } else if (car.car_name == "Innova") {
-            calculatedprice = 3000;
-          } else {
-            calculatedprice = 4000;
-          }
-        } else if (
-          (pickupcity == Cities[2] && dropcity == Cities[1]) ||
-          (pickupcity == Cities[6] && dropcity == Cities[1])
-        ) {
-          if (car.car_name == "Sedan") {
-            calculatedprice = 2800;
-          } else if (car.car_name == "SUV") {
-            calculatedprice = 3500;
-          } else if (car.car_name == "Innova") {
-            calculatedprice = 6000;
-          } else {
-            calculatedprice = 7000;
-          }
-        } else {
-          calculatedprice =
-            car.local_min_price + (totaldistance - 5) * car.local_price_per_km;
+        } catch (er) {
+          console.log(er)
+           return 
         }
-
-        car.calculated_price = calculatedprice;
-
-        return {
-          ...car,
-          calculated_price: calculatedprice,
-        }; // Create NEW objects
-      });
-    setMyCars(processedCars);
+    };
+ 
+    calculateDistance();
   }, []);
   const handleonclick = (car: CarType) => {
     const route = "/Cabs/Local/Booking";
     localStorage.setItem("selectedcars", JSON.stringify(car));
+    router.push(route);
+  };
+  const gohome = () => {
+    const route = "/";
+    router.push(route);
+  };
+  const gooutstation  = () => {
+    const route = "/Cabs/Outstation";
     router.push(route);
   };
 
