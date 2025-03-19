@@ -167,12 +167,12 @@ const ServiceForms = ({
                   htmlFor="pickupDate"
                   className={`${inputCommonClass} flex items-center pl-10 whitespace-nowrap`}
                 >
-                  {formData.date ? formData.date : "PickUp Date"}
+                  {formData.date ? formData.date : "Date"}
                 </label>
                 <input
                   id="pickupDate"
                   type="date"
-                  className="absolute inset-0  outline-none bg-transparent text-transparent cursor-pointer"
+                  className="absolute inset-0  text-sm outline-none bg-transparent text-transparent cursor-pointer"
                   value={formData.date}
                   onChange={(e) => handleFormChange("date", e.target.value)}
                 />
@@ -185,12 +185,12 @@ const ServiceForms = ({
                   htmlFor="pickupTime"
                   className={`${inputCommonClass} flex items-center pl-10 whitespace-nowrap`}
                 >
-                  {formData.time ? formData.time : "PickUp Time"}
+                  {formData.time ? formData.time : "Time"}
                 </label>
                 <input
                   id="pickupTime"
                   type="time"
-                  className="absolute inset-0 outline-none bg-transparent text-transparent cursor-pointer"
+                  className="absolute inset-0 text-sm outline-none bg-transparent text-transparent cursor-pointer"
                   value={formData.time}
                   onChange={(e) => handleFormChange("time", e.target.value)}
                 />
@@ -290,12 +290,12 @@ const ServiceForms = ({
                   htmlFor="pickupDate"
                   className={`${inputCommonClass} flex items-center pl-10 whitespace-nowrap`}
                 >
-                  {formData.date ? formData.date : "PickUp Date"}
+                  {formData.date ? formData.date : "Date"}
                 </label>
                 <input
                   id="pickupDate"
                   type="date"
-                  className="absolute inset-0 bg-transparent outline-none text-transparent cursor-pointer"
+                  className="absolute inset-0 text-sm bg-transparent outline-none text-transparent cursor-pointer"
                   value={formData.date}
                   onChange={(e) => handleFormChange("date", e.target.value)}
                 />
@@ -308,12 +308,12 @@ const ServiceForms = ({
                   htmlFor="pickupTime"
                   className={`${inputCommonClass} flex items-center pl-10 whitespace-nowrap`}
                 >
-                  {formData.time ? formData.time : "PickUp Time"}
+                  {formData.time ? formData.time : "Time"}
                 </label>
                 <input
                   id="pickupTime"
                   type="time"
-                  className="absolute inset-0 bg-transparent outline-none text-transparent cursor-pointer"
+                  className="absolute inset-0 text-sm bg-transparent outline-none text-transparent cursor-pointer"
                   value={formData.time}
                   onChange={(e) => handleFormChange("time", e.target.value)}
                 />
@@ -427,14 +427,14 @@ const ServiceForms = ({
                 <FaCalendar className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
                 <label
                   htmlFor="pickupDate"
-                  className={`${inputCommonClass} flex items-center pl-10 whitespace-nowrap`}
+                  className={`${inputCommonClass} flex items-center pl-10 ${tripType === "Round Trip"?"text-sm":""} whitespace-nowrap`}
                 >
-                  {formData.date ? formData.date : "PickUp Date"}
+                  {formData.date ? formData.date :( tripType === "Round Trip"? "Pickup Date" :"Date")}
                 </label>
                 <input
                   id="pickupDate"
                   type="date"
-                  className="absolute inset-0  outline-none bg-transparent text-transparent cursor-pointer"
+                  className="absolute inset-0 text-sm outline-none bg-transparent text-transparent cursor-pointer"
                   value={formData.date}
                   onChange={(e) => handleFormChange("date", e.target.value)}
                 />
@@ -445,14 +445,14 @@ const ServiceForms = ({
                 <FaClock className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
                 <label
                   htmlFor="pickupTime"
-                  className={`${inputCommonClass} flex items-center pl-10 whitespace-nowrap`}
+                  className={`${inputCommonClass} ${tripType === "Round Trip"?"text-sm":""} flex items-center pl-10 whitespace-nowrap`}
                 >
-                  {formData.time ? formData.time : "PickUp Time"}
+                  {formData.time ? formData.time : ( tripType === "Round Trip"? "Pickup Time" :"Time")}
                 </label>
                 <input
                   id="pickupTime"
                   type="time"
-                  className="absolute inset-0 outline-none bg-transparent text-transparent cursor-pointer"
+                  className="absolute text-sm inset-0 outline-none bg-transparent text-transparent cursor-pointer"
                   value={formData.time}
                   onChange={(e) => handleFormChange("time", e.target.value)}
                 />
@@ -479,14 +479,14 @@ const ServiceForms = ({
                 <FaCalendar className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
                 <label
                   htmlFor="DropDate"
-                  className={`${inputCommonClass} flex items-center pl-10 whitespace-nowrap`}
+                  className={`${inputCommonClass} text-sm flex items-center pl-10 whitespace-nowrap`}
                 >
-                  {formData.dropdate ? formData.dropdate : "drop Date"}
+                  {formData.dropdate ? formData.dropdate : "Drop Date"}
                 </label>
                 <input
                   id="DropDate"
                   type="date"
-                  className="absolute inset-0  outline-none bg-transparent text-transparent cursor-pointer"
+                  className="absolute inset-0 text-sm  outline-none bg-transparent text-transparent cursor-pointer"
                   value={formData.dropdate}
                   onChange={(e) => handleFormChange("dropdate", e.target.value)}
                 />
@@ -497,14 +497,14 @@ const ServiceForms = ({
                 <FaClock className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
                 <label
                   htmlFor="dropTime"
-                  className={`${inputCommonClass} flex items-center pl-10 whitespace-nowrap`}
+                  className={`${inputCommonClass} flex text-sm items-center pl-10 whitespace-nowrap`}
                 >
-                  {formData.droptime ? formData.droptime : "PickUp Time"}
+                  {formData.droptime ? formData.droptime : "Drop Time"}
                 </label>
                 <input
                   id="dropTime"
                   type="time"
-                  className="absolute inset-0 outline-none bg-transparent text-transparent cursor-pointer"
+                  className="absolute inset-0  text-sm outline-none bg-transparent text-transparent cursor-pointer"
                   value={formData.droptime}
                   onChange={(e) => handleFormChange("droptime", e.target.value)}
                 />

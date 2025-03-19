@@ -17,7 +17,6 @@ export async function POST(request: Request) {
 
     const response = await fetch(url);
     const data = await response.json();
-    console.log("Google API Response:", data);
 
     if (data.status !== "OK" || !data.results.length) {
       return NextResponse.json(
