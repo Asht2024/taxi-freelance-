@@ -1,3 +1,5 @@
+// lib/auth.ts or wherever you define authOptions
+
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
@@ -17,7 +19,6 @@ export const authOptions: NextAuthOptions = {
           name: profile.name,
           email: profile.email,
           image: profile.picture,
-          // Add any additional fields you want to store from Google profile
         };
       },
     }),
@@ -28,15 +29,15 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async session({ session, user }) {
-      // Send properties to the client, like an access_token from a provider
-      session.user.id = user.id;
+      if (session.user) {
+        session.user.id = user.id;
+      }
       return session;
-    }
+    },
   },
   events: {
     async createUser({ user }) {
-      // Optional: Add any post-user creation logic here
       console.log(`New user created: ${user.email}`);
-    }
-  }
+    },
+  },
 };

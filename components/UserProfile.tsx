@@ -1,19 +1,41 @@
-"use client"
+"use client";
+
 import { useSession, signIn } from "next-auth/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import BookingCard from "./BookingCard";
+import type { Session } from "next-auth";
+
+interface Booking {
+  id: string;
+  carId: number;
+  amount: number;
+  paymentId: string;
+  paymentStatus: string;
+  createdAt: string;
+  updatedAt: string;
+  tripData: unknown; // Replace with a proper type if known
+  car?: {
+    car_name: string;
+    model: string;
+    image_url: string;
+  };
+}
 
 export default function UserProfilePage() {
-  const { data: session } = useSession();
-  const [bookings, setBookings] = useState([]);
+  const { data: session, status } = useSession() as {
+    data: Session | null;
+    status: "loading" | "authenticated" | "unauthenticated";
+  };
+
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchBookings = async () => {
-      if (session?.user.id) {
+      if (session?.user?.email) {
         try {
-          const response = await axios.get(`/api/bookings?userId=${session.user.id}`);
+          const response = await axios.get(`/api/bookings?email=${session.user.email}`);
           setBookings(response.data);
         } catch (error) {
           console.error("Error fetching bookings:", error);
@@ -26,7 +48,15 @@ export default function UserProfilePage() {
     fetchBookings();
   }, [session]);
 
-  if (!session) {
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  if (!session || !session.user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -48,7 +78,7 @@ export default function UserProfilePage() {
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
           <div className="flex items-center gap-6">
             <img
-              src={session.user.image}
+              src={session.user.image || "/default-avatar.png"}
               alt="Profile"
               className="w-20 h-20 rounded-full"
             />
@@ -60,19 +90,23 @@ export default function UserProfilePage() {
         </div>
 
         <h2 className="text-2xl font-bold text-gray-800 mb-6">Booking History</h2>
-        
+
         {loading ? (
           <div className="flex justify-center">
             <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600"></div>
           </div>
         ) : bookings.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
-            No bookings found
-          </div>
+          <div className="text-center py-12 text-gray-500">No bookings found</div>
         ) : (
           <div className="space-y-4">
-            {bookings.map((booking: any) => (
-              <BookingCard key={booking.id} booking={booking} />
+            {bookings.map((booking) => (
+              <BookingCard key={booking.id} booking={{ 
+                ...booking, 
+                carDetails: {
+                  car_name: booking.car?.car_name || "Unknown Car",
+                  model: booking.car?.model || "Unknown Model"
+                }
+              }} />
             ))}
           </div>
         )}

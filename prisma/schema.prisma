@@ -4,11 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-<<<<<<< HEAD
   url      = "postgresql://neondb_owner:npg_f2snTl1jBASb@ep-jolly-term-a5bjlvsc-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require"
-=======
-  url      = "postgresql://neondb_owner:npg_xMPTwE9LbSH2@ep-late-snowflake-a5nz2w01-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require"
->>>>>>> eac65208483d37174e2fe9cd8f5303068f13be5f
 }
 
 model Car {

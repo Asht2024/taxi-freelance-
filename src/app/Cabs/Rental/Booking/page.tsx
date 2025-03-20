@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+
 
 interface RentalPackage {
   hours: number;
@@ -41,7 +41,6 @@ interface TripData {
 
 export default function RentalBookingPage() {
   const { data: session } = useSession();
-  const router = useRouter();
   const [tripData, setTripData] = useState<TripData | null>(null);
   const [carDetails, setCarDetails] = useState<CarDetails | null>(null);
   const [rentalPackage, setRentalPackage] = useState<RentalPackage | null>(null);
@@ -55,7 +54,6 @@ export default function RentalBookingPage() {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [paymentError, setPaymentError] = useState("");
 
-  // Load data from localStorage
   useEffect(() => {
     const tripDataString = localStorage.getItem("currentTripData");
     const packageDataString = localStorage.getItem("selectedRentalPackage");
@@ -68,13 +66,11 @@ export default function RentalBookingPage() {
     }
   }, []);
 
-  // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsDetailsSubmitted(true);
   };
 
-  // Initiate PhonePe payment
   const initiatePhonePePayment = async () => {
     if (!session) {
       alert("Please login to proceed with payment.");
@@ -84,11 +80,12 @@ export default function RentalBookingPage() {
     setIsProcessingPayment(true);
     setPaymentError("");
     let transactionId: string | null = null;
-  
+
     try {
-      const transactionId = uuidv4();
-      const baseAmount = Number((rentalPackage!.price + rentalPackage!.price * 0.05).toFixed(2)) * 100; // Convert to paise
+      transactionId = uuidv4();
+      const baseAmount = Number((rentalPackage!.price + rentalPackage!.price * 0.05).toFixed(2)) * 100;
       const amount = paymentOption === "partial" ? baseAmount * 0.35 : baseAmount;
+      
       const response = await axios.post("/api/payments/initiate", {
         transactionId,
         amount,
@@ -96,28 +93,37 @@ export default function RentalBookingPage() {
         email: formData.email,
         name: formData.name,
       });
-  
-      if (paymentResponse.data?.url) {
-        window.location.href = paymentResponse.data.url;
+
+      if (response.data?.url) {
+        window.location.href = response.data.url;
       } else {
         throw new Error("Payment URL not received");
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Payment error:", error);
-      setPaymentError(error.message || "Payment processing failed");
-  
-      // Cleanup failed booking if created
+    
+      const errMsg =
+        error instanceof Error
+          ? error.message
+          : typeof error === "string"
+          ? error
+          : "Payment processing failed";
+    
+      setPaymentError(errMsg);
+    
       if (transactionId) {
-        await axios.patch(`/api/bookings/${transactionId}`, {
-          paymentStatus: "failed",
-        }).catch(console.error);
+        await axios
+          .patch(`/api/bookings/${transactionId}`, {
+            paymentStatus: "failed",
+          })
+          .catch(console.error);
       }
-    } finally {
+    }
+     finally {
       setIsProcessingPayment(false);
     }
   };
 
-  // Show loading spinner if data is not loaded
   if (!tripData || !carDetails || !rentalPackage)
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -132,7 +138,6 @@ export default function RentalBookingPage() {
       className="min-h-screen mt-14 py-8 px-4 sm:px-6 lg:px-8"
     >
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Left Section - Booking Details */}
         <motion.div
           initial={{ x: -50 }}
           animate={{ x: 0 }}
@@ -143,7 +148,6 @@ export default function RentalBookingPage() {
           </h2>
 
           <div className="space-y-6">
-            {/* Pickup Location */}
             <div className="bg-gray-50 p-4 rounded-xl">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xl">📍</span>
@@ -154,7 +158,6 @@ export default function RentalBookingPage() {
               </p>
             </div>
 
-            {/* Trip Details */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               <DetailItem title="Pickup Date" value={tripData.formData.date} />
               <DetailItem title="Pickup Time" value={tripData.formData.time} />
@@ -164,7 +167,6 @@ export default function RentalBookingPage() {
               <DetailItem title="Included KM" value={rentalPackage.km} />
             </div>
 
-            {/* User Details Form */}
             {!isDetailsSubmitted ? (
               <motion.form
                 onSubmit={handleSubmit}
@@ -208,81 +210,80 @@ export default function RentalBookingPage() {
               </motion.form>
             ) : (
               <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="space-y-4"
-            >
-              <DetailItem title="Name" value={formData.name} />
-              <DetailItem title="Contact" value={formData.contact} />
-              <DetailItem title="Email" value={formData.email} />
-
-              <div className="grid grid-cols-2 gap-4">
-                <button
-                  type="button"
-                  onClick={() => setPaymentOption("partial")}
-                  className={`p-4 rounded-xl border-2 transition-all ${
-                    paymentOption === "partial"
-                      ? "border-blue-600 bg-blue-50"
-                      : "border-gray-300 hover:border-blue-400"
-                  }`}
-                >
-                  <div className="text-left">
-                    <p className="font-semibold text-lg">Pay 35% Now</p>
-                    <p className="text-gray-600 text-sm">
-                      ₹{(rentalPackage.price * 0.35 * 1.05).toFixed(2)}
-                    </p>
-                  </div>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setPaymentOption("full")}
-                  className={`p-4 rounded-xl border-2 transition-all ${
-                    paymentOption === "full"
-                      ? "border-blue-600 bg-blue-50"
-                      : "border-gray-300 hover:border-blue-400"
-                  }`}
-                >
-                  <div className="text-left">
-                    <p className="font-semibold text-lg">Pay Full Amount</p>
-                    <p className="text-gray-600 text-sm">
-                      ₹{(rentalPackage.price * 1.05).toFixed(2)}
-                    </p>
-                  </div>
-                </button>
-              </div>
-
-              <button
-                onClick={initiatePhonePePayment}
-                disabled={isProcessingPayment}
-                className={`w-full ${
-                  isProcessingPayment
-                    ? "bg-gray-400"
-                    : "bg-green-600 hover:bg-green-700"
-                } text-white py-3 px-6 rounded-xl transition-all duration-300 font-semibold text-lg mt-6`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="space-y-4"
               >
-                {isProcessingPayment ? (
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    Processing...
-                  </div>
-                ) : paymentOption === "partial" ? (
-                  `Pay 30% Now (₹${(rentalPackage.price * 0.3 * 1.05).toFixed(2)})`
-                ) : (
-                  `Pay Full Amount (₹${(rentalPackage.price * 1.05).toFixed(2)})`
-                )}
-              </button>
-              {paymentError && (
-                <div className="text-red-600 text-center mt-4">
-                  {paymentError}
+                <DetailItem title="Name" value={formData.name} />
+                <DetailItem title="Contact" value={formData.contact} />
+                <DetailItem title="Email" value={formData.email} />
+
+                <div className="grid grid-cols-2 gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setPaymentOption("partial")}
+                    className={`p-4 rounded-xl border-2 transition-all ${
+                      paymentOption === "partial"
+                        ? "border-blue-600 bg-blue-50"
+                        : "border-gray-300 hover:border-blue-400"
+                    }`}
+                  >
+                    <div className="text-left">
+                      <p className="font-semibold text-lg">Pay 35% Now</p>
+                      <p className="text-gray-600 text-sm">
+                        ₹{(rentalPackage.price * 0.35 * 1.05).toFixed(2)}
+                      </p>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setPaymentOption("full")}
+                    className={`p-4 rounded-xl border-2 transition-all ${
+                      paymentOption === "full"
+                        ? "border-blue-600 bg-blue-50"
+                        : "border-gray-300 hover:border-blue-400"
+                    }`}
+                  >
+                    <div className="text-left">
+                      <p className="font-semibold text-lg">Pay Full Amount</p>
+                      <p className="text-gray-600 text-sm">
+                        ₹{(rentalPackage.price * 1.05).toFixed(2)}
+                      </p>
+                    </div>
+                  </button>
                 </div>
-              )}
-            </motion.div>
+
+                <button
+                  onClick={initiatePhonePePayment}
+                  disabled={isProcessingPayment}
+                  className={`w-full ${
+                    isProcessingPayment
+                      ? "bg-gray-400"
+                      : "bg-green-600 hover:bg-green-700"
+                  } text-white py-3 px-6 rounded-xl transition-all duration-300 font-semibold text-lg mt-6`}
+                >
+                  {isProcessingPayment ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      Processing...
+                    </div>
+                  ) : paymentOption === "partial" ? (
+                    `Pay 35% Now (₹${(rentalPackage.price * 0.35 * 1.05).toFixed(2)})`
+                  ) : (
+                    `Pay Full Amount (₹${(rentalPackage.price * 1.05).toFixed(2)})`
+                  )}
+                </button>
+                {paymentError && (
+                  <div className="text-red-600 text-center mt-4">
+                    {paymentError}
+                  </div>
+                )}
+              </motion.div>
             )}
           </div>
         </motion.div>
 
-        {/* Right Section - Car Details */}
         <motion.div
           initial={{ x: 50 }}
           animate={{ x: 0 }}
@@ -333,7 +334,6 @@ export default function RentalBookingPage() {
   );
 }
 
-// Reusable Components
 const DetailItem = ({
   title,
   value,
@@ -374,8 +374,3 @@ const InputField = ({
     />
   </div>
 );
-
-
-
-
-
