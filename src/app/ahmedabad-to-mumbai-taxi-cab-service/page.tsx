@@ -1,100 +1,13 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { FaTaxi, FaCarSide, FaMapMarkedAlt, FaSearch } from "react-icons/fa";
-import ServiceForms from "../../../components/ServiceForm";
-import { useRouter } from "next/navigation";
+import React from "react";
+import Main from "../../../components/Main";
 
-type LocationType = {
-  address: string;
-  city: string;
-  lat: number;
-  lng: number;
-};
-
-type OptionType = "One-Way" | "Round-Trip" | "Full-Day";
 
 const AhmedabadToMumbaiPage = () => {
-  const router = useRouter();
-  const [dropLocation, setDropLocation] = useState<LocationType>({
-    address: "",
-    city: "",
-    lat: 0,
-    lng: 0,
-  });
-  const [pickupLocation, setPickupLocation] = useState<LocationType>({
-    address: "Your current location",
-    city: "",
-    lat: 0,
-    lng: 0,
-  });
-  const [selectedOption, setSelectedOption] = useState<OptionType>("One-Way");
-
-  const getAddressFromCoords = async (lat: number, lng: number) => {
-    try {
-      const response = await fetch("/api/get-address", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ latitude: lat, longitude: lng }),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        setPickupLocation({
-          address: data.address,
-          city: data.city,
-          lat: data.lat,
-          lng: data.lng,
-        });
-      }
-    } catch (error) {
-      console.error("Error fetching address:", error);
-      alert("Could not fetch location details. Please enter manually.");
-    }
-  };
-
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setPickupLocation((prev) => ({
-            ...prev,
-            lat: latitude,
-            lng: longitude,
-          }));
-          getAddressFromCoords(latitude, longitude);
-        },
-        (error) => {
-          console.error("Geolocation error:", error);
-        }
-      );
-    }
-  }, []);
-
-  const handleSearchCab = () => {
-    const data = JSON.parse(localStorage.getItem("tripFormData") || "{}");
-    const tripData = {
-      pickupLocation,
-      dropLocation,
-      selectedOption,
-      formData: data,
-    };
-
-    localStorage.setItem("currentTripData", JSON.stringify(tripData));
-    
-    if (!pickupLocation.address || !data.date || !data.time || !data.members) {
-      alert("Please enter all input!");
-      return;
-    }
-    
-    const route = `/Cabs/${selectedOption}`;
-    setTimeout(() => router.push(route), 500);
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
+      <Main/>
       <section className="bg-gradient-to-r from-blue-600 to-blue-400 py-16 text-white text-center">
         <div className="max-w-4xl mx-auto px-4">
           <h1 className="text-4xl font-bold mb-4">Reliable Cab and Taxi Services: Ahmedabad to Mumbai & Mumbai to Ahmedabad</h1>
@@ -103,59 +16,6 @@ const AhmedabadToMumbaiPage = () => {
           </p>
         </div>
       </section>
-
-      {/* Service Form Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10"
-      >
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          {/* Service Selection Buttons */}
-          <div className="flex gap-4 mb-6">
-            {[
-              { name: "One-Way", icon: <FaTaxi size={24} /> },
-              { name: "Round-Trip", icon: <FaCarSide size={24} /> },
-              { name: "Full-Day", icon: <FaMapMarkedAlt size={24} /> },
-            ].map((option) => (
-              <button
-                key={option.name}
-                onClick={() => setSelectedOption(option.name as OptionType)}
-                className={`p-3 rounded-lg flex items-center gap-2 transition-all ${
-                  selectedOption === option.name
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                {option.icon}
-                <span>{option.name}</span>
-              </button>
-            ))}
-          </div>
-
-          {/* Service Form */}
-          <ServiceForms
-            key={selectedOption}
-            serviceType={selectedOption}
-            pickupAddress={pickupLocation.address}
-            dropAddress={dropLocation.address}
-            onPickupChange={setPickupLocation}
-            onDropChange={setDropLocation}
-          />
-
-          {/* Search Button */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleSearchCab}
-            className="w-full mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-          >
-            <FaSearch size={18} />
-            <span>Search Available Cabs</span>
-          </motion.button>
-        </div>
-      </motion.div>
-
       {/* Content Section */}
       <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
         <div className="space-y-8">

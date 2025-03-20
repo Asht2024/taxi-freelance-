@@ -72,9 +72,9 @@ export const Navbar = ({
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex gap-6 items-center">
-          {navItems.map((item) => (
+          {navItems.map((item,i) => (
             item.dropdown ? (
-              <div key={item.name} className="relative" ref={servicesRef}>
+              <div key={i} className="relative" ref={servicesRef}>
                 <button
                   onClick={() => setIsServicesOpen(!isServicesOpen)}
                   className="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors flex items-center gap-1"
@@ -92,9 +92,9 @@ export const Navbar = ({
                 {isServicesOpen && (
                   <div className="absolute top-full left-0 mt-2 w-48 bg-white/95 dark:bg-black/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
                     <div className="p-2">
-                      {item.dropdown.map((subItem) => (
+                      {item.dropdown.map((subItem,i) => (
                         <Link
-                          key={subItem.name}
+                          key={i}
                           href={subItem.link}
                           className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
                           onClick={() => setIsServicesOpen(false)}
@@ -108,7 +108,7 @@ export const Navbar = ({
               </div>
             ) : (
               <Link
-                key={item.name}
+                key={i}
                 href={item.link}
                 className="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors"
               >
@@ -204,9 +204,9 @@ export const Navbar = ({
       {isMenuOpen && (
         <div className="md:hidden absolute w-full bg-white/95 dark:bg-black/95 backdrop-blur-sm transition-all duration-300 ease-in-out">
           <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
-            {navItems.map((item) => (
+            {navItems.map((item,i) => (
               item.dropdown ? (
-                <div key={item.name} className="relative" ref={mobileServicesRef}>
+                <div key={i} className="relative" ref={mobileServicesRef}>
                   <button
                     onClick={() => setIsMobileServicesOpen(!isMobileServicesOpen)}
                     className="w-full text-left py-2 text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors flex justify-between items-center"
@@ -223,9 +223,9 @@ export const Navbar = ({
                   </button>
                   {isMobileServicesOpen && (
                     <div className="ml-4">
-                      {item.dropdown.map((subItem) => (
+                      {item.dropdown.map((subItem,i) => (
                         <Link
-                          key={subItem.name}
+                          key={i}
                           href={subItem.link}
                           className="block py-2 text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors"
                           onClick={() => {
@@ -241,7 +241,7 @@ export const Navbar = ({
                 </div>
               ) : (
                 <Link
-                  key={item.name}
+                  key={i}
                   href={item.link}
                   className="block py-2 text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
