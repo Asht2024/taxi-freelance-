@@ -14,6 +14,7 @@ import {
   FaInstagram,
   FaLinkedinIn
 } from 'react-icons/fa';
+import Link from 'next/link';
 
 const Footer = () => {
   const scrollToTop = () => {
@@ -80,10 +81,10 @@ const Footer = () => {
             className="space-y-2"
           >
             <h4 className="text-lg font-semibold text-white mb-4">Explore</h4>
-            <a href="#" className="block hover:text-blue-300 transition">About Us</a>
-            <a href="#" className="block hover:text-blue-300 transition">Services</a>
-            <a href="#" className="block hover:text-blue-300 transition">Fleet</a>
-            <a href="#" className="block hover:text-blue-300 transition">Careers</a>
+            <Link href="#" className="block hover:text-blue-300 transition">About Us</Link>
+            <Link href="#" className="block hover:text-blue-300 transition">Services</Link>
+            <Link href="/fleet" className="block hover:text-blue-300 transition">Fleet</Link>
+            <Link href="#" className="block hover:text-blue-300 transition">Careers</Link>
           </motion.div>
 
           {/* Newsletter */}
