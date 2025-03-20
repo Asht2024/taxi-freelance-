@@ -1,34 +1,54 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { cn } from "../lib/utils";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 
+interface NavItem {
+  name: string;
+  link: string;
+  dropdown?: { name: string; link: string }[];
+}
+
 export const Navbar = ({
   navItems,
   className,
 }: {
-  navItems: {
-    name: string;
-    link: string;
-    icon?: React.ReactNode;
-  }[];
+  navItems: NavItem[];
   className?: string;
 }) => {
   const { data: session } = useSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [isMobileServicesOpen, setIsMobileServicesOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
+  const servicesRef = useRef<HTMLDivElement>(null);
+  const mobileServicesRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsMounted(true);
+    const handleClickOutside = (event: MouseEvent) => {
+      if (servicesRef.current && !servicesRef.current.contains(event.target as Node)) {
+        setIsServicesOpen(false);
+      }
+      if (mobileServicesRef.current && !mobileServicesRef.current.contains(event.target as Node)) {
+        setIsMobileServicesOpen(false);
+      }
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setIsProfileOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const userName = session?.user?.name || "Satyam Maurya";
-  const truncatedName = userName.split(' ')[0] + ' ' + userName.split(' ')[1]?.[0] + '.';
+  const truncatedName = userName.split(' ')[0] + ' ' + (userName.split(' ')[1]?.[0] || '');
 
   return (
     <nav 
@@ -53,17 +73,53 @@ export const Navbar = ({
         {/* Desktop Navigation */}
         <div className="hidden md:flex gap-6 items-center">
           {navItems.map((item) => (
-            <Link
-              key={item.name}
-              href={item.link}
-              className="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors"
-            >
-              {item.name}
-            </Link>
+            item.dropdown ? (
+              <div key={item.name} className="relative" ref={servicesRef}>
+                <button
+                  onClick={() => setIsServicesOpen(!isServicesOpen)}
+                  className="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors flex items-center gap-1"
+                >
+                  {item.name}
+                  <svg
+                    className={`w-4 h-4 transition-transform ${isServicesOpen ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {isServicesOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-48 bg-white/95 dark:bg-black/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+                    <div className="p-2">
+                      {item.dropdown.map((subItem) => (
+                        <Link
+                          key={subItem.name}
+                          href={subItem.link}
+                          className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+                          onClick={() => setIsServicesOpen(false)}
+                        >
+                          {subItem.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                key={item.name}
+                href={item.link}
+                className="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors"
+              >
+                {item.name}
+              </Link>
+            )
           ))}
           
+          {/* Profile Section */}
           {session ? (
-            <div className="relative ml-4">
+            <div className="relative ml-4" ref={profileRef}>
               <button 
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
                 className="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full p-1 transition-colors"
@@ -149,14 +205,50 @@ export const Navbar = ({
         <div className="md:hidden absolute w-full bg-white/95 dark:bg-black/95 backdrop-blur-sm transition-all duration-300 ease-in-out">
           <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
             {navItems.map((item) => (
-              <Link
-                key={item.name}
-                href={item.link}
-                className="block py-2 text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {item.name}
-              </Link>
+              item.dropdown ? (
+                <div key={item.name} className="relative" ref={mobileServicesRef}>
+                  <button
+                    onClick={() => setIsMobileServicesOpen(!isMobileServicesOpen)}
+                    className="w-full text-left py-2 text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors flex justify-between items-center"
+                  >
+                    {item.name}
+                    <svg
+                      className={`w-4 h-4 transition-transform ${isMobileServicesOpen ? 'rotate-180' : ''}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {isMobileServicesOpen && (
+                    <div className="ml-4">
+                      {item.dropdown.map((subItem) => (
+                        <Link
+                          key={subItem.name}
+                          href={subItem.link}
+                          className="block py-2 text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors"
+                          onClick={() => {
+                            setIsMenuOpen(false);
+                            setIsMobileServicesOpen(false);
+                          }}
+                        >
+                          {subItem.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  key={item.name}
+                  href={item.link}
+                  className="block py-2 text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              )
             ))}
             
             {session ? (
