@@ -165,7 +165,7 @@ const ServiceForms = ({
                 <FaCalendar className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
                 <label
                   htmlFor="pickupDate"
-                  className={`${inputCommonClass} flex items-center pl-10 whitespace-nowrap`}
+                  className={`w-full pt-4 pb-2 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 pl-8 bg-white shadow-sm flex text-sm items-center whitespace-nowrap`}
                 >
                   {formData.date ? formData.date : "Date"}
                 </label>
@@ -183,7 +183,7 @@ const ServiceForms = ({
                 <FaClock className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
                 <label
                   htmlFor="pickupTime"
-                  className={`${inputCommonClass} flex items-center pl-10 whitespace-nowrap`}
+                  className={`w-full pt-4 pb-2 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 pl-8 bg-white shadow-sm flex text-sm items-center whitespace-nowrap`}
                 >
                   {formData.time ? formData.time : "Time"}
                 </label>
@@ -288,7 +288,7 @@ const ServiceForms = ({
                 <FaCalendar className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
                 <label
                   htmlFor="pickupDate"
-                  className={`${inputCommonClass} flex items-center pl-10 whitespace-nowrap`}
+                  className={`w-full pt-4 pb-2 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 pl-8 bg-white shadow-sm flex text-sm items-center whitespace-nowrap`}
                 >
                   {formData.date ? formData.date : "Date"}
                 </label>
@@ -306,7 +306,7 @@ const ServiceForms = ({
                 <FaClock className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
                 <label
                   htmlFor="pickupTime"
-                  className={`${inputCommonClass} flex items-center pl-10 whitespace-nowrap`}
+                  className={`w-full pt-4 pb-2 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 pl-8 bg-white shadow-sm flex text-sm items-center whitespace-nowrap`}
                 >
                   {formData.time ? formData.time : "Time"}
                 </label>
@@ -427,7 +427,7 @@ const ServiceForms = ({
                 <FaCalendar className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
                 <label
                   htmlFor="pickupDate"
-                  className={`${inputCommonClass} flex items-center pl-10 ${tripType === "Round Trip"?"text-sm":""} whitespace-nowrap`}
+                  className={`w-full pt-4 pb-2 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 pl-8 bg-white shadow-sm flex text-sm items-center whitespace-nowrap`}
                 >
                   {formData.date ? formData.date :( tripType === "Round Trip"? "Pickup Date" :"Date")}
                 </label>
@@ -445,7 +445,7 @@ const ServiceForms = ({
                 <FaClock className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
                 <label
                   htmlFor="pickupTime"
-                  className={`${inputCommonClass} ${tripType === "Round Trip"?"text-sm":""} flex items-center pl-10 whitespace-nowrap`}
+                  className={`w-full pt-4 pb-2 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 pl-8 bg-white shadow-sm flex text-sm items-center whitespace-nowrap`}
                 >
                   {formData.time ? formData.time : ( tripType === "Round Trip"? "Pickup Time" :"Time")}
                 </label>
@@ -479,7 +479,7 @@ const ServiceForms = ({
                 <FaCalendar className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
                 <label
                   htmlFor="DropDate"
-                  className={`${inputCommonClass} text-sm flex items-center pl-10 whitespace-nowrap`}
+                  className={`w-full pt-4 pb-2 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 pl-8 bg-white shadow-sm flex text-sm items-center whitespace-nowrap`}
                 >
                   {formData.dropdate ? formData.dropdate : "Drop Date"}
                 </label>
@@ -497,7 +497,7 @@ const ServiceForms = ({
                 <FaClock className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
                 <label
                   htmlFor="dropTime"
-                  className={`${inputCommonClass} flex text-sm items-center pl-10 whitespace-nowrap`}
+                  className={`w-full pt-4 pb-2 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 pl-8 bg-white shadow-sm flex text-sm items-center whitespace-nowrap`}
                 >
                   {formData.droptime ? formData.droptime : "Drop Time"}
                 </label>
