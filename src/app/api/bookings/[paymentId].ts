@@ -1,3 +1,5 @@
+// pages/api/bookings/[paymentId].ts
+
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { Prisma } from "@prisma/client";
