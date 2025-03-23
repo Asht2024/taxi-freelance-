@@ -114,6 +114,7 @@ const ServiceForms = ({
     visible: { opacity: 1, y: 0 },
   };
 
+  
   const handleAddCity = () => {
     const newCities = [...intermediateCities, ""];
     setIntermediateCities(newCities);
@@ -122,13 +123,6 @@ const ServiceForms = ({
 
   const handleRemoveCity = (index: number) => {
     const newCities = intermediateCities.filter((_, i) => i !== index);
-    setIntermediateCities(newCities);
-    handleFormChange("intermediateCities", newCities);
-  };
-
-  const handleUpdateCity = (index: number, value: string) => {
-    const newCities = [...intermediateCities];
-    newCities[index] = value;
     setIntermediateCities(newCities);
     handleFormChange("intermediateCities", newCities);
   };
@@ -429,7 +423,11 @@ const ServiceForms = ({
                   htmlFor="pickupDate"
                   className={`w-full pt-4 pb-2 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 pl-8 bg-white shadow-sm flex text-sm items-center whitespace-nowrap`}
                 >
-                  {formData.date ? formData.date :( tripType === "Round Trip"? "Pickup Date" :"Date")}
+                  {formData.date
+                    ? formData.date
+                    : tripType === "Round Trip"
+                    ? "Pickup Date"
+                    : "Date"}
                 </label>
                 <input
                   id="pickupDate"
@@ -447,7 +445,11 @@ const ServiceForms = ({
                   htmlFor="pickupTime"
                   className={`w-full pt-4 pb-2 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 pl-8 bg-white shadow-sm flex text-sm items-center whitespace-nowrap`}
                 >
-                  {formData.time ? formData.time : ( tripType === "Round Trip"? "Pickup Time" :"Time")}
+                  {formData.time
+                    ? formData.time
+                    : tripType === "Round Trip"
+                    ? "Pickup Time"
+                    : "Time"}
                 </label>
                 <input
                   id="pickupTime"
@@ -471,47 +473,51 @@ const ServiceForms = ({
             {/* Round Trip Date & Time Section */}
             {tripType === "Round Trip" && (
               <motion.div
-              variants={formVariants}
-              className="grid grid-cols-2 gap-3 h-[58px]"
-            >
-              {/* Pickup Date Field */}
-              <div className="relative">
-                <FaCalendar className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
-                <label
-                  htmlFor="DropDate"
-                  className={`w-full pt-4 pb-2 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 pl-8 bg-white shadow-sm flex text-sm items-center whitespace-nowrap`}
-                >
-                  {formData.dropdate ? formData.dropdate : "Drop Date"}
-                </label>
-                <input
-                  id="DropDate"
-                  type="date"
-                  className="absolute inset-0 text-sm  outline-none bg-transparent text-transparent cursor-pointer"
-                  value={formData.dropdate}
-                  onChange={(e) => handleFormChange("dropdate", e.target.value)}
-                />
-              </div>
+                variants={formVariants}
+                className="grid grid-cols-2 gap-3 h-[58px]"
+              >
+                {/* Pickup Date Field */}
+                <div className="relative">
+                  <FaCalendar className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
+                  <label
+                    htmlFor="DropDate"
+                    className={`w-full pt-4 pb-2 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 pl-8 bg-white shadow-sm flex text-sm items-center whitespace-nowrap`}
+                  >
+                    {formData.dropdate ? formData.dropdate : "Drop Date"}
+                  </label>
+                  <input
+                    id="DropDate"
+                    type="date"
+                    className="absolute inset-0 text-sm  outline-none bg-transparent text-transparent cursor-pointer"
+                    value={formData.dropdate}
+                    onChange={(e) =>
+                      handleFormChange("dropdate", e.target.value)
+                    }
+                  />
+                </div>
 
-              {/* Pickup Time Field */}
-              <div className="relative">
-                <FaClock className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
-                <label
-                  htmlFor="dropTime"
-                  className={`w-full pt-4 pb-2 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 pl-8 bg-white shadow-sm flex text-sm items-center whitespace-nowrap`}
-                >
-                  {formData.droptime ? formData.droptime : "Drop Time"}
-                </label>
-                <input
-                  id="dropTime"
-                  type="time"
-                  className="absolute inset-0  text-sm outline-none bg-transparent text-transparent cursor-pointer"
-                  value={formData.droptime}
-                  onChange={(e) => handleFormChange("droptime", e.target.value)}
-                />
-              </div>
-            </motion.div>
+                {/* Pickup Time Field */}
+                <div className="relative">
+                  <FaClock className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />
+                  <label
+                    htmlFor="dropTime"
+                    className={`w-full pt-4 pb-2 rounded-lg border-2 border-blue-100 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 pl-8 bg-white shadow-sm flex text-sm items-center whitespace-nowrap`}
+                  >
+                    {formData.droptime ? formData.droptime : "Drop Time"}
+                  </label>
+                  <input
+                    id="dropTime"
+                    type="time"
+                    className="absolute inset-0  text-sm outline-none bg-transparent text-transparent cursor-pointer"
+                    value={formData.droptime}
+                    onChange={(e) =>
+                      handleFormChange("droptime", e.target.value)
+                    }
+                  />
+                </div>
+              </motion.div>
             )}
-              
+
             <motion.div
               variants={formVariants}
               className="grid grid-cols-2 gap-4"
@@ -579,15 +585,15 @@ const ServiceForms = ({
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
                     >
-                      <FaMapMarkerAlt className={iconCommonClass} />
-                      <input
-                        type="text"
-                        placeholder={`Intermediate City ${index + 1}`}
-                        className={inputCommonClass}
+                      <AutocompleteInput
+                        label={`Intermediate City ${index + 1}`}
                         value={city}
-                        onChange={(e) =>
-                          handleUpdateCity(index, e.target.value)
-                        }
+                        onChange={(location) => {
+                          const newCities = [...intermediateCities];
+                          newCities[index] = location.address;
+                          setIntermediateCities(newCities);
+                          handleFormChange("intermediateCities", newCities);
+                        }}
                       />
                       <button
                         onClick={() => handleRemoveCity(index)}

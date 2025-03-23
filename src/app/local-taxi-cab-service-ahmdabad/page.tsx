@@ -15,7 +15,7 @@ import {
   ArrowRightIcon
 } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
-
+import Main from '../../../components/Main';
 export default function TaxiServices() {
   const router = useRouter();
   
@@ -42,7 +42,8 @@ export default function TaxiServices() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen mt-10">
+      <Main/>
       <Head>
         <title>Premium Taxi Services in Ahmedabad | Asht Cab</title>
       </Head>
@@ -74,7 +75,7 @@ export default function TaxiServices() {
               Perfect for daily commutes, business meetings, or city exploration.
             </p>
             <button 
-              onClick={() => router.push('/book')}
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition flex items-center"
             >
               Book City Ride
@@ -92,7 +93,7 @@ export default function TaxiServices() {
               Professional drivers, AC vehicles, and seamless city navigation.
             </p>
             <button 
-              onClick={() => router.push('/premium')}
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition flex items-center"
             >
               Explore Premium
@@ -184,14 +185,14 @@ export default function TaxiServices() {
           <h2 className="text-3xl font-bold mb-8">Ready to Ride in Comfort?</h2>
           <div className="flex justify-center gap-6 flex-wrap">
             <button 
-              onClick={() => router.push('/contact')}
+              onClick={() => router.push('/Contact')}
               className="bg-white text-blue-900 px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition flex items-center"
             >
               Contact Our Team
               <ArrowRightIcon className="h-4 w-4 ml-2" />
             </button>
             <button 
-              onClick={() => router.push('/book')}
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               className="border-2 border-white px-8 py-4 rounded-xl font-semibold hover:bg-white/10 transition flex items-center"
             >
               Instant Booking

@@ -44,6 +44,14 @@ const TermsAndConditionsPage = () => {
               <li>Additional charges are payable directly to the driver in cash.</li>
               <li>AC may not function in hilly areas or when the vehicle is parked.</li>
               <li>Drivers are not forced to exceed speed limits set by Indian Motor Vehicle laws.</li>
+              <li>
+                <strong>Rental Time Policy:</strong> Customers are allowed a 15-minute grace period post scheduled pickup time. 
+                After this period, the rental duration will be calculated from the originally scheduled pickup time.
+              </li>
+              <li>
+                <strong>Peak Season Pricing:</strong> For advance bookings during festivals or tourist seasons, 
+                rates will be charged according to the prevailing prices on the actual pickup date.
+              </li>
             </ul>
           </section>
 
@@ -58,6 +66,14 @@ const TermsAndConditionsPage = () => {
               <li>Night driving in hilly areas is restricted for safety reasons.</li>
               <li>Pick-up and drop points must be specified during booking.</li>
               <li>Tour destination routes cannot be changed without prior notice.</li>
+              <li>
+                <strong>Vehicle Cleanliness:</strong> Customers will be charged for cleaning/repair fees
+                in case of interior damage, vomiting, or excessive dirtiness caused during the rental period.
+              </li>
+              <li>
+                <strong>Additional Charges:</strong> All toll taxes, state entry taxes, parking charges, 
+                and police entry fees must be paid directly by the customer during the journey.
+              </li>
             </ul>
           </section>
 
@@ -101,3 +117,9 @@ const TermsAndConditionsPage = () => {
 };
 
 export default TermsAndConditionsPage;
+
+
+
+
+
+  

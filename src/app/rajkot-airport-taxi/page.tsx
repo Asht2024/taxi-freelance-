@@ -8,10 +8,8 @@ import {
   StarIcon,
   ArrowRightIcon
 } from '@heroicons/react/24/outline';
-import { useRouter } from 'next/navigation';
-
+import Main from '../../../components/Main';
 export default function RajkotAirportTaxi() {
-  const router = useRouter();
 
   const features = [
     { icon: <ClockIcon className="h-6 w-6" />, title: "24/7 Availability", content: "Round-the-clock service for all flights" },
@@ -27,7 +25,8 @@ export default function RajkotAirportTaxi() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen mt-10">
+    <Main/>
       <Head>
         <title>Premium Rajkot Airport Taxi Services | Asht Cab</title>
       </Head>
@@ -123,7 +122,7 @@ export default function RajkotAirportTaxi() {
             Book your Rajkot airport transfer now and experience premium comfort with guaranteed punctuality
           </p>
           <button 
-            onClick={() => router.push('/book')}
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             className="bg-white text-blue-900 px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition flex items-center mx-auto"
           >
             Book Airport Transfer
