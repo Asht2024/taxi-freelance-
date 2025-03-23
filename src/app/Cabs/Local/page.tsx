@@ -268,6 +268,8 @@ const LocalPage = () => {
   const handleonclick = (car: CarType) => {
     const route = "/Cabs/Local/Booking";
     localStorage.setItem("selectedcars", JSON.stringify(car));
+    localStorage.setItem('car',car.car_name)
+    localStorage.setItem('price',JSON.stringify(car.calculated_price))
     router.push(route);
   };
   const gohome = () => {

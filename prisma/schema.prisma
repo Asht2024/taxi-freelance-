@@ -7,78 +7,18 @@ datasource db {
   url      = "postgresql://neondb_owner:npg_f2snTl1jBASb@ep-jolly-term-a5bjlvsc-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require"
 }
 
-model Car {
-  id                Int     @id @default(autoincrement())
-  model             String  @db.VarChar(100)
-  image_url         String  @db.VarChar(200)
-  car_name          String  @db.VarChar(100)
-  local_price_per_km Int
-  local_min_price   Int
-  rental_price      String  @db.VarChar(200)
-  outstation_per_km Int
-  outstation_min    Int
-  luggage           Int
-  passenger         Int
-  calculated_price  Int?
-
-  // Relations
-  LocalBookings LocalBooking[]
-  FixedPrices   FixedPrice[]
-  bookings      Booking[] // ✅ This is the missing reverse relation
-}
-
-
-model LocationInfo {
-  id            Int     @id @default(autoincrement())
-  location_name String  @db.VarChar(200)
-
-  // Relations
-  LocalBookings LocalBooking[]
-  FixedPrices   FixedPrice[]
-}
-
-model LocalBooking {
-  id          Int @id @default(autoincrement())
-  car_id      Int
-  location_id Int
-  fixed_price_id Int   // ✅ Ensure this matches the FixedPrice table ID
-
-  // Relations (if applicable)
-  car          Car        @relation(fields: [car_id], references: [id])
-  location     LocationInfo @relation(fields: [location_id], references: [id])
-  fixedPrice   FixedPrice @relation(fields: [fixed_price_id], references: [id])
-}
-
-
-model FixedPrice {
-  id          Int   @id @default(autoincrement())
-  location_id Int
-  car_id      Int
-  prices      String  @db.VarChar(200)
-
-  // Foreign Keys
-  location    LocationInfo   @relation(fields: [location_id], references: [id], onDelete: Cascade)
-  car         Car            @relation(fields: [car_id], references: [id], onDelete: Cascade)
-
-  // ✅ Add this to fix the error
-  LocalBookings LocalBooking[] // **This creates the opposite relation**
-}
-
-
-
-
 model Account {
   id                String  @id @default(cuid())
   userId            String
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String?  @db.Text
-  access_token      String?  @db.Text
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String?  @db.Text
+  id_token          String? @db.Text
   session_state     String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -109,9 +49,8 @@ model User {
 model Booking {
   id            String   @id @default(cuid())
   userId        String
-  carId         Int      // ✅ was String, changed to Int
+  carName       String
   amount        Float
-  paymentId     String  @unique
   paymentStatus String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -119,6 +58,4 @@ model Booking {
 
   // Relations
   user User @relation(fields: [userId], references: [id])
-  car  Car  @relation(fields: [carId], references: [id]) // ✅ fixed type match
 }
-
