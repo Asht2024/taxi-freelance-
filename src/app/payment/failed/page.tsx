@@ -1,6 +1,14 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 export default function PaymentFailed() {
+const router=useRouter();
+  useEffect(()=>{
+      setTimeout(()=>{
+         router.push('/')
+      },5000)
+  })
   return (
     <div className="min-h-screen flex items-center justify-center bg-red-50">
       <div className="text-center p-8 bg-white rounded-lg shadow-xl">
@@ -11,10 +19,9 @@ export default function PaymentFailed() {
           Please try again or contact support.
         </p>
         <button
-          onClick={() => window.location.href = '/booking'}
           className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg"
         >
-          Try Again
+          Redirecting to home 
         </button>
       </div>
     </div>

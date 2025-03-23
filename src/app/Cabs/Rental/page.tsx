@@ -66,6 +66,8 @@ const RentalPage = () => {
       },
       package: pkg
     };
+    localStorage.setItem('car',car.car_name)
+    localStorage.setItem('price',JSON.stringify(pkg.price))
     
     localStorage.setItem("selectedRentalPackage", JSON.stringify(bookingData));
     router.push('/Cabs/Rental/Booking')
