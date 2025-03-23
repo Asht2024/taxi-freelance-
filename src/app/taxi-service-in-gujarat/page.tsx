@@ -10,10 +10,8 @@ import {
   CheckCircleIcon,
   ArrowRightIcon
 } from '@heroicons/react/24/outline';
-import { useRouter } from 'next/navigation';
-
+import Main from '../../../components/Main';
 export default function GujaratTravel() {
-  const router = useRouter();
 
   const perks = [
     { icon: <ClockIcon className="h-6 w-6" />, title: "Punctuality", content: "Smart routing with real-time traffic updates" },
@@ -30,7 +28,8 @@ export default function GujaratTravel() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen mt-10">
+        <Main/>
       <Head>
         <title>Premium Taxi Services in Gujarat | Asht Cab</title>
       </Head>
@@ -168,7 +167,7 @@ export default function GujaratTravel() {
             across Gujarat is amazing destinations.
           </p>
           <button 
-            onClick={() => router.push('/book')}
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             className="bg-white text-blue-900 px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition flex items-center mx-auto"
           >
             Start Your Journey

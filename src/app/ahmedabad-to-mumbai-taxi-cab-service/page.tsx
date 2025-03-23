@@ -12,10 +12,8 @@ import {
   CheckCircleIcon,
   ArrowRightIcon
 } from '@heroicons/react/24/outline';
-import { useRouter } from 'next/navigation';
-
+import Main from '../../../components/Main';
 export default function IntercityServices() {
-  const router = useRouter();
 
   const features = [
     { icon: <TruckIcon className="h-6 w-6" />, title: "Door-to-Door Service", content: "Hassle-free pickup and drop-off at your preferred locations" },
@@ -32,7 +30,8 @@ export default function IntercityServices() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen mt-10">
+     <Main/>
       <Head>
         <title>Premium Ahmedabad-Mumbai Cab Services | Asht Cab</title>
       </Head>
@@ -175,7 +174,7 @@ export default function IntercityServices() {
             and real-time updates on your journey.
           </p>
           <button 
-            onClick={() => router.push('/book')}
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             className="bg-blue-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-blue-700 transition flex items-center mx-auto"
           >
             Book Now

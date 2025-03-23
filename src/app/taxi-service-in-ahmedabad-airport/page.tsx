@@ -9,10 +9,8 @@ import {
   ArrowRightIcon,
   BookOpenIcon
 } from '@heroicons/react/24/outline';
-import { useRouter } from 'next/navigation';
-
+import Main from '../../../components/Main';
 export default function AhmedabadTaxi() {
-  const router = useRouter();
   const bookingSteps = [
     { step: "1", title: "Select Journey Type", content: "City ride, intercity, or airport transfer" },
     { step: "2", title: "Choose Date/Time", content: "Flexible scheduling 24/7" },
@@ -34,7 +32,8 @@ export default function AhmedabadTaxi() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen mt-10">
+        <Main/>
       <Head>
         <title>Premium Ahmedabad Taxi Services | Asht Cab</title>
       </Head>
@@ -153,7 +152,7 @@ export default function AhmedabadTaxi() {
             Book your Ahmedabad airport transfer now and experience premium comfort with guaranteed punctuality.
           </p>
           <button 
-            onClick={() => router.push('/book')}
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             className="bg-white text-blue-900 px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition flex items-center mx-auto"
           >
             Book Now

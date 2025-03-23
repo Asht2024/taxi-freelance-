@@ -1,8 +1,13 @@
+"use client"
+import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { FaCarSide, FaRoute, FaCity, FaStar } from 'react-icons/fa';
+import Main from '../../../components/Main';
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-12">
+    <div className='mt-10'>
+    <Main/>
+    <div className="min py-12">
       <div className="max-w-6xl mx-auto px-4 space-y-12">
         {/* Hero Section */}
         <section className="bg-white rounded-2xl p-8 shadow-2xl shadow-blue-100/50 border-2 border-blue-50 transform transition hover:shadow-blue-200/50">
@@ -86,11 +91,16 @@ export default function HomePage() {
             Our commitment to customer satisfaction, competitive rates, and professional service makes us the preferred
             choice...
           </p>
-          <button className="bg-white text-blue-600 px-8 py-3 rounded-xl font-bold hover:bg-blue-50 transition">
+          <button 
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="bg-white text-blue-900 px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition flex items-center mx-auto"
+          >
             Book Your Ride Now
+            <ArrowRightIcon className="h-5 w-5 ml-2" />
           </button>
         </section>
       </div>
+    </div>
     </div>
   );
 }

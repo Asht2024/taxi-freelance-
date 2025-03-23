@@ -1,6 +1,6 @@
 // components/AutocompleteInput.tsx
 "use client";
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 
 interface LocationType {
@@ -98,7 +98,7 @@ const AutocompleteInput = ({ label, value, onChange }: AutocompleteInputProps) =
   const handleSelectSuggestion = useCallback(async (address: string) => {
     setInputValue(address);
     setSuggestions([]);
-
+    
     try {
       const response = await fetch(`/api/places?input=${encodeURIComponent(address)}&type=geocode`);
       const data = await response.json();
@@ -133,7 +133,10 @@ const AutocompleteInput = ({ label, value, onChange }: AutocompleteInputProps) =
     );
     return cityComponent?.long_name || '';
   }, []);
-
+  // Add this useEffect in AutocompleteInput.tsx
+useEffect(() => {
+  setInputValue(value);
+}, [value]); // This syncs the input with parent's value changes
   return (
     <div className="relative mb-4">
       <FaMapMarkerAlt className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" />

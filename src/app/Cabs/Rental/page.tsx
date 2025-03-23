@@ -148,7 +148,7 @@ const RentalPage = () => {
                               {pkg.hours} Hours / {pkg.km} KM
                             </h4>
                             <p className="text-sm text-gray-600">
-                              Extra: {pkg.extraKm}km and {pkg.extraTime}min
+                              Extra: {pkg.extraKm}km and {pkg.extraTime}/hr
                             </p>
                           </div>
                           <span className="text-2xl font-bold text-blue-600">
