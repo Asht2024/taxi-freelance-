@@ -1,125 +1,207 @@
 "use client";
-import React from "react";
-import Main from "../../../components/Main";
+import Head from 'next/head';
+import { 
+  TruckIcon,
+  UserCircleIcon,
+  CalendarIcon,
+  CurrencyDollarIcon,
+  ShieldCheckIcon,
+  ClockIcon,
+  MapPinIcon,
+  InformationCircleIcon,
+  CheckCircleIcon,
+  ArrowRightIcon
+} from '@heroicons/react/24/outline';
+import { useRouter } from 'next/navigation';
 
+export default function IntercityServices() {
+  const router = useRouter();
 
-const AhmedabadToMumbaiPage = () => {
+  const features = [
+    { icon: <TruckIcon className="h-6 w-6" />, title: "Door-to-Door Service", content: "Hassle-free pickup and drop-off at your preferred locations" },
+    { icon: <ClockIcon className="h-6 w-6" />, title: "24/7 Availability", content: "Round-the-clock service for urgent or planned trips" },
+    { icon: <ShieldCheckIcon className="h-6 w-6" />, title: "Safety First", content: "Sanitized vehicles and safety-certified drivers" },
+    { icon: <CurrencyDollarIcon className="h-6 w-6" />, title: "Transparent Pricing", content: "No hidden charges with upfront quotes" }
+  ];
+
+  const considerations = [
+    { icon: <MapPinIcon className="h-6 w-6" />, title: "Accurate Distance Tracking", content: "522 km journey with precise route planning" },
+    { icon: <TruckIcon className="h-6 w-6" />, title: "Modern Fleet", content: "GPS-equipped vehicles with safety features" },
+    { icon: <ShieldCheckIcon className="h-6 w-6" />, title: "Driver Verification", content: "Thoroughly vetted professional drivers" },
+    { icon: <InformationCircleIcon className="h-6 w-6" />, title: "Service Transparency", content: "Clear communication and reliable support" }
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50">
+      <Head>
+        <title>Premium Ahmedabad-Mumbai Cab Services | Asht Cab</title>
+      </Head>
+
       {/* Hero Section */}
-      <Main/>
-      <section className="bg-gradient-to-r from-blue-600 to-blue-400 py-16 text-white text-center">
-        <div className="max-w-4xl mx-auto px-4">
-          <h1 className="text-4xl font-bold mb-4">Reliable Cab and Taxi Services: Ahmedabad to Mumbai & Mumbai to Ahmedabad</h1>
-          <p className="text-lg">
-            Comfortable, reliable, and convenient cab services for your journey between Ahmedabad and Mumbai.
+      <section className="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-20">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex items-center mb-6">
+            <TruckIcon className="h-12 w-12 mr-4" />
+            <h1 className="text-4xl font-bold">Premium Intercity Cab Services</h1>
+          </div>
+          <p className="text-xl text-blue-100 max-w-3xl">
+            Experience seamless travel between Ahmedabad and Mumbai with our reliable, comfortable, 
+            and safe taxi services. 530 km journey made effortless with professional drivers 
+            and modern fleet.
           </p>
         </div>
       </section>
-      {/* Content Section */}
-      <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
-        <div className="space-y-8">
-          {/* Introduction */}
-          <div>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Why Choose Asht Cab Services?</h2>
-            <p className="text-gray-600">
-              When it comes to traveling between two of India’s busiest cities, Ahmedabad and Mumbai, comfort, reliability, and convenience are essential. Whether you’re traveling for business, a family vacation, or just a weekend getaway, Asht Cab Services provides seamless cab and taxi solutions for both routes: Ahmedabad to Mumbai and Mumbai to Ahmedabad. With our fleet of modern vehicles and professional drivers, your journey between these bustling cities will be as comfortable and stress-free as possible.
-            </p>
-          </div>
 
-          {/* Why Choose Us */}
-          <div>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Why Choose Asht Cab Services?</h2>
-            <ul className="space-y-3 text-gray-700 list-disc list-inside">
-              <li><strong>Comfortable Rides:</strong> Our fleet includes a wide range of vehicles, from economy cabs to luxury cars, ensuring that we have the perfect option for all types of travelers.</li>
-              <li><strong>Experienced Drivers:</strong> Our drivers are professional, courteous, and well-trained, ensuring a safe and smooth ride.</li>
-              <li><strong>Flexible Booking Options:</strong> We provide a variety of booking options to suit your schedule, whether you need a last-minute taxi or are planning in advance.</li>
+      {/* Main Content Container */}
+      <div className="max-w-6xl mx-auto px-4 py-16">
+
+        {/* Why Choose Us Section */}
+        <section className="bg-white rounded-2xl shadow-xl p-8 mb-12">
+          <div className="flex items-center mb-8">
+            <CheckCircleIcon className="h-8 w-8 text-blue-600 mr-4" />
+            <h2 className="text-3xl font-bold text-gray-800">Why Choose Asht Cab?</h2>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="space-y-6">
+              <div className="flex items-start">
+                <UserCircleIcon className="h-6 w-6 text-blue-600 mr-4 mt-1" />
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">Expert Drivers</h3>
+                  <p className="text-gray-600">Professional drivers with extensive route knowledge and safety training</p>
+                </div>
+              </div>
+              <div className="flex items-start">
+                <CalendarIcon className="h-6 w-6 text-blue-600 mr-4 mt-1" />
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">Flexible Booking</h3>
+                  <p className="text-gray-600">Book instantly online or via app with multiple payment options</p>
+                </div>
+              </div>
+            </div>
+            <div className="space-y-6">
+              <div className="flex items-start">
+                <TruckIcon className="h-6 w-6 text-blue-600 mr-4 mt-1" />
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">Luxury Fleet</h3>
+                  <p className="text-gray-600">Choose from economy sedans to premium SUVs with AC</p>
+                </div>
+              </div>
+              <div className="flex items-start">
+                <CurrencyDollarIcon className="h-6 w-6 text-blue-600 mr-4 mt-1" />
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">Best Rates</h3>
+                  <p className="text-gray-600">Competitive pricing with no hidden charges</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Service Highlights */}
+        <section className="grid md:grid-cols-2 gap-8 mb-12">
+          <div className="bg-white p-8 rounded-2xl shadow-xl">
+            <div className="flex items-center mb-6">
+              <TruckIcon className="h-8 w-8 text-blue-600 mr-4" />
+              <h3 className="text-2xl font-bold">Ahmedabad to Mumbai</h3>
+            </div>
+            <p className="text-gray-600 mb-6">
+              8-10 hour comfortable journey with multiple stop options. Perfect for business 
+              trips, family vacations, or solo travel.
+            </p>
+            <ul className="space-y-4">
+              <li className="flex items-center">
+                <CheckCircleIcon className="h-5 w-5 text-green-500 mr-2" />
+                <span>Doorstep pickup</span>
+              </li>
+              <li className="flex items-center">
+                <CheckCircleIcon className="h-5 w-5 text-green-500 mr-2" />
+                <span>24/7 customer support</span>
+              </li>
+              <li className="flex items-center">
+                <CheckCircleIcon className="h-5 w-5 text-green-500 mr-2" />
+                <span>Live journey tracking</span>
+              </li>
             </ul>
           </div>
 
-          {/* Ahmedabad to Mumbai Cab Services */}
-          <div>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Ahmedabad to Mumbai Cab Services</h2>
-            <p className="text-gray-600">
-              Our Ahmedabad to Mumbai cab service is the perfect solution for those who value convenience and efficiency. The distance between Ahmedabad and Mumbai is around 530 km, and our cabs ensure that you cover this distance comfortably, whether for business or leisure. With door-to-door service, you won’t have to worry about reaching the station or airport. We pick you up from your location in Ahmedabad and drop you off at your destination in Mumbai without any hassle.
+          <div className="bg-white p-8 rounded-2xl shadow-xl">
+            <div className="flex items-center mb-6">
+              <TruckIcon className="h-8 w-8 text-blue-600 mr-4" />
+              <h3 className="text-2xl font-bold">Mumbai to Ahmedabad</h3>
+            </div>
+            <p className="text-gray-600 mb-6">
+              Safe return journeys with experienced drivers. Flexible timing and 
+              emergency support throughout the trip.
             </p>
-          </div>
-
-          {/* Key Features */}
-          <div>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Key Features of Our Services</h2>
-            <ul className="space-y-3 text-gray-700 list-disc list-inside">
-              <li><strong>Door-to-Door Pickup and Drop:</strong> We pick you up from your preferred location and drop you off at your desired destination.</li>
-              <li><strong>Round-the-Clock Availability:</strong> Our services are available 24/7 for urgent or planned trips.</li>
-              <li><strong>Well-Maintained Vehicles:</strong> All our cabs are serviced regularly to ensure a smooth ride.</li>
-              <li><strong>Transparent Pricing:</strong> No hidden costs! We provide upfront pricing.</li>
-              <li><strong>Safety and Hygiene:</strong> Our cars are sanitized after every trip, and our drivers follow all safety protocols.</li>
+            <ul className="space-y-4">
+              <li className="flex items-center">
+                <CheckCircleIcon className="h-5 w-5 text-green-500 mr-2" />
+                <span>Multiple vehicle options</span>
+              </li>
+              <li className="flex items-center">
+                <CheckCircleIcon className="h-5 w-5 text-green-500 mr-2" />
+                <span>Corporate travel solutions</span>
+              </li>
+              <li className="flex items-center">
+                <CheckCircleIcon className="h-5 w-5 text-green-500 mr-2" />
+                <span>Luggage assistance</span>
+              </li>
             </ul>
           </div>
+        </section>
 
-          {/* Hassle-Free Booking Process */}
-          <div>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Hassle-Free Booking Process</h2>
-            <p className="text-gray-600">
-              Booking your Ahmedabad to Mumbai taxi or Mumbai to Ahmedabad cab is quick and simple with Asht Cab Services. You can book through our website, by phone, or via our app. We offer multiple payment options to ensure that the process is as convenient as possible.
-            </p>
+        {/* Key Features */}
+        <section className="bg-blue-50 rounded-2xl p-8 mb-12">
+          <h2 className="text-3xl font-bold mb-8 text-center">Service Features</h2>
+          <div className="grid md:grid-cols-4 gap-6">
+            {features.map((feature, index) => (
+              <div key={index} className="text-center">
+                <div className="bg-white rounded-full p-4 w-max mx-auto mb-4">
+                  {feature.icon}
+                </div>
+                <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
+                <p className="text-gray-600 text-sm">{feature.content}</p>
+              </div>
+            ))}
           </div>
+        </section>
 
-          {/* Things to Consider */}
-          <div>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Things to Consider While Choosing Taxi Cab Services</h2>
-            <ul className="space-y-3 text-gray-700 list-disc list-inside">
-              <li><strong>Know the Distance:</strong> The distance from Ahmedabad to Mumbai is around 522 km, and the journey takes approximately 10 hours and 14 minutes.</li>
-              <li><strong>Car Type:</strong> For long distances, pre-book a comfortable and modern car equipped with safety features like GPS, airbags, and seat belts.</li>
-              <li><strong>Safety:</strong> Ensure drivers follow all necessary highway rules and prioritize passenger safety.</li>
-              <li><strong>Check the Driver’s Credentials:</strong> Verify driver qualifications, route familiarity, and adherence to safety standards.</li>
-              <li><strong>Choose the Best Taxi Service Providers:</strong> Conduct thorough research to ensure reliable customer support and a safe journey.</li>
-            </ul>
+        {/* Booking CTA */}
+        <section className="text-center bg-white rounded-2xl shadow-xl p-8 mb-12">
+          <h2 className="text-3xl font-bold mb-6">Ready to Travel Comfortably?</h2>
+          <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
+            Book your Ahmedabad-Mumbai cab in 3 simple steps. Get instant confirmation 
+            and real-time updates on your journey.
+          </p>
+          <button 
+            onClick={() => router.push('/book')}
+            className="bg-blue-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-blue-700 transition flex items-center mx-auto"
+          >
+            Book Now
+            <ArrowRightIcon className="h-5 w-5 ml-2" />
+          </button>
+        </section>
+
+        {/* Travel Considerations */}
+        <section className="bg-white rounded-2xl shadow-xl p-8">
+          <h2 className="text-3xl font-bold mb-8">Smart Travel Tips</h2>
+          <div className="grid md:grid-cols-2 gap-8">
+            {considerations.map((item, index) => (
+              <div key={index} className="flex items-start">
+                <div className="bg-blue-100 p-3 rounded-lg mr-4">
+                  {item.icon}
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
+                  <p className="text-gray-600">{item.content}</p>
+                </div>
+              </div>
+            ))}
           </div>
+        </section>
 
-          {/* Why Book a One-Way Cab Service? */}
-          <div>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Why Book a One-Way Cab Service from Ahmedabad to Mumbai?</h2>
-            <p className="text-gray-600">
-              Ahmedabad cab services are widely available across the city, offering comfortable rides. However, for long-distance travel, such as the Ahmedabad to Mumbai cab service, choosing a one-way cab is the most recommended option. The primary reason is that passengers traveling such a long distance do not need to share the ride with others. This means they will have a dedicated taxi, ensuring greater privacy.
-            </p>
-          </div>
-
-          {/* Why Book a Mumbai to Ahmedabad Cab Service? */}
-          <div>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Why Book a Mumbai to Ahmedabad Cab Service?</h2>
-            <p className="text-gray-600">
-              In today’s world, we must be prepared for uncertainties while working in various locations. These uncertainties can include floods, landslides, virus outbreaks, natural disasters, and more. In such adverse situations, our primary goal is to return home safely. However, public transport often fails to meet our needs during these challenging times. Therefore, Mumbai to Ahmedabad cab services are the best option, as they can provide alternative solutions to ensure passengers reach their specified destinations safely.
-            </p>
-          </div>
-
-          {/* Why Book an Online Taxi Cab? */}
-          <div>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Why Book an Online Taxi Cab?</h2>
-            <p className="text-gray-600">
-              When booking a cab service from Mumbai to Ahmedabad, passengers can expect a variety of benefits. The most common benefits include:
-            </p>
-            <ul className="space-y-3 text-gray-700 list-disc list-inside">
-              <li><strong>100% Assured Ride:</strong> Unlike public transport, which can be uncertain and often crowded, the Ahmedabad to Mumbai cab service guarantees a confirmed journey regardless of the situation in the city.</li>
-              <li><strong>Technology-Equipped Cars:</strong> Public transport typically offers less concern for passenger safety. In contrast, the Ahmedabad to Mumbai taxi service is equipped with modern GPS technology that guides the driver and ensures a safe journey.</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* Call to Action */}
-      <section className="bg-blue-100 py-10 text-center mt-12">
-        <h3 className="text-xl font-bold text-blue-700">Need a ride now?</h3>
-        <p className="text-gray-700 mt-2 mb-4">Call us at +91-9876543210 or book online instantly!</p>
-        <button
-          className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition"
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        >
-          Book Now
-        </button>
-      </section>
+      </div>
     </div>
   );
-};
-
-export default AhmedabadToMumbaiPage;
+}

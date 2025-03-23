@@ -27,18 +27,18 @@ const navItems = [
     name: "Services", 
     link: "#",
     dropdown: [
-      { name: "Local Taxi Cab Service in Ahmedabad", link: "/#" },
+      { name: "Local Taxi Cab Service in Ahmedabad", link: "/local-taxi-cab-service-ahmdabad" },
       { name: "Ahmedabad to Mumbai Taxi Cab Service", link: "/ahmedabad-to-mumbai-taxi-cab-service" },
-      { name: "Rajkot to Hirasar Airport Taxi Service", link: "/services/outstation" },
-      { name: "Taxi Service in Gujarat", link: "/services/corporate" },
-      { name: "Taxi Service in Ahmedabad Airport", link: "/services/wedding" },
-      { name: "Rajkot Airport Taxi", link: "/services/hourly" },
-      { name: "Cab Service in Ahmedabad for Outstation", link: "/services/self-drive" },
-  
+      { name: "Rajkot to Hirasar Airport Taxi Service", link: "/rajkot-to-hirasar-cab-service" },
+      { name: "Taxi Service in Gujarat", link: "/taxi-service-in-gujarat" },
+      { name: "Taxi Service in Ahmedabad Airport", link: "/taxi-service-in-ahmedabad-airport" },
+      { name: "Rajkot Airport Taxi", link: "/rajkot-airport-taxi" },
+      { name: "Cab Service in Ahmedabad for Outstation", link: "/cab-service-in-ahmedabad-for-outstation" },
+
     ]
   },
-  { name: "About", link: "/about" },
-  { name: "Contact", link: "/contact" },
+  { name: "About", link: "/About" },
+  { name: "Contact", link: "/Contact" },
 ];
 
 

@@ -1,61 +1,44 @@
+"use client";
 import Head from 'next/head';
 import { 
   ArrowRightIcon,
-  MapPinIcon,
   ClockIcon,
-  UserIcon,
-  
   TruckIcon,
- 
-  DevicePhoneMobileIcon,
-  GlobeAltIcon
-} from '@heroicons/react/24/outline';
-import '../globals.css'
-
+  CheckCircleIcon,
+  UserGroupIcon,
+  SparklesIcon
+} from '@heroicons/react/24/outline'; // Removed CarIcon
+import '../globals.css';
+import { useRouter } from 'next/navigation';
 
 export default function About() {
-  const services = [
-    {
-      title: "Local Taxi Service in Ahmedabad",
-      icon: <MapPinIcon className="w-8 h-8 text-blue-600" />,
-      features: ["24/7 Availability", "Instant Booking", "AC Vehicles"]
+  const router = useRouter();
+  
+  const whyChooseUs = [
+    { 
+      icon: <CheckCircleIcon className="w-8 h-8 text-blue-600" />,
+      title: "Comfortable & Clean Vehicles",
+      content: "Our fleet is regularly maintained for cleanliness and comfort."
     },
-    {
-      title: "Ahmedabad to Mumbai Cab",
-      icon: <GlobeAltIcon className="w-8 h-8 text-blue-600" />,
-      features: ["6-seater Options", "Live Tracking", "Multiple Stops"]
+    { 
+      icon: <UserGroupIcon className="w-8 h-8 text-blue-600" />,
+      title: "Professional Drivers",
+      content: "Experienced, courteous drivers ensuring safe rides."
     },
-    {
-      title: "Airport Transfers",
-      icon: <TruckIcon className="w-8 h-8 text-blue-600" />,
-      features: ["Flight Monitoring", "Meet & Greet", "Luggage Help"]
-    },
-    {
-      title: "Rajkot Airport Taxi",
-      icon: <DevicePhoneMobileIcon className="w-8 h-8 text-blue-600" />,
-      features: ["On-Time Service", "Professional Drivers", "Affordable Rates"]
-    },
-    {
-      title: "Rajkot to Hirasar Airport",
+    { 
       icon: <ClockIcon className="w-8 h-8 text-blue-600" />,
-      features: ["Timely Pickup", "Comfortable Ride", "Reliable Drivers"]
+      title: "24/7 Availability",
+      content: "Round-the-clock service for any time travel needs."
     },
-    {
-      title: "Outstation Cabs",
-      icon: <UserIcon className="w-8 h-8 text-blue-600" />,
-      features: ["Long-Distance Travel", "Safety Focused", "AC & Non-AC Cars"]
+    { 
+      icon: <CheckCircleIcon className="w-8 h-8 text-blue-600" />,
+      title: "Affordable Pricing",
+      content: "Competitive rates with no hidden charges."
     }
   ];
 
-  const stats = [
-    { number: "10+", label: "Years Experience" },
-    { number: "250+", label: "Cities Covered" },
-    { number: "1100+", label: "Happy Customers" },
-    { number: "24/7", label: "Service Availability" }
-  ];
-
   return (
-    <div className="min-h-screen ">
+    <div className="min-h-screen">
       <Head>
         <title>About Us - Asht Cab Services</title>
       </Head>
@@ -70,10 +53,10 @@ export default function About() {
             Trusted transportation partner for Ahmedabad since 2014
           </p>
           <div className="flex gap-4 justify-center">
-            <button className="bg-white text-blue-600 px-6 py-3 rounded-full hover:bg-blue-50 transition-all flex items-center gap-2">
+            <button onClick={() => router.push("/")} className="bg-white text-blue-600 px-6 py-3 rounded-full hover:bg-blue-50 transition-all flex items-center gap-2">
               Book Now <ArrowRightIcon className="w-5 h-5" />
             </button>
-            <button className="border-2 border-white px-6 py-3 rounded-full hover:bg-white/10 transition-all">
+            <button onClick={() => router.push("/Contact")} className="border-2 border-white px-6 py-3 rounded-full hover:bg-white/10 transition-all">
               Contact Us
             </button>
           </div>
@@ -83,7 +66,7 @@ export default function About() {
       {/* Stats Section */}
       <div className="max-w-7xl mx-auto px-4 py-16 -mt-20">
         <div className="grid md:grid-cols-4 gap-6 bg-white rounded-2xl shadow-xl p-6">
-          {stats.map((stat, index) => (
+          {[{ number: "10+", label: "Years Experience" }, { number: "250+", label: "Cities Covered" }, { number: "1100+", label: "Happy Customers" }, { number: "24/7", label: "Service Availability" }].map((stat, index) => (
             <div key={index} className="text-center p-4">
               <div className="text-3xl font-bold text-blue-600 mb-2">{stat.number}</div>
               <div className="text-gray-600">{stat.label}</div>
@@ -92,47 +75,51 @@ export default function About() {
         </div>
       </div>
 
-      {/* Our Story */}
+      {/* Our Story Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Our Story</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">Our Journey</h2>
             <div className="w-20 h-1 bg-blue-600 mx-auto"></div>
           </div>
-          <div className="text-gray-600 space-y-6 text-lg max-w-4xl mx-auto">
-            <p>
-              Welcome to Asht Cab Services, your reliable and trustworthy partner for all your transportation needs in and around Ahmedabad. We are dedicated to providing exceptional cab services that combine convenience, comfort, and safety.
-            </p>
-            <p>
-              Founded in 2014 with a mission to simplify travel, we’ve now expanded to over 250 cities and earned the trust of 1,100+ satisfied customers. On February 15, 2024, we became a corporate entity. Our sister firm, Aadesh Cab Services, is now a proud part of our journey.
-            </p>
-            <p>
-              Our services include Local Taxi in Ahmedabad, Outstation Cab Services, Rajkot Airport Taxi, Rajkot to Hirasar Airport Taxi, and Ahmedabad to Mumbai Cab. We ensure smooth rides, punctuality, and affordable rates.
-            </p>
+          <div className="grid md:grid-cols-1 gap-8">
+            <div className="space-y-8">
+              <div className="border-2 border-blue-600 rounded-xl p-6">
+                <h3 className="text-2xl font-bold text-blue-600 mb-4">About Asht Cab Services</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Your reliable partner for transportation in Ahmedabad. We combine convenience, comfort, and safety for 
+                  seamless travel experiences. Whether local rides or long journeys, our professional drivers and 
+                  well-maintained vehicles ensure smooth trips.
+                </p>
+              </div>
+              <div className="border-2 border-blue-600 rounded-xl p-6">
+                <h3 className="text-2xl font-bold text-blue-600 mb-4">Our Foundation</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Founded in 2014 to simplify travel, we have expanded to 250+ cities with 1100+ satisfied customers. 
+                  Now a corporate entity with our sister firm Aadesh Cab Services, we offer local taxis, outstation 
+                  cabs, and airport transfers with punctuality and affordability.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Services Section */}
-      <section className="py-16 bg-gray-50">
+      {/* Why Choose Us */}
+      <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Our Services</h2>
-            <p className="text-gray-600">Your travel needs, our top priority</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">Why Choose Us?</h2>
+            <p className="text-gray-600">Your satisfaction, our commitment</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {services.map((service, index) => (
-              <div key={index} className="bg-white p-6 rounded-xl shadow hover:shadow-xl transition-all">
-                <div className="mb-4">{service.icon}</div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">{service.title}</h3>
-                <ul className="text-gray-600 space-y-2">
-                  {service.features.map((feature, i) => (
-                    <li key={i} className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-blue-600"></span>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {whyChooseUs.map((item, index) => (
+              <div key={index} className="bg-white p-6 rounded-xl shadow-lg">
+                <div className="flex items-center gap-4 mb-4">
+                  {item.icon}
+                  <h3 className="text-xl font-semibold text-gray-800">{item.title}</h3>
+                </div>
+                <p className="text-gray-600">{item.content}</p>
               </div>
             ))}
           </div>
@@ -141,39 +128,93 @@ export default function About() {
 
       {/* Vision & Mission */}
       <section className="py-16 bg-white">
-        <div className="max-w-5xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">Our Vision & Mission</h2>
-          <div className="grid md:grid-cols-2 gap-12">
-            <div>
-              <h3 className="text-xl font-semibold text-blue-700 mb-4">Vision</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Our vision is to make every customer’s journey more meaningful and delightful. We strive to enhance safety and professionalism in our service while incorporating innovative solutions through technology and dedication.
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="bg-blue-50 p-8 rounded-2xl">
+              <h3 className="text-2xl font-bold text-blue-600 mb-4">Our Vision</h3>
+              <p className="text-gray-600">
+                To make every journey meaningful through enhanced safety and tech-driven solutions. We aim to 
+                provide cost-effective, seamless experiences while setting new transportation standards.
               </p>
             </div>
-            <div>
-              <h3 className="text-xl font-semibold text-blue-700 mb-4">Mission</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Our mission is to build strong relationships and maintain long-term bonds with our customers by offering personalized and innovative transportation solutions across cities and towns.
+            <div className="bg-yellow-50 p-8 rounded-2xl">
+              <h3 className="text-2xl font-bold text-yellow-600 mb-4">Our Mission</h3>
+              <p className="text-gray-600">
+                Build lasting customer relationships through exceptional solutions. Expanding across cities while 
+                leveraging technology to redefine cab services and elevate operational excellence.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Team Section */}
       <section className="py-16 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Meet Our Leaders</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            The journey of a decade was made possible by the visionary leadership of Mr. Hiren Pankhaniya (Director) and Mrs. Nirmalaben Pankhaniya (CEO). Their commitment continues to inspire our highly professional and hardworking team.
-          </p>
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="bg-white p-8 rounded-2xl shadow-lg">
+            <h2 className="text-3xl font-bold text-center text-blue-600 mb-8">
+              Reviving Travel Comfort
+            </h2>
+            <div className="space-y-8">
+              <div className="flex items-start gap-4">
+                <SparklesIcon className="w-8 h-8 text-blue-600 flex-shrink-0" />
+                <p className="text-gray-600">
+                  Experience ultimate comfort with ASHT Cab Services. Through meticulous supervision and commitment 
+                  to excellence, we consistently exceed customer expectations.
+                </p>
+              </div>
+              {/* Add other milestone points similarly */}
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Contact CTA */}
-      
+      {/* Leadership & Fleet */}
+      <section className="py-16 bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="grid md:grid-cols-2 gap-8">
+          <div className="bg-white p-8 rounded-2xl shadow-lg">
+            <h3 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <UserGroupIcon className="w-8 h-8 text-green-600" />
+              Our Leadership
+            </h3>
+            <p className="text-gray-600">
+              Driven by Director Mr. Hiren Pankhaniya and CEO Mrs. Nirmalaben Pankhaniya...
+            </p>
+          </div>
+          <div className="bg-white p-8 rounded-2xl shadow-lg">
+            <h3 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <TruckIcon className="w-8 h-8 text-blue-600" /> {/* Changed to TruckIcon */}
+              Our Fleet
+            </h3>
+            <p className="text-gray-600">
+              Featuring latest models with cutting-edge technology...
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    
+      {/* Final CTA with Contact Content */}
+      <section className="py-16 bg-blue-900 text-white">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-4">Start Your Journey Today</h2>
+          <p className="text-xl mb-8">
+            Experience reliable, safe, and convenient travel with Asht Cab Services. 
+            Contact us for any travel needs or questions about your trip.
+          </p>
+          <div className="flex gap-4 justify-center">
+            <button onClick={() => router.push("/contact")} className="bg-white text-blue-900 px-8 py-3 rounded-full hover:bg-blue-100 transition-all">
+              Contact Us
+            </button>
+            <button onClick={() => router.push("/")} className="border-2 border-white px-8 py-3 rounded-full hover:bg-white/10">
+              Book Now
+            </button>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
+
+
+
