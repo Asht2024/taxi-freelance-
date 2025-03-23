@@ -23,7 +23,7 @@ interface LocationData {
 }
 
 interface ServiceFormsProps {
-  serviceType: "Local" | "Rental" | "Outstation";
+  serviceType: string;
   pickupAddress: string;
   dropAddress: string;
   onPickupChange: (location: LocationData) => void;

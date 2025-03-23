@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 
 import Main from "../../components/Main";
 import Loader from "../../components/Loader"; // Import the Loader component
+import RestHome from "../../components/RestHome";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true); // State to control loader visibility
@@ -28,8 +29,9 @@ export default function Home() {
           </div> */}
 
           {/* Main component aligned to the left */}
-          <div className="flex  w-full">
+          <div className="flex flex-col justify-center items-center w-full">
             <Main />
+            <RestHome/>
           </div>
         </>
       )}

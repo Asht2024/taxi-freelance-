@@ -27,19 +27,20 @@ const navItems = [
     name: "Services", 
     link: "#",
     dropdown: [
-      { name: "local-taxi-cab-service-in-ahmedabad", link: "/local-taxi-cab-service" },
-      { name: "ahmedabad-to-mumbai-taxi-cab-service", link: "/services/city" },
-      { name: "rajkot-to-hirasar-airport-taxi-service", link: "/services/outstation" },
-      { name: "taxi-service-in-gujarat", link: "/services/corporate" },
-      { name: "taxi-service-in-ahmedabad-airport", link: "/services/wedding" },
-      { name: "rajkot-airport-taxi", link: "/services/hourly" },
-      { name: "cab-service-in-ahmedabad-for-outstation", link: "/services/self-drive" },
+      { name: "Local Taxi Cab Service in Ahmedabad", link: "/#" },
+      { name: "Ahmedabad to Mumbai Taxi Cab Service", link: "/ahmedabad-to-mumbai-taxi-cab-service" },
+      { name: "Rajkot to Hirasar Airport Taxi Service", link: "/services/outstation" },
+      { name: "Taxi Service in Gujarat", link: "/services/corporate" },
+      { name: "Taxi Service in Ahmedabad Airport", link: "/services/wedding" },
+      { name: "Rajkot Airport Taxi", link: "/services/hourly" },
+      { name: "Cab Service in Ahmedabad for Outstation", link: "/services/self-drive" },
   
     ]
   },
   { name: "About", link: "/about" },
   { name: "Contact", link: "/contact" },
 ];
+
 
 export default function RootLayout({
   children,

@@ -31,11 +31,13 @@ export async function POST(req: Request) {
         ? `${process.env.NEXT_PUBLIC_BASE_URL}/payment/success`
         : `${process.env.NEXT_PUBLIC_BASE_URL}/payment/failed`;
 
-    return NextResponse.redirect(redirectURL);
+    // Use 303 See Other to force a GET request
+    return NextResponse.redirect(redirectURL, 303);
   } catch (error) {
     console.error("Callback Error:", error);
     return NextResponse.redirect(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/payment/failed`
+      `${process.env.NEXT_PUBLIC_BASE_URL}/payment/failed`,
+      303
     );
   }
 }
