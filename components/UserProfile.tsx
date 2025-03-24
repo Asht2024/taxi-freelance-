@@ -6,21 +6,57 @@ import axios from "axios";
 import BookingCard from "./BookingCard";
 import type { Session } from "next-auth";
 
+interface TripData {
+  formData: {
+    date: string;
+    time: string;
+    luggage: number;
+    members: number;
+    dropdate: string;
+    droptime: string;
+    tripType: string;
+    dropAddress: string;
+    serviceType: string;
+    pickupAddress: string;
+    intermediateCities: string[];
+  };
+  pickupLocation: {
+    lat: number;
+    lng: number;
+    city: string;
+    address: string;
+  };
+  dropLocation: {
+    lat: number;
+    lng: number;
+    city: string;
+    address: string;
+  };
+  rentalPackage: {
+    km: number;
+    hours: number;
+  };
+  selectedOption: string;
+}
+
+
 interface Booking {
   id: string;
   carId: number;
+  carName: string;
   amount: number;
   paymentId: string;
   paymentStatus: string;
   createdAt: string;
   updatedAt: string;
-  tripData: unknown; // Replace with a proper type if known
+  tripData: TripData;
   car?: {
     car_name: string;
     model: string;
     image_url: string;
   };
 }
+
 
 export default function UserProfilePage() {
   const { data: session, status } = useSession() as {
@@ -73,7 +109,7 @@ export default function UserProfilePage() {
   }
 
   return (
-    <div className="min-h-screen mt-14 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen mt-14 py-8 px-4 sm:px-6 lg:px-8 bg-gray-50">
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
           <div className="flex items-center gap-6">
@@ -100,13 +136,21 @@ export default function UserProfilePage() {
         ) : (
           <div className="space-y-4">
             {bookings.map((booking) => (
-              <BookingCard key={booking.id} booking={{ 
-                ...booking, 
-                carDetails: {
-                  car_name: booking.car?.car_name || "Unknown Car",
-                  model: booking.car?.model || "Unknown Model"
-                }
-              }} />
+              <BookingCard
+              key={booking.id}
+              booking={{
+                id: booking.id,
+                carName: booking.carName,
+                amount: booking.amount,
+                paymentStatus: booking.paymentStatus,
+                createdAt: booking.createdAt,
+                tripType: booking.tripData?.selectedOption || "N/A",
+                pickupAddress: booking.tripData?.formData?.pickupAddress || "N/A",
+                dropAddress: booking.tripData?.formData?.dropAddress || "", // show only if it exists
+              }}
+            />
+            
+
             ))}
           </div>
         )}

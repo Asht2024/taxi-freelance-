@@ -192,7 +192,7 @@ export default function TaxiServices() {
               <ArrowRightIcon className="h-4 w-4 ml-2" />
             </button>
             <button 
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              onClick={() => router.push('/Booking')}
               className="border-2 border-white px-8 py-4 rounded-xl font-semibold hover:bg-white/10 transition flex items-center"
             >
               Instant Booking

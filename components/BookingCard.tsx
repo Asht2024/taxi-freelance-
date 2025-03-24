@@ -1,38 +1,46 @@
 interface BookingCardProps {
   booking: {
+    id: string;
+    carName: string;
     amount: number;
-    createdAt: string;
     paymentStatus: string;
-    carDetails: {
-      car_name: string;
-      model: string;
-    };
+    createdAt: string;
+    tripType: string;
+    pickupAddress: string;
+    dropAddress?: string;
   };
 }
 
 export default function BookingCard({ booking }: BookingCardProps) {
   return (
-    <div className="bg-white rounded-xl shadow-md p-6">
-      <div className="flex flex-col md:flex-row justify-between gap-4">
-        <div>
-          <h3 className="text-lg font-semibold">{booking.carDetails.car_name}</h3>
-          <p className="text-gray-600">{booking.carDetails.model}</p>
-          <p className="text-sm text-gray-500">
-            {new Date(booking.createdAt).toLocaleDateString()}
+    <div className="bg-white rounded-xl shadow-md p-4 flex items-start gap-6">
+      
+      <div className="flex-1">
+        <h3 className="text-xl font-semibold">{booking.carName}</h3>
+        <p className="text-sm text-gray-600">Trip Type: {booking.tripType}</p>
+        <p className="text-sm text-gray-500">Amount: ₹{booking.amount}</p>
+        <p
+          className={`text-sm font-medium ${
+            booking.paymentStatus === "SUCCESS" ? "text-green-600" : "text-red-500"
+          }`}
+        >
+          {booking.paymentStatus}
+        </p>
+
+        <div className="mt-2">
+          <p className="text-sm">
+            <strong>Pickup:</strong> {booking.pickupAddress}
           </p>
+          {booking.dropAddress && (
+            <p className="text-sm">
+              <strong>Drop:</strong> {booking.dropAddress}
+            </p>
+          )}
         </div>
-        <div className="text-right">
-          <p
-            className={`text-lg font-bold ${
-              booking.paymentStatus === "success"
-                ? "text-green-600"
-                : "text-red-600"
-            }`}
-          >
-            ₹{booking.amount / 100}
-          </p>
-          <p className="text-sm capitalize">{booking.paymentStatus}</p>
-        </div>
+
+        <p className="text-xs text-gray-400 mt-2">
+          Booked on: {new Date(booking.createdAt).toLocaleDateString()}
+        </p>
       </div>
     </div>
   );

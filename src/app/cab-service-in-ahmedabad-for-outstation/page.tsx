@@ -2,8 +2,9 @@
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { FaCarSide, FaRoute, FaCity, FaStar } from 'react-icons/fa';
 import Main from '../../../components/Main';
-
+import { useRouter } from 'next/navigation';
 export default function HomePage() {
+  const router=useRouter()
   return (
     <div className='mt-10'>
     <Main/>
@@ -92,7 +93,7 @@ export default function HomePage() {
             choice...
           </p>
           <button 
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            onClick={() => router.push('/Booking')}
             className="bg-white text-blue-900 px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition flex items-center mx-auto"
           >
             Book Your Ride Now

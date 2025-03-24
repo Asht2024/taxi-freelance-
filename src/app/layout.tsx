@@ -25,7 +25,7 @@ const navItems = [
   { name: "Home", link: "/" },
   { 
     name: "Services", 
-    link: "#",
+    link: "/Service",
     dropdown: [
       { name: "Local Taxi Cab Service in Ahmedabad", link: "/local-taxi-cab-service-ahmdabad" },
       { name: "Ahmedabad to Mumbai Taxi Cab Service", link: "/ahmedabad-to-mumbai-taxi-cab-service" },

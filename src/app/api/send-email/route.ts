@@ -19,19 +19,21 @@ export async function POST(request: Request) {
       );
     }
 
-    // Configure Nodemailer
+    // Configure Nodemailer with Hostinger SMTP
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.hostinger.com',
+      port: 465,
+      secure: true, // true for 465, false for 587
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD,
+        user: process.env.HOSTINGER_EMAIL!, // example: Info@ashtcabservices.in
+        pass: process.env.HOSTINGER_PASS!,   // the real password from Hostinger
       },
     });
 
     // Email content for admin
     const adminMailOptions = {
-      from: process.env.EMAIL_USER,
-      to: process.env.ADMIN_EMAIL, // Your email address
+      from: `"Asht Cab Services" <${process.env.HOSTINGER_EMAIL}>`,
+      to: process.env.ADMIN_EMAIL!, // Your email to receive feedback
       subject: `New Contact Form Submission from ${name}`,
       html: `
         <h2 style="color: #2563eb;">New Message Received</h2>
@@ -44,7 +46,7 @@ export async function POST(request: Request) {
       `,
     };
 
-    // Send email to admin
+    // Send email
     await transporter.sendMail(adminMailOptions);
 
     return NextResponse.json(
@@ -53,7 +55,7 @@ export async function POST(request: Request) {
     );
 
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Email error:', error);
     return NextResponse.json(
       { error: 'Failed to send message. Please try again later.' },
       { status: 500 }
