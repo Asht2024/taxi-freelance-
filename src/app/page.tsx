@@ -4,10 +4,20 @@ import React, { useState, useEffect } from "react";
 import Main from "../../components/Main";
 import Loader from "../../components/Loader"; // Import the Loader component
 import RestHome from "../../components/RestHome";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true); // State to control loader visibility
- 
+  const router = useRouter();
+  const session = useSession();
+  useEffect(()=>{
+     if(session.data?.user){
+       if(session.data.user.email == 'aadeshconsultancy2@gmail.com'){
+             router.push('/Admin');
+       }
+     }
+  },[])
 
   useEffect(() => {
     // Simulate loading for 3 seconds
