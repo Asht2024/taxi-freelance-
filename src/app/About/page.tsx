@@ -206,7 +206,7 @@ export default function About() {
             <button onClick={() => router.push("/Contact")} className="bg-white text-blue-900 px-8 py-3 rounded-full hover:bg-blue-100 transition-all">
               Contact Us
             </button>
-            <button onClick={() => router.push("/")} className="border-2 border-white px-8 py-3 rounded-full hover:bg-white/10">
+            <button onClick={() => router.push("/Booking")} className="border-2 border-white px-8 py-3 rounded-full hover:bg-white/10">
               Book Now
             </button>
           </div>
