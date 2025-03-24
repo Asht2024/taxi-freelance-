@@ -49,7 +49,7 @@ const RentalPage = () => {
     { model: "Swift Dzire or Equivalent", image_url: "/sedan.png", car_name: "Sedan", 
       rental_price: "1650 1950 2850 11 160", luggage: 4, passenger: 4 },
     { model: "Ertiga or Equivalent", image_url: "/suv.png", car_name: "SUV", 
-      rental_price: "2450 2850 14 200", luggage: 6, passenger: 6 },
+      rental_price: "2450 2850 3550 14 200", luggage: 6, passenger: 6 },
     { model: "Marrazo or Equivalent", image_url: "/inova.png", car_name: "Innova", 
       rental_price: "3800 4500 17 260", luggage: 7, passenger: 7},
     { model: "or Equivalent", image_url: "/inovacysta.png", car_name: "Innova Cysta", 
@@ -150,7 +150,7 @@ const RentalPage = () => {
                               {pkg.hours} Hours / {pkg.km} KM
                             </h4>
                             <p className="text-sm text-gray-600">
-                              Extra: {pkg.extraKm}km and {pkg.extraTime}/hr
+                              Extra: {pkg.extraKm}/km and {pkg.extraTime}/hr
                             </p>
                           </div>
                           <span className="text-2xl font-bold text-blue-600">

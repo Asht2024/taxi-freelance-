@@ -322,8 +322,8 @@ export default function RentalBookingPage() {
                   </span>
                 </div>
                 <div className="flex justify-between text-sm text-gray-600">
-                  <span>Extra KM: {rentalPackage.extraKm}km</span>
-                  <span>Extra Time: {rentalPackage.extraTime}min</span>
+                  <span>Extra Km charges: {rentalPackage.extraKm}/km</span>
+                  <span>Extra charge: {rentalPackage.extraTime}/hr</span>
                 </div>
               </div>
             </div>
