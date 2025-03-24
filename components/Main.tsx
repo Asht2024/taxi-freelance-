@@ -24,7 +24,7 @@ type OptionType = string;
 
 const MainPage = () => {
   const router = useRouter();
-  const session = useSession();
+const session=useSession();
 
   // Location states
   const [dropLocation, setDropLocation] = useState<LocationType>({
@@ -107,6 +107,11 @@ const MainPage = () => {
   ];
 
   const handleSearchCab = () => {
+
+    if(!session.data?.user.email){
+       alert("please login to continue");
+       router.push('/signin');
+    }else{
     const data = JSON.parse(localStorage.getItem("tripFormData") || "{}");
     const tripData = {
       pickupLocation,
@@ -114,6 +119,8 @@ const MainPage = () => {
       selectedOption,
       formData: data,
     };
+
+     
 
     localStorage.setItem("currentTripData", JSON.stringify(tripData));
     if (!pickupLocation.address || !data.date || !data.time || !data.members) {
@@ -140,6 +147,7 @@ const MainPage = () => {
     setTimeout(() => {
       router.push(route);
     }, 500);
+  }
   };
 
   useEffect(() => {
@@ -170,6 +178,8 @@ const MainPage = () => {
     hidden: { opacity: 0, y: 50 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
   };
+
+  
 
   return (
     <AnimatePresence>

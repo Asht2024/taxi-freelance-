@@ -203,7 +203,7 @@ export default function About() {
             Contact us for any travel needs or questions about your trip.
           </p>
           <div className="flex gap-4 justify-center">
-            <button onClick={() => router.push("/contact")} className="bg-white text-blue-900 px-8 py-3 rounded-full hover:bg-blue-100 transition-all">
+            <button onClick={() => router.push("/Contact")} className="bg-white text-blue-900 px-8 py-3 rounded-full hover:bg-blue-100 transition-all">
               Contact Us
             </button>
             <button onClick={() => router.push("/")} className="border-2 border-white px-8 py-3 rounded-full hover:bg-white/10">
