@@ -313,7 +313,7 @@ export default function OutstationBookingPage() {
 
               <div className="bg-blue-50 p-4 rounded-xl space-y-2">
           <div className="flex justify-between">
-            <span className="text-gray-700">Base Fare:</span>
+            <span className="text-gray-700">Base Fare: (Inc 5% tax)</span>
             <span className="font-semibold">
               ₹{(carDetails.calculated_price * 1.05).toFixed(2)}
             </span>
