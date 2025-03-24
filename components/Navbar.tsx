@@ -255,7 +255,7 @@ export const Navbar = ({
               <div className="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4">
                 <div className="flex items-center gap-3 mb-4">
                   <Image
-                    src={session.user?.image || "https://lh3.googleusercontent.com/a/ACg8ocLPBevtHNJCwgM8L1wx3Ogq1Lk_i8ezGFzVkuzxp-bukpjgBDyB=s96-c"}
+                    src={session.user.image || "https://lh3.googleusercontent.com/a/ACg8ocLPBevtHNJCwgM8L1wx3Ogq1Lk_i8ezGFzVkuzxp-bukpjgBDyB=s96-c"}
                     alt="Profile"
                     width={48}
                     height={48}

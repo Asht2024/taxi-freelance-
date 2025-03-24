@@ -13,8 +13,9 @@ import {
   ArrowRightIcon
 } from '@heroicons/react/24/outline';
 import Main from '../../../components/Main';
+import { useRouter } from 'next/navigation';
 export default function IntercityServices() {
-
+ const router=useRouter()
   const features = [
     { icon: <TruckIcon className="h-6 w-6" />, title: "Door-to-Door Service", content: "Hassle-free pickup and drop-off at your preferred locations" },
     { icon: <ClockIcon className="h-6 w-6" />, title: "24/7 Availability", content: "Round-the-clock service for urgent or planned trips" },
@@ -174,7 +175,7 @@ export default function IntercityServices() {
             and real-time updates on your journey.
           </p>
           <button 
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            onClick={() => router.push('/Booking')}
             className="bg-blue-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-blue-700 transition flex items-center mx-auto"
           >
             Book Now

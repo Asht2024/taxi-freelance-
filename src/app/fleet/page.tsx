@@ -14,7 +14,6 @@ const FleetPage = () => {
       outstation_per_km: 18,
       luggage: 4,
       passenger: 4,
-      calculated_price: 0,
     },
     {
       model: "Ertiga or Equivalent",
@@ -25,7 +24,6 @@ const FleetPage = () => {
       outstation_per_km: 21,
       luggage: 6,
       passenger: 6,
-      calculated_price: 0,
     },
     {
       model: "Marrazo or Equivalent",
@@ -36,7 +34,6 @@ const FleetPage = () => {
       outstation_per_km: 28,
       luggage: 7,
       passenger: 7,
-      calculated_price: 0,
     },
     {
       model: "Innova Cysta or Equivalent",
@@ -47,7 +44,6 @@ const FleetPage = () => {
       outstation_per_km: 30,
       luggage: 7,
       passenger: 7,
-      calculated_price: 0,
     },
   ];
 
@@ -60,7 +56,9 @@ const FleetPage = () => {
     { name: "Rajkot Airport Taxi", link: "/rajkot-airport-taxi" },
     { name: "Cab Service in Ahmedabad for Outstation", link: "/cab-service-in-ahmedabad-for-outstation" },
   ];
+
   const router = useRouter();
+
   return (
     <div className="min-h-screen mt-5 py-8">
       {/* Fleet Section */}
@@ -73,72 +71,79 @@ const FleetPage = () => {
         </h2>
 
         <div className="space-y-12">
-          {cars.map((car, index) => (
-            <div 
-              key={car.model}
-              className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} gap-8 items-center bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300`}
-            >
-              {/* Image Section */}
-              <div className="w-full md:w-1/2">
-                <div className="relative w-full h-64 rounded-lg overflow-hidden">
-                  <Image
-                    src={car.image_url}
-                    alt={car.car_name}
-                    layout="fill"
-                    objectFit="cover"
-                    className="hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-              </div>
+          {cars.map((car, index) => {
+            const prices = car.rental_price.split(" ");
+            const packages = prices.length === 2
+              ? ['8hr/80km', '12hr/120km']
+              : ['6hr/60km', '8hr/80km', '12hr/120km'];
 
-              {/* Details Section */}
-              <div className="w-full md:w-1/2 space-y-4">
-                <h3 className="text-2xl font-bold text-gray-800">{car.car_name}</h3>
-                <p className="text-gray-600 italic">{car.model}</p>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-gray-100 p-4 rounded-lg">
-                    <p className="text-sm text-gray-600">Local Rate</p>
-                    <p className="font-bold text-lg">₹{car.local_price_per_km}/km</p>
-                  </div>
-                  <div className="bg-gray-100 p-4 rounded-lg">
-                    <p className="text-sm text-gray-600">Outstation</p>
-                    <p className="font-bold text-lg">₹{car.outstation_per_km}/km</p>
-                  </div>
-                  <div className="bg-gray-100 p-4 rounded-lg">
-                    <p className="text-sm text-gray-600">Luggage</p>
-                    <p className="font-bold text-lg">{car.luggage} Bags</p>
-                  </div>
-                  <div className="bg-gray-100 p-4 rounded-lg">
-                    <p className="text-sm text-gray-600">Passengers</p>
-                    <p className="font-bold text-lg">{car.passenger}</p>
+            return (
+              <div
+                key={car.model}
+                className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} gap-8 items-center bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300`}
+              >
+                {/* Image Section */}
+                <div className="w-full md:w-1/2 flex justify-center">
+                  <div className="relative w-full h-48 md:h-64 rounded-lg overflow-hidden">
+                    <Image
+                      src={car.image_url}
+                      alt={car.car_name}
+                      layout="fill"
+                      objectFit="contain"
+                      className="transition-transform duration-300"
+                    />
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <h4 className="font-semibold text-gray-800">Rental Packages:</h4>
-                  <div className="flex flex-wrap gap-4">
-                    {car.rental_price.split(' ').map((price, i) => {
-                      const packages = ['6hr/60km', '8hr/80km', '12hr/120km'];
-                      return (
-                        <div 
-                          key={i} 
+                {/* Details Section */}
+                <div className="w-full md:w-1/2 space-y-4">
+                  <h3 className="text-2xl font-bold text-gray-800">{car.car_name}</h3>
+                  <p className="text-gray-600 italic">{car.model}</p>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-gray-100 p-4 rounded-lg">
+                      <p className="text-sm text-gray-600">Local Rate</p>
+                      <p className="font-bold text-lg">₹{car.local_price_per_km}/km</p>
+                    </div>
+                    <div className="bg-gray-100 p-4 rounded-lg">
+                      <p className="text-sm text-gray-600">OneWay</p>
+                      <p className="font-bold text-lg">₹{car.outstation_per_km}/km</p>
+                    </div>
+                    <div className="bg-gray-100 p-4 rounded-lg">
+                      <p className="text-sm text-gray-600">Luggage</p>
+                      <p className="font-bold text-lg">{car.luggage} Bags</p>
+                    </div>
+                    <div className="bg-gray-100 p-4 rounded-lg">
+                      <p className="text-sm text-gray-600">Passengers</p>
+                      <p className="font-bold text-lg">{car.passenger}</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-gray-800">Rental Packages:</h4>
+                    <div className="flex flex-wrap gap-4">
+                      {prices.map((price, i) => (
+                        <div
+                          key={i}
                           className="bg-blue-100 p-3 rounded-lg flex-1 min-w-[120px] text-center"
                         >
                           <p className="text-lg font-bold text-blue-800">₹{price}</p>
                           <p className="text-xs text-gray-600 mt-1">{packages[i]}</p>
                         </div>
-                      )
-                    })}
+                      ))}
+                    </div>
                   </div>
-                </div>
 
-                <button onClick={()=>{router.push("/")}} className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300 font-semibold">
-                  Book Now
-                </button>
+                  <button
+                    onClick={() => { router.push("/") }}
+                    className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300 font-semibold"
+                  >
+                    Book Now
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
@@ -150,7 +155,7 @@ const FleetPage = () => {
             Explore our comprehensive taxi services
           </span>
         </h2>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {services.map((service) => (
             <Link

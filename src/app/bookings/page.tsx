@@ -6,15 +6,50 @@ import axios from "axios";
 import type { Session } from "next-auth";
 import BookingCard from "../../../components/BookingCard";
 
+interface TripData {
+  formData: {
+    date: string;
+    time: string;
+    luggage: number;
+    members: number;
+    dropdate: string;
+    droptime: string;
+    tripType: string;
+    dropAddress: string;
+    serviceType: string;
+    pickupAddress: string;
+    intermediateCities: string[];
+  };
+  pickupLocation: {
+    lat: number;
+    lng: number;
+    city: string;
+    address: string;
+  };
+  dropLocation: {
+    lat: number;
+    lng: number;
+    city: string;
+    address: string;
+  };
+  rentalPackage: {
+    km: number;
+    hours: number;
+  };
+  selectedOption: string;
+}
+
+
 interface Booking {
   id: string;
   carId: number;
+  carName: string;
   amount: number;
   paymentId: string;
   paymentStatus: string;
   createdAt: string;
   updatedAt: string;
-  tripData: unknown; // Replace with a proper type if known
+  tripData: TripData;
   car?: {
     car_name: string;
     model: string;
@@ -22,7 +57,8 @@ interface Booking {
   };
 }
 
-export default function Bookings() {
+
+export default function UserProfilePage() {
   const { data: session, status } = useSession() as {
     data: Session | null;
     status: "loading" | "authenticated" | "unauthenticated";
@@ -35,7 +71,7 @@ export default function Bookings() {
     const fetchBookings = async () => {
       if (session?.user?.email) {
         try {
-          const response = await axios.get(`/api/bookings`);
+          const response = await axios.get(`/api/bookings?email=${session.user.email}`);
           setBookings(response.data);
         } catch (error) {
           console.error("Error fetching bookings:", error);
@@ -73,7 +109,10 @@ export default function Bookings() {
   }
 
   return (
-    <div className="min-h-screen mt-14 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen mt-14 py-8 px-4 sm:px-6 lg:px-8 ">
+      <div className="max-w-4xl mx-auto">
+        
+
         <h2 className="text-2xl font-bold text-gray-800 mb-6">Booking History</h2>
 
         {loading ? (
@@ -85,16 +124,25 @@ export default function Bookings() {
         ) : (
           <div className="space-y-4">
             {bookings.map((booking) => (
-              <BookingCard key={booking.id} booking={{ 
-                ...booking, 
-                carDetails: {
-                  car_name: booking.car?.car_name || "Unknown Car",
-                  model: booking.car?.model || "Unknown Model"
-                }
-              }} />
+              <BookingCard
+              key={booking.id}
+              booking={{
+                id: booking.id,
+                carName: booking.carName,
+                amount: booking.amount,
+                paymentStatus: booking.paymentStatus,
+                createdAt: booking.createdAt,
+                tripType: booking.tripData?.selectedOption || "N/A",
+                pickupAddress: booking.tripData?.formData?.pickupAddress || "N/A",
+                dropAddress: booking.tripData?.formData?.dropAddress || "", // show only if it exists
+              }}
+            />
+            
+
             ))}
           </div>
         )}
       </div>
+    </div>
   );
 }

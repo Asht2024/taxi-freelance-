@@ -50,9 +50,9 @@ export default function Admin() {
       </div>
 
       {/* Stats Grid */}
-      <div onClick={()=>{router.push("/users")}} className="grid grid-cols-1 gap-6 md:grid-cols-3">
+      <div  className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {/* Users Card */}
-        <div className="transform rounded-lg bg-blue-600 p-6 text-white transition-all duration-300 hover:scale-105 hover:shadow-xl">
+        <div onClick={()=>{router.push("/users")}} className="transform rounded-lg bg-blue-600 p-6 text-white transition-all duration-300 hover:scale-105 hover:shadow-xl">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-4xl font-bold">{stats.totalUsers}</p>
