@@ -460,7 +460,15 @@ const ServiceForms = ({
                 />
               </div>
             </motion.div>
-
+            {tripType !== "One Way" && (
+              <motion.button
+                variants={formVariants}
+                className="flex items-center gap-2  text-blue-700"
+                onClick={handleAddCity}
+              >
+                <FaPlusCircle /> Add Intermediate City
+              </motion.button>
+            )}
             <motion.div variants={formVariants} className={rowCommonClass}>
               <FaMapMarkerAlt className={iconCommonClass} />
               <AutocompleteInput
@@ -607,15 +615,7 @@ const ServiceForms = ({
               </AnimatePresence>
             )}
 
-            {tripType !== "One Way" && (
-              <motion.button
-                variants={formVariants}
-                className="flex items-center gap-2  text-blue-700"
-                onClick={handleAddCity}
-              >
-                <FaPlusCircle /> Add Intermediate City
-              </motion.button>
-            )}
+            
           </motion.div>
         );
 

@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 import axios from "axios";
-import { v4 as uuidv4 } from "uuid";
+import {v4 as uuidv4 } from "uuid";
 
 interface TripData {
   pickupLocation: {
@@ -73,7 +73,9 @@ export default function BookingPage() {
       const baseAmount = carDetails!.calculated_price*1.05;
       const totalAmount = amountType === "partial" ? baseAmount * 0.35 : baseAmount;
       const amount = Math.round(totalAmount * 100); // Convert to paise
-
+       localStorage.setItem('contact',formData.contact);
+       localStorage.setItem('baseAmount', JSON.stringify(baseAmount));
+       localStorage.setItem('totalamount',JSON.stringify(totalAmount));
       const response = await axios.post("/api/payments/initiate", {
         transactionId,
         amount,

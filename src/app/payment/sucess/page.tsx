@@ -33,7 +33,11 @@ export default function PaymentSuccess() {
           };
 
           const carName = localStorage.getItem('car') || "Unknown Car";
-          const price = localStorage.getItem('price') || "0";
+          const estimatedfair=localStorage.getItem('baseAmount')
+
+          const bookingamount=localStorage.getItem('totalamount')
+
+          const contact=localStorage.getItem('contact')
 
           // Save booking
           const bookingResponse = await fetch('/api/booking', {
@@ -42,7 +46,7 @@ export default function PaymentSuccess() {
             body: JSON.stringify({
               userId: session.user.id,
               carName,
-              amount: Number(price),
+              
               paymentStatus: 'SUCCESS',
               tripData: transformedTripData
             }),
@@ -60,7 +64,9 @@ export default function PaymentSuccess() {
               name: session.user.name,
               email: session.user.email,
               car: carName,
-              price: Number(price),
+              estimatedfair:Number(estimatedfair),
+              BookingTotal:Number(bookingamount),
+              Contact:Number(contact),
               tripData: transformedTripData
             }),
           });

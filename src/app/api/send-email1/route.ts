@@ -5,7 +5,9 @@ interface EmailRequestBody {
   name: string;
   email: string;
   car: string;
-  price: number;
+  estimatedfair: number;
+  BookingTotal: number;
+  Contact: string;
   tripData: {
     pickupLocation: string;
     dropoffLocation: string;
@@ -19,7 +21,8 @@ interface EmailRequestBody {
 
 export async function POST(request: Request) {
   try {
-    const { name, email, tripData, car, price }: EmailRequestBody = await request.json();
+    const { name, email, tripData, car, estimatedfair, BookingTotal, Contact }: EmailRequestBody =
+      await request.json();
 
     // Configure Nodemailer
     const transporter = nodemailer.createTransport({
@@ -32,11 +35,21 @@ export async function POST(request: Request) {
       },
     });
 
-    // Format price with currency
-    const formattedPrice = new Intl.NumberFormat('en-IN', {
+    // Format prices
+    const formattedPrice_e = new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'INR'
-    }).format(price);
+      currency: 'INR',
+    }).format(estimatedfair);
+
+    const formattedPrice_b = new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+    }).format(BookingTotal);
+
+    const formattedPrice_r = new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+    }).format(estimatedfair - BookingTotal);
 
     // Email to admin
     const adminMailOptions = {
@@ -47,8 +60,8 @@ export async function POST(request: Request) {
         <h2 style="color: #2563eb;">New Booking Received</h2>
         <p><strong>Customer Name:</strong> ${name}</p>
         <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Contact:</strong> ${Contact}</p>
         <p><strong>Car:</strong> ${car}</p>
-        <p><strong>Price:</strong> ${formattedPrice}</p>
         <h3 style="color: #374151; margin-top: 20px;">Trip Details:</h3>
         <ul style="list-style: none; padding: 0;">
           <li><strong>Pickup Location:</strong> ${tripData.pickupLocation}</li>
@@ -58,6 +71,12 @@ export async function POST(request: Request) {
           ${tripData.distance ? `<li><strong>Distance:</strong> ${tripData.distance}</li>` : ''}
           ${tripData.duration ? `<li><strong>Duration:</strong> ${tripData.duration}</li>` : ''}
           ${tripData.carType ? `<li><strong>Service Type:</strong> ${tripData.carType}</li>` : ''}
+        </ul>
+        <h4 style="margin-top: 20px;">Pricing Summary:</h4>
+        <ul style="list-style: none; padding: 0;">
+          <li><strong>Estimated Fare:</strong> ${formattedPrice_e}</li>
+          <li><strong>Booking Advance:</strong> ${formattedPrice_b}</li>
+          <li><strong>Remaining Amount:</strong> ${formattedPrice_r}</li>
         </ul>
         <hr style="margin: 20px 0;">
         <p style="color: #6b7280;">This booking was made through the website</p>
@@ -74,11 +93,13 @@ export async function POST(request: Request) {
         <p style="font-size: 16px; color: #374151;">Your booking summary:</p>
         <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
           <p><strong>Car:</strong> ${car}</p>
-          <p><strong>Total Price:</strong> ${formattedPrice}</p>
+          <p><strong>Estimated Fare:</strong> 
         </div>
         <p style="font-size: 16px; color: #374151;">Your trip details:</p>
         <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px;">
-          <p><strong>Pickup Location:</strong> ${tripData.pickupLocation}</p>
+          <p><strong>Pickup Location:<${formattedPrice_e}</p>
+          <p><strong>Advance Paid:</strong> ${formattedPrice_b}</p>
+          <p><strong>Remaining Amount:</strong> ${formattedPrice_r}</p>/strong> ${tripData.pickupLocation}</p>
           <p><strong>Dropoff Location:</strong> ${tripData.dropoffLocation}</p>
           <p><strong>Date:</strong> ${tripData.date}</p>
           <p><strong>Time:</strong> ${tripData.time}</p>
@@ -103,7 +124,6 @@ export async function POST(request: Request) {
       { message: 'Confirmation emails sent successfully!' },
       { status: 200 }
     );
-
   } catch (error) {
     console.error('Email sending error:', error);
     return NextResponse.json(

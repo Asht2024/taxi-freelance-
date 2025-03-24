@@ -93,6 +93,10 @@ export default function OutstationBookingPage() {
       const amountWithTax = totalAmount * 1.05;
       const amount = Math.round(amountWithTax * 100);
 
+      localStorage.setItem('contact',formData.contact);
+       localStorage.setItem('baseAmount', JSON.stringify(baseAmount));
+       localStorage.setItem('totalamount',JSON.stringify(totalAmount));
+
       const response = await axios.post("/api/payments/initiate", {
         transactionId,
         amount,

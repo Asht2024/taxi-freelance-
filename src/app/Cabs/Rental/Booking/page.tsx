@@ -71,11 +71,16 @@ export default function RentalBookingPage() {
     setIsDetailsSubmitted(true);
   };
 
+ 
+
   const initiatePhonePePayment = async () => {
     if (!session) {
       alert("Please login to proceed with payment.");
       return;
     }
+
+
+   
   
     setIsProcessingPayment(true);
     setPaymentError("");
@@ -85,7 +90,9 @@ export default function RentalBookingPage() {
       transactionId = uuidv4();
       const baseAmount = Number((rentalPackage!.price + rentalPackage!.price * 0.05).toFixed(2)) * 100;
       const amount = paymentOption === "partial" ? baseAmount * 0.35 : baseAmount;
-      
+      localStorage.setItem('contact',formData.contact);
+      localStorage.setItem('baseAmount', JSON.stringify(baseAmount));
+      localStorage.setItem('totalamount',JSON.stringify(amount));
       const response = await axios.post("/api/payments/initiate", {
         transactionId,
         amount,
