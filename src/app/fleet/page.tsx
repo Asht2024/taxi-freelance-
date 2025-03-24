@@ -106,7 +106,7 @@ const FleetPage = () => {
                       <p className="font-bold text-lg">₹{car.local_price_per_km}/km</p>
                     </div>
                     <div className="bg-gray-100 p-4 rounded-lg">
-                      <p className="text-sm text-gray-600">OneWay</p>
+                      <p className="text-sm text-gray-600">One-Way</p>
                       <p className="font-bold text-lg">₹{car.outstation_per_km}/km</p>
                     </div>
                     <div className="bg-gray-100 p-4 rounded-lg">

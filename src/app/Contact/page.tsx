@@ -198,9 +198,9 @@ const ContactPage = () => {
                   <div>
                     <h3 className="text-xl font-semibold mb-2">Visit Us</h3>
                     <p className="text-gray-600">
-                      123 Business Street
+                      13, Ratnaraj Green, B/H HP Petrol Pump, Nana Chiloda
                       <br />
-                      Ahmedabad, Gujarat 380001
+                      Ahmedabad-382330
                     </p>
                   </div>
                 </div>
