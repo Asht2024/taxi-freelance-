@@ -1,5 +1,4 @@
 "use client";
-
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
 
@@ -8,39 +7,51 @@ export default function PaymentSuccess() {
 
   useEffect(() => {
     if (status === "authenticated") {
-      console.log("User ID:", session.user.id); // User ID को console पर print करें
-      const tripData=JSON.parse(localStorage.getItem('currentTripData') || "")
-      const carName=localStorage.getItem('car')
-       const price=Number(localStorage.getItem('price'))
-      const saveBookingData = async () => {
-        const bookingData = {
-          userId: session.user.id, // Use user ID from session
-          carName: carName,
-          amount: price,
-          paymentStatus: 'SUCCESS',
-          tripData: tripData,
-          }
-
+      const sendConfirmationEmails = async () => {
         try {
-          const response = await fetch('/api/booking', {
+          // Use null coalescing to default to "{}" if null
+const tripData = JSON.parse(localStorage.getItem('currentTripData') || "{}");
+          const carName = localStorage.getItem('car') || "";
+          const price = Number(localStorage.getItem('price')) || 0;
+
+          // पहले booking save करें
+          const bookingResponse = await fetch('/api/booking', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(bookingData),
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userId: session.user.id,
+              carName,
+              amount: price,
+              paymentStatus: 'SUCCESS',
+              tripData
+            }),
           });
 
-          if (response.ok) {
-            console.log('Booking data saved successfully!');
-          } else {
-            console.error('Failed to save booking data.');
-          }
+          if (!bookingResponse.ok) throw new Error('Booking save failed');
+
+          // फिर emails भेजें
+          const emailResponse = await fetch('/api/send-email1', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: session.user.name,
+              email: session.user.email,
+              tripData
+            }),
+          });
+
+          if (!emailResponse.ok) throw new Error('Email sending failed');
+
+          localStorage.removeItem('currentTripData');
+          localStorage.removeItem('car');
+          localStorage.removeItem('price');
+
         } catch (error) {
-          console.error('Error saving booking data:', error);
+          console.error('Payment success process error:', error);
         }
       };
 
-      saveBookingData();
+      sendConfirmationEmails();
     }
   }, [session, status]);
 
