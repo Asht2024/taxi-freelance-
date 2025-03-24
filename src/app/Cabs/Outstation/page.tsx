@@ -21,7 +21,6 @@ interface CarType {
 }
 
 const OutstationPage = () => {
-  const [day, setDay] = useState<number>(0);
   const router = useRouter();
   const [mycars, setMyCars] = useState<CarType[]>([]);
   const [totalDistance, setTotalDistance] = useState<number>(0);
@@ -102,7 +101,6 @@ const OutstationPage = () => {
       (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
     ) + 1;
 
-    setDay(dayCount); // ✅ set day correctly before calculation
 
     const calculatePrices = async () => {
       try {
@@ -122,7 +120,10 @@ const OutstationPage = () => {
         const distance = res.data.distance;
         setTotalDistance(distance);
 
-        const allowance = dayCount * 300 + (dayCount - 1) * 250;
+        let allowance = 0
+        if(dayCount){
+          allowance = dayCount * 300 + (dayCount - 1) * 250;
+        }
 
         const processedCars = cars
           .filter(
@@ -140,12 +141,12 @@ const OutstationPage = () => {
                   ? distance * car.outstation_per_km
                   : minimumDistance * car.outstation_per_km;
             } else {
-              if (distance <= 105) {
+              if (distance <= 100) {
                 calculatedPrice = car.outstation_min;
               } else {
                 calculatedPrice =
                   car.outstation_min +
-                  (distance - 105) * car.outstation_oneway;
+                  (distance - 100) * car.outstation_oneway;
               }
             }
 
@@ -187,7 +188,7 @@ const OutstationPage = () => {
           Outstation Cabs
         </motion.h1>
 
-        <AllowanceInfo day={day} />
+        <AllowanceInfo />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {mycars.map((car, index) => (
@@ -269,17 +270,17 @@ const OutstationPage = () => {
   );
 };
 
-const AllowanceInfo = ({ day }: { day: number }) => (
+const AllowanceInfo = () => (
   <motion.div
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
-    className="bg-blue-50 p-4 rounded-xl mb-8 text-blue-800 font-medium flex flex-col sm:flex-row sm:justify-between gap-2"
+    className={`bg-blue-50 p-4 rounded-xl mb-8 text-blue-800 font-medium flex flex-col sm:flex-row sm:justify-between gap-2`}
   >
     <span className="text-center sm:text-left">
-      Day Allowance (₹300 × {day})
+      Day Allowance (₹300)
     </span>
     <span className="text-center sm:text-right">
-      Night Allowance (₹250 × {Math.max(day - 1, 0)})
+      Night Allowance (₹250)
     </span>
   </motion.div>
 );
