@@ -469,6 +469,40 @@ const ServiceForms = ({
                 <FaPlusCircle /> Add Intermediate City
               </motion.button>
             )}
+             {tripType !== "One Way" && (
+              <AnimatePresence>
+                <motion.div className="space-y-4">
+                  {intermediateCities.map((city, index) => (
+                    <motion.div
+                      key={index}
+                      variants={formVariants}
+                      className="relative"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                    >
+                      <AutocompleteInput
+                        label={`Intermediate City ${index + 1}`}
+                        value={city}
+                        onChange={(location) => {
+                          const newCities = [...intermediateCities];
+                          newCities[index] = location.address;
+                          setIntermediateCities(newCities);
+                          handleFormChange("intermediateCities", newCities);
+                        }}
+                      />
+                      <button
+                        onClick={() => handleRemoveCity(index)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-red-500 hover:text-red-600"
+                      >
+                        <FaTrash />
+                      </button>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </AnimatePresence>
+            )}
+
             <motion.div variants={formVariants} className={rowCommonClass}>
               <FaMapMarkerAlt className={iconCommonClass} />
               <AutocompleteInput
@@ -581,40 +615,7 @@ const ServiceForms = ({
             </motion.div>
 
             {/* Intermediate Cities */}
-            {tripType !== "One Way" && (
-              <AnimatePresence>
-                <motion.div className="space-y-4">
-                  {intermediateCities.map((city, index) => (
-                    <motion.div
-                      key={index}
-                      variants={formVariants}
-                      className="relative"
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                    >
-                      <AutocompleteInput
-                        label={`Intermediate City ${index + 1}`}
-                        value={city}
-                        onChange={(location) => {
-                          const newCities = [...intermediateCities];
-                          newCities[index] = location.address;
-                          setIntermediateCities(newCities);
-                          handleFormChange("intermediateCities", newCities);
-                        }}
-                      />
-                      <button
-                        onClick={() => handleRemoveCity(index)}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-red-500 hover:text-red-600"
-                      >
-                        <FaTrash />
-                      </button>
-                    </motion.div>
-                  ))}
-                </motion.div>
-              </AnimatePresence>
-            )}
-
+           
             
           </motion.div>
         );
