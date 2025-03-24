@@ -4,6 +4,8 @@ import nodemailer from 'nodemailer';
 interface EmailRequestBody {
   name: string;
   email: string;
+  car: string;
+  price: number;
   tripData: {
     pickupLocation: string;
     dropoffLocation: string;
@@ -17,10 +19,7 @@ interface EmailRequestBody {
 
 export async function POST(request: Request) {
   try {
-    const { name, email, tripData }: EmailRequestBody = await request.json();
-
-    // Log received data for debugging
-    console.log('Email request data:', { name, email, tripData });
+    const { name, email, tripData, car, price }: EmailRequestBody = await request.json();
 
     // Configure Nodemailer
     const transporter = nodemailer.createTransport({
@@ -33,6 +32,12 @@ export async function POST(request: Request) {
       },
     });
 
+    // Format price with currency
+    const formattedPrice = new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR'
+    }).format(price);
+
     // Email to admin
     const adminMailOptions = {
       from: `"Asht Cab Services" <${process.env.HOSTINGER_EMAIL}>`,
@@ -42,6 +47,8 @@ export async function POST(request: Request) {
         <h2 style="color: #2563eb;">New Booking Received</h2>
         <p><strong>Customer Name:</strong> ${name}</p>
         <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Car:</strong> ${car}</p>
+        <p><strong>Price:</strong> ${formattedPrice}</p>
         <h3 style="color: #374151; margin-top: 20px;">Trip Details:</h3>
         <ul style="list-style: none; padding: 0;">
           <li><strong>Pickup Location:</strong> ${tripData.pickupLocation}</li>
@@ -64,6 +71,11 @@ export async function POST(request: Request) {
       subject: 'Booking Confirmed - Asht Cab Services',
       html: `
         <h2 style="color: #2563eb;">Thank you for your booking, ${name}!</h2>
+        <p style="font-size: 16px; color: #374151;">Your booking summary:</p>
+        <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+          <p><strong>Car:</strong> ${car}</p>
+          <p><strong>Total Price:</strong> ${formattedPrice}</p>
+        </div>
         <p style="font-size: 16px; color: #374151;">Your trip details:</p>
         <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px;">
           <p><strong>Pickup Location:</strong> ${tripData.pickupLocation}</p>

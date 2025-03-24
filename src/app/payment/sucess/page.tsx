@@ -6,14 +6,14 @@ export default function PaymentSuccess() {
   const { data: session, status } = useSession();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [processed, setProcessed] = useState(false); // New state to track processing
+  const [processed, setProcessed] = useState(false);
 
   useEffect(() => {
-    if (status === "authenticated" && !processed) { // Check if not already processed
+    if (status === "authenticated" && !processed) {
       const handleSuccess = async () => {
         try {
           setLoading(true);
-          setProcessed(true); // Mark as processed
+          setProcessed(true);
           
           // Get trip data from localStorage
           const tripDataString = localStorage.getItem('currentTripData');
@@ -52,13 +52,15 @@ export default function PaymentSuccess() {
             throw new Error('Booking save failed');
           }
 
-          // Send confirmation emails
+          // Send confirmation emails with car and price information
           const emailResponse = await fetch('/api/send-email1', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               name: session.user.name,
               email: session.user.email,
+              car: carName,
+              price: Number(price),
               tripData: transformedTripData
             }),
           });
@@ -76,7 +78,7 @@ export default function PaymentSuccess() {
         } catch (error) {
           console.error('Payment success process error:', error);
           setError(error instanceof Error ? error.message : 'An unknown error occurred');
-          setProcessed(false); // Reset processed state on error
+          setProcessed(false);
         } finally {
           setLoading(false);
         }
@@ -84,7 +86,7 @@ export default function PaymentSuccess() {
 
       handleSuccess();
     }
-  }, [session, status, processed]); // Add processed to dependencies
+  }, [session, status, processed]);
 
   if (loading) {
     return (
