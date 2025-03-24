@@ -53,7 +53,7 @@ export default function About() {
             Trusted transportation partner for Ahmedabad since 2014
           </p>
           <div className="flex gap-4 justify-center">
-            <button onClick={() => router.push("/")} className="bg-white text-blue-600 px-6 py-3 rounded-full hover:bg-blue-50 transition-all flex items-center gap-2">
+            <button onClick={() => router.push("/Booking")} className="bg-white text-blue-600 px-6 py-3 rounded-full hover:bg-blue-50 transition-all flex items-center gap-2">
               Book Now <ArrowRightIcon className="w-5 h-5" />
             </button>
             <button onClick={() => router.push("/Contact")} className="border-2 border-white px-6 py-3 rounded-full hover:bg-white/10 transition-all">

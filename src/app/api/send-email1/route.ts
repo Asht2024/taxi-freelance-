@@ -1,119 +1,101 @@
-// src/app/api/send-email1/route.ts
-
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
+interface EmailRequestBody {
+  name: string;
+  email: string;
+  tripData: {
+    pickupLocation: string;
+    dropoffLocation: string;
+    date: string;
+    time: string;
+    distance?: string;
+    duration?: string;
+    carType?: string;
+  };
+}
+
 export async function POST(request: Request) {
   try {
-    const { name, email, tripData } = await request.json();
+    const { name, email, tripData }: EmailRequestBody = await request.json();
 
-    // 1. Environment variables validation
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD || !process.env.ADMIN_EMAIL) {
-      console.error('Missing email configuration in environment variables');
-      return NextResponse.json(
-        { error: 'Server email configuration error' },
-        { status: 500 }
-      );
-    }
+    // Log received data for debugging
+    console.log('Email request data:', { name, email, tripData });
 
-    // 2. Data validation
-    if (!name || !email) {
-      return NextResponse.json(
-        { error: 'Name and email are required' },
-        { status: 400 }
-      );
-    }
-
-    if (
-      !tripData?.carDetails?.model ||
-      !tripData?.rentalPackage?.hours ||
-      typeof tripData?.totalPrice !== 'number'
-    ) {
-      console.error('Invalid tripData structure:', tripData);
-      return NextResponse.json(
-        { error: 'Invalid trip data format' },
-        { status: 400 }
-      );
-    }
-
-    // 3. Configure transporter with TypeScript typing
+    // Configure Nodemailer
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.hostinger.com',
+      port: 465,
+      secure: true,
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD,
+        user: process.env.HOSTINGER_EMAIL!,
+        pass: process.env.HOSTINGER_PASS!,
       },
     });
 
-    // 4. Configure email templates with fallbacks
-    const userMailOptions = {
-      from: `Taxi Service <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: 'आपकी बुकिंग पुष्टि हुई है ✅',
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #22c55e;">बुकिंग सफल! 🎉</h2>
-          <p>नमस्ते ${name || 'ग्राहक'},</p>
-          <p>आपकी बुकिंग सफलतापूर्वक पंजीकृत की गई है। यहां आपकी यात्रा का विवरण है:</p>
-          
-          <div style="background: #f3f4f6; padding: 1rem; border-radius: 0.5rem;">
-            <h3 style="color: #3b82f6;">कार का विवरण</h3>
-            <p>मॉडल: ${tripData.carDetails.model || 'N/A'}</p>
-            
-            <h3 style="color: #3b82f6; margin-top: 1rem;">पैकेज</h3>
-            <p>समय: ${tripData.rentalPackage.hours} घंटे</p>
-            <p>दूरी: ${tripData.rentalPackage.km || 0} किमी</p>
-            
-            <h3 style="color: #3b82f6; margin-top: 1rem;">भुगतान</h3>
-            <p>कुल राशि: ₹${tripData.totalPrice.toLocaleString('en-IN')}</p>
-          </div>
-
-          <p style="margin-top: 1.5rem;">हमें चुनने के लिए धन्यवाद! 🚕</p>
-        </div>
-      `
-    };
-
+    // Email to admin
     const adminMailOptions = {
-      from: `Taxi Service <${process.env.EMAIL_USER}>`,
-      to: process.env.ADMIN_EMAIL,
-      subject: `नई बुकिंग - ${name}`,
+      from: `"Asht Cab Services" <${process.env.HOSTINGER_EMAIL}>`,
+      to: process.env.ADMIN_EMAIL!,
+      subject: `New Booking Confirmation from ${name}`,
       html: `
-        <div style="font-family: Arial, sans-serif;">
-          <h2 style="color: #ef4444;">नई बुकिंग प्राप्त हुई 🔔</h2>
-          <p><strong>ग्राहक:</strong> ${name} (${email})</p>
-          
-          <h3 style="color: #3b82f6;">यात्रा विवरण</h3>
-          <pre style="
-            background: #f3f4f6;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            white-space: pre-wrap;
-          ">
-${JSON.stringify(tripData, null, 2)}
-          </pre>
-        </div>
-      `
+        <h2 style="color: #2563eb;">New Booking Received</h2>
+        <p><strong>Customer Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <h3 style="color: #374151; margin-top: 20px;">Trip Details:</h3>
+        <ul style="list-style: none; padding: 0;">
+          <li><strong>Pickup Location:</strong> ${tripData.pickupLocation}</li>
+          <li><strong>Dropoff Location:</strong> ${tripData.dropoffLocation}</li>
+          <li><strong>Date:</strong> ${tripData.date}</li>
+          <li><strong>Time:</strong> ${tripData.time}</li>
+          ${tripData.distance ? `<li><strong>Distance:</strong> ${tripData.distance}</li>` : ''}
+          ${tripData.duration ? `<li><strong>Duration:</strong> ${tripData.duration}</li>` : ''}
+          ${tripData.carType ? `<li><strong>Service Type:</strong> ${tripData.carType}</li>` : ''}
+        </ul>
+        <hr style="margin: 20px 0;">
+        <p style="color: #6b7280;">This booking was made through the website</p>
+      `,
     };
 
-    // 5. Send emails with error handling
-    const userResult = await transporter.sendMail(userMailOptions);
-    console.log('User email sent:', userResult.messageId);
+    // Email to user
+    const userMailOptions = {
+      from: `"Asht Cab Services" <${process.env.HOSTINGER_EMAIL}>`,
+      to: email,
+      subject: 'Booking Confirmed - Asht Cab Services',
+      html: `
+        <h2 style="color: #2563eb;">Thank you for your booking, ${name}!</h2>
+        <p style="font-size: 16px; color: #374151;">Your trip details:</p>
+        <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px;">
+          <p><strong>Pickup Location:</strong> ${tripData.pickupLocation}</p>
+          <p><strong>Dropoff Location:</strong> ${tripData.dropoffLocation}</p>
+          <p><strong>Date:</strong> ${tripData.date}</p>
+          <p><strong>Time:</strong> ${tripData.time}</p>
+          ${tripData.distance ? `<p><strong>Distance:</strong> ${tripData.distance}</p>` : ''}
+          ${tripData.duration ? `<p><strong>Duration:</strong> ${tripData.duration}</p>` : ''}
+          ${tripData.carType ? `<p><strong>Service Type:</strong> ${tripData.carType}</p>` : ''}
+        </div>
+        <p style="margin-top: 20px; color: #374151;">
+          Need help? Contact us at ${process.env.HOSTINGER_EMAIL} or call +91-XXXXXXX
+        </p>
+        <p style="color: #6b7280; margin-top: 30px;">
+          Safe travels with Asht Cab Services!
+        </p>
+      `,
+    };
 
-    const adminResult = await transporter.sendMail(adminMailOptions);
-    console.log('Admin email sent:', adminResult.messageId);
+    // Send both emails
+    await transporter.sendMail(adminMailOptions);
+    await transporter.sendMail(userMailOptions);
 
-    return NextResponse.json({ 
-      success: true,
-      message: 'Both emails sent successfully'
-    });
+    return NextResponse.json(
+      { message: 'Confirmation emails sent successfully!' },
+      { status: 200 }
+    );
 
   } catch (error) {
     console.error('Email sending error:', error);
     return NextResponse.json(
-      { 
-        error: 'Failed to send emails',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      },
+      { error: 'Failed to send confirmation emails. Please try again later.' },
       { status: 500 }
     );
   }

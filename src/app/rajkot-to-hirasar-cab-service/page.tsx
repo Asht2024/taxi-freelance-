@@ -12,6 +12,7 @@ import {
   ArrowRightIcon
 } from '@heroicons/react/24/outline';
 import Main from '../../../components/Main';
+import { useRouter } from 'next/navigation';
 export default function AirportTransfers() {
 
   const features = [
@@ -27,7 +28,7 @@ export default function AirportTransfers() {
     { title: "Private Taxi", description: "Exclusive vehicle with personal space and privacy" },
     { title: "Metered Fare", description: "Pay-per-kilometer option for short distances" }
   ];
-
+ const router=useRouter();
   return (
     <div className="min-h-screen mt-10">
       <Main/>
@@ -159,7 +160,7 @@ export default function AirportTransfers() {
             flight monitoring, and premium comfort.
           </p>
           <button 
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            onClick={() => router.push('/Booking')}
             className="bg-white text-blue-900 px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition flex items-center mx-auto"
           >
             Book Airport Transfer

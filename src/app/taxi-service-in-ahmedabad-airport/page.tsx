@@ -10,6 +10,7 @@ import {
   BookOpenIcon
 } from '@heroicons/react/24/outline';
 import Main from '../../../components/Main';
+import { useRouter } from 'next/navigation';
 export default function AhmedabadTaxi() {
   const bookingSteps = [
     { step: "1", title: "Select Journey Type", content: "City ride, intercity, or airport transfer" },
@@ -31,6 +32,7 @@ export default function AhmedabadTaxi() {
     { title: "Outstation Trips", description: "Long-distance comfort" }
   ];
 
+  const router=useRouter();
   return (
     <div className="min-h-screen mt-10">
         <Main/>
@@ -152,7 +154,7 @@ export default function AhmedabadTaxi() {
             Book your Ahmedabad airport transfer now and experience premium comfort with guaranteed punctuality.
           </p>
           <button 
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            onClick={() => router.push('/Booking')}
             className="bg-white text-blue-900 px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition flex items-center mx-auto"
           >
             Book Now

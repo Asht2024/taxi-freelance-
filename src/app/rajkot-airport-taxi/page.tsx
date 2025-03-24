@@ -9,6 +9,7 @@ import {
   ArrowRightIcon
 } from '@heroicons/react/24/outline';
 import Main from '../../../components/Main';
+import { useRouter } from 'next/navigation';
 export default function RajkotAirportTaxi() {
 
   const features = [
@@ -17,6 +18,8 @@ export default function RajkotAirportTaxi() {
     { icon: <CurrencyDollarIcon className="h-6 w-6" />, title: "Fixed Pricing", content: "No surge charges" },
     { icon: <StarIcon className="h-6 w-6" />, title: "Rated Drivers", content: "4.9/5 customer rating" }
   ];
+
+  const router=useRouter()
 
   const destinations = [
     { location: "Ahmedabad", distance: "230 km", time: "4h 10m" },
@@ -122,7 +125,7 @@ export default function RajkotAirportTaxi() {
             Book your Rajkot airport transfer now and experience premium comfort with guaranteed punctuality
           </p>
           <button 
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            onClick={() => router.push('/Booking')}
             className="bg-white text-blue-900 px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition flex items-center mx-auto"
           >
             Book Airport Transfer
