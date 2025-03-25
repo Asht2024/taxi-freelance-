@@ -11,16 +11,25 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const user = await prisma.user.findUnique({
-      where: { email },
-      include: { bookings: true },
-    });
+    if (email === 'aadeshconsultancy2@gmail.com') {
+      // Admin email: return all bookings
+      const allBookings = await prisma.booking.findMany({
+        include: { user: true }, // Include user details if needed
+      });
+      return NextResponse.json(allBookings);
+    } else {
+      // Regular user: return only their bookings
+      const user = await prisma.user.findUnique({
+        where: { email },
+        include: { bookings: true },
+      });
 
-    if (!user) {
-      return NextResponse.json({ message: 'User not found' }, { status: 404 });
+      if (!user) {
+        return NextResponse.json({ message: 'User not found' }, { status: 404 });
+      }
+
+      return NextResponse.json(user.bookings);
     }
-
-    return NextResponse.json(user.bookings);
   } catch (error) {
     console.error('Error fetching bookings:', error);
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
