@@ -73,19 +73,19 @@ const CareersPage = () => {
                   <p className="text-gray-600">📧 21012003rs@gmail.com</p>
                   <p className="text-gray-600">📱 8318297569</p>
                   <p className="text-gray-600">
-                    B.Tech (Computer Science) - IIIT Ranchi<br/>
+                    B.Tech (Electronics and Communication Device) - IIIT Ranchi<br/>
                     Full Stack Developer specializing in scalable mobility solutions
                   </p>
                 </div>
               </div>
   
               <div className="bg-blue-50 p-6 rounded-lg">
-                <h3 className="text-2xl font-bold text-blue-900 mb-4">Praveen Morya</h3>
+                <h3 className="text-2xl font-bold text-blue-900 mb-4">Praveen Maurya</h3>
                 <div className="space-y-2">
                   <p className="text-gray-600">📧 satyammaurya9620@gmail.com</p>
                   <p className="text-gray-600">📱 8302252848</p>
                   <p className="text-gray-600">
-                    B.Tech (Computer Science) - IIIT Ranchi<br/>
+                    B.Tech (Electronics and Communication Device) - IIIT Ranchi<br/>
                     Backend Systems Expert focusing on transportation logistics
                   </p>
                 </div>
