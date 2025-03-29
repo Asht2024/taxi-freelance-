@@ -46,9 +46,13 @@ export default function PaymentSuccess() {
             body: JSON.stringify({
               userId: session.user.id,
               carName,
-              
+              amount:parseFloat(estimatedfair||"0"),
               paymentStatus: 'SUCCESS',
-              tripData: transformedTripData
+              tripData: transformedTripData,
+              costomername:session.user.name,
+              costomemail:session.user.email,
+              costomercontact:contact,
+              paid:parseFloat(bookingamount||"0"),
             }),
           });
 

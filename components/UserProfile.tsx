@@ -7,54 +7,27 @@ import BookingCard from "./BookingCard";
 import type { Session } from "next-auth";
 
 interface TripData {
-  formData: {
     date: string;
     time: string;
-    luggage: number;
-    members: number;
-    dropdate: string;
-    droptime: string;
-    tripType: string;
-    dropAddress: string;
-    serviceType: string;
-    pickupAddress: string;
-    intermediateCities: string[];
-  };
-  pickupLocation: {
-    lat: number;
-    lng: number;
-    city: string;
-    address: string;
-  };
-  dropLocation: {
-    lat: number;
-    lng: number;
-    city: string;
-    address: string;
-  };
-  rentalPackage: {
-    km: number;
-    hours: number;
-  };
-  selectedOption: string;
+    carType: string;
+    distance: string;
+    pickupLocation: string;
+    dropoffLocation: string;
 }
 
 
 interface Booking {
   id: string;
-  carId: number;
   carName: string;
   amount: number;
-  paymentId: string;
   paymentStatus: string;
   createdAt: string;
   updatedAt: string;
   tripData: TripData;
-  car?: {
-    car_name: string;
-    model: string;
-    image_url: string;
-  };
+  costomername?: string;
+  costomemail?: string;
+  costomercontact?: string;
+  paid?: number;
 }
 
 
@@ -136,22 +109,24 @@ export default function UserProfilePage() {
         ) : (
           <div className="space-y-4">
             {bookings.map((booking) => (
-              <BookingCard
-              key={booking.id}
-              booking={{
-                id: booking.id,
-                carName: booking.carName,
-                amount: booking.amount,
-                paymentStatus: booking.paymentStatus,
-                createdAt: booking.createdAt,
-                tripType: booking.tripData?.selectedOption || "N/A",
-                pickupAddress: booking.tripData?.formData?.pickupAddress || "N/A",
-                dropAddress: booking.tripData?.formData?.dropAddress || "", // show only if it exists
-              }}
-            />
-            
-
-            ))}
+  <BookingCard
+    key={booking.id}
+    booking={{
+      id: booking.id,
+      carName: booking.carName,
+      amount: booking.amount,
+      paymentStatus: booking.paymentStatus,
+      createdAt: booking.createdAt,
+      tripType: booking.tripData.carType || "N/A",
+      pickupAddress: booking.tripData?.pickupLocation || "N/A",
+      dropAddress: booking.tripData?.dropoffLocation || "",
+      costomername: booking.costomername,
+      costomemail: booking.costomemail,
+      costomercontact: booking.costomercontact,
+      paid: booking.paid || 0,
+    }}
+  />
+))}
           </div>
         )}
       </div>

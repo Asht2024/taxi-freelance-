@@ -90,29 +90,28 @@ export async function POST(request: Request) {
       subject: 'Booking Confirmed - Asht Cab Services',
       html: `
         <h2 style="color: #2563eb;">Thank you for your booking, ${name}!</h2>
-        <p style="font-size: 16px; color: #374151;">Your booking summary:</p>
-        <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-          <p><strong>Car:</strong> ${car}</p>
-          <p><strong>Estimated Fare:</strong> 
-        </div>
-        <p style="font-size: 16px; color: #374151;">Your trip details:</p>
-        <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px;">
-          <p><strong>Pickup Location:<${formattedPrice_e}</p>
-          <p><strong>Advance Paid:</strong> ${formattedPrice_b}</p>
-          <p><strong>Remaining Amount:</strong> ${formattedPrice_r}</p>/strong> ${tripData.pickupLocation}</p>
-          <p><strong>Dropoff Location:</strong> ${tripData.dropoffLocation}</p>
-          <p><strong>Date:</strong> ${tripData.date}</p>
-          <p><strong>Time:</strong> ${tripData.time}</p>
-          ${tripData.distance ? `<p><strong>Distance:</strong> ${tripData.distance}</p>` : ''}
-          ${tripData.duration ? `<p><strong>Duration:</strong> ${tripData.duration}</p>` : ''}
-          ${tripData.carType ? `<p><strong>Service Type:</strong> ${tripData.carType}</p>` : ''}
-        </div>
-        <p style="margin-top: 20px; color: #374151;">
-          Need help? Contact us at ${process.env.HOSTINGER_EMAIL} or call +91-XXXXXXX
-        </p>
-        <p style="color: #6b7280; margin-top: 30px;">
-          Safe travels with Asht Cab Services!
-        </p>
+        <p><strong>your Name:</strong> ${name}</p>
+        <p><strong>your Email:</strong> ${email}</p>
+        <p><strong>your Contact:</strong> ${Contact}</p>
+        <p><strong>Car:</strong> ${car}</p>
+        <h3 style="color: #374151; margin-top: 20px;">Trip Details:</h3>
+        <ul style="list-style: none; padding: 0;">
+          <li><strong>Pickup Location:</strong> ${tripData.pickupLocation}</li>
+          <li><strong>Dropoff Location:</strong> ${tripData.dropoffLocation}</li>
+          <li><strong>Date:</strong> ${tripData.date}</li>
+          <li><strong>Time:</strong> ${tripData.time}</li>
+          ${tripData.distance ? `<li><strong>Distance:</strong> ${tripData.distance}</li>` : ''}
+          ${tripData.duration ? `<li><strong>Duration:</strong> ${tripData.duration}</li>` : ''}
+          ${tripData.carType ? `<li><strong>Service Type:</strong> ${tripData.carType}</li>` : ''}
+        </ul>
+        <h4 style="margin-top: 20px;">Pricing Summary:</h4>
+        <ul style="list-style: none; padding: 0;">
+          <li><strong>Estimated Fare:</strong> ${formattedPrice_e}</li>
+          <li><strong>Booking Advance:</strong> ${formattedPrice_b}</li>
+          <li><strong>Remaining Amount:</strong> ${formattedPrice_r}</li>
+        </ul>
+        <hr style="margin: 20px 0;">
+        <p style="color: #6b7280;">This booking was made through the website</p>
       `,
     };
 

@@ -47,15 +47,18 @@ model User {
 }
 
 model Booking {
-  id            String   @id @default(cuid())
-  userId        String
-  carName       String
-  amount        Float
-  paymentStatus String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  tripData      Json
-
+  id              String   @id @default(cuid())
+  userId          String
+  carName         String
+  amount          Float
+  paymentStatus   String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  tripData        Json
+  costomername    String?
+  costomemail     String?
+  costomercontact String?
+  paid            Float?
   // Relations
-  user User @relation(fields: [userId], references: [id])
+  user            User     @relation(fields: [userId], references: [id])
 }
