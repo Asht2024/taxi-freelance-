@@ -25,7 +25,8 @@ export const metadata: Metadata = {
 const navItems = [
   { name: "Home", link: "/" },
   { 
-    name: "Services",
+    name: "Services", 
+    link: "/Service",
     dropdown: [
       { name: "All Services", link: "/Service" },
       { name: "Local Taxi Cab Service in Ahmedabad", link: "/local-taxi-cab-service-ahmdabad" },
